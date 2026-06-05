@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v25_4_mobile_answer_panel_layout";
+const CANDLE_QUEST_BUILD = "v25_5_mobile_cockpit_compact";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v25.4 · Mobile Answer Layout"
+    b.textContent = "v25.5 · Mobile Cockpit Compact"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -285,11 +285,13 @@ function loadState(){
 function saveState(){
   localStorage.setItem("candleQuestRebornV1", JSON.stringify(state));
   $("xpText").textContent = `${state.xp} XP`;
+  const gameXp = $("gameXpText");
+  if(gameXp) gameXp.textContent = `${state.xp} XP`;
   document.body.dataset.skin = state.skin === "classic" ? "" : state.skin;
 }
 
 function pulseXPWallet(){
-  const wallet = document.querySelector(".wallet");
+  const wallet = document.querySelector(document.body.dataset.screen === "game" ? ".game-wallet-mini" : ".wallet") || document.querySelector(".wallet");
   if(!wallet) return;
   wallet.classList.remove("xp-pulse");
   void wallet.offsetWidth;
@@ -297,7 +299,7 @@ function pulseXPWallet(){
 }
 
 function showXPPop(amount, label="Bonus XP"){
-  const wallet = document.querySelector(".wallet");
+  const wallet = document.querySelector(document.body.dataset.screen === "game" ? ".game-wallet-mini" : ".wallet") || document.querySelector(".wallet");
   if(!wallet || !amount || amount <= 0) return;
   pulseXPWallet();
   const pop = document.createElement("div");

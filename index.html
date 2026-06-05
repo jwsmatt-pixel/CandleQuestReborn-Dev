@@ -60,10 +60,11 @@
     <main id="game" class="screen">
       <section class="game-shell">
         <div class="game-hud">
-          <button class="ghost" onclick="quitRun()">← Exit</button>
-          <div><b id="runMode">Pattern Run</b><span id="runHint">Watch the channel. Timer starts at Quest Moment.</span></div>
+          <button class="ghost desktop-exit" onclick="quitRun()">← Exit</button>
+          <div class="run-copy"><b id="runMode">Pattern Run</b><span id="runHint">Watch the channel. Timer starts at Quest Moment.</span></div>
           <div class="hud-stats"><span id="scoreText">0</span><small>score</small></div>
           <div class="hud-stats"><span id="timeText">—</span><small>sec</small></div>
+          <div class="game-wallet-mini"><span id="gameXpText">0 XP</span><button onclick="openScreen('shop')">Shop</button></div>
         </div>
 
         <div class="chart-wrap">
@@ -72,6 +73,8 @@
         </div>
 
         <div id="answerPad" class="answer-pad"></div>
+
+        <button class="ghost mobile-exit" onclick="quitRun()">← Exit</button>
       </section>
     </main>
 
