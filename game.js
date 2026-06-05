@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v25_6_summary_compression_desktop_shop_cleanup";
+const CANDLE_QUEST_BUILD = "v25_7_desktop_summary_rebalance";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v25.6 · Summary Compression + Desktop Shop Cleanup"
+    b.textContent = "v25.7 · Desktop Summary Rebalance"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }

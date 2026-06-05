@@ -1354,3 +1354,91 @@ body[data-skin="gold"] .definition-card{
     border-radius:16px!important;
   }
 }
+
+
+/* v25.7: desktop-only run-complete rebalance.
+   Mobile gameplay/layout remains frozen; this only fixes the desktop summary card feeling too flat/squashed. */
+@media (min-width:851px){
+  #result.screen.active{
+    padding-top:18px!important;
+  }
+  #result .result-card{
+    max-width:690px!important;
+    padding:24px 28px 26px!important;
+    border-radius:28px!important;
+  }
+  #result .result-card .eyebrow{
+    font-size:12px!important;
+    line-height:1.1!important;
+    margin-bottom:4px!important;
+    letter-spacing:.14em!important;
+  }
+  #result #resultTitle{
+    font-size:clamp(36px,4.8vw,48px)!important;
+    line-height:.96!important;
+    margin:0 0 8px!important;
+    letter-spacing:-.05em!important;
+  }
+  #result .summary-correct{
+    font-size:clamp(48px,5.7vw,64px)!important;
+    line-height:.95!important;
+    margin:2px 0 3px!important;
+    letter-spacing:-.045em!important;
+  }
+  #result .summary-label{
+    font-size:12px!important;
+    line-height:1.1!important;
+    margin:0 0 10px!important;
+    letter-spacing:.13em!important;
+  }
+  #result .summary-comment{
+    font-size:18px!important;
+    line-height:1.22!important;
+    max-width:560px!important;
+    margin:6px auto 8px!important;
+    letter-spacing:-.02em!important;
+  }
+  #result .summary-meta{
+    font-size:12px!important;
+    line-height:1.15!important;
+    margin:5px 0 8px!important;
+  }
+  #result .summary-bonus-row{
+    gap:8px!important;
+    margin:8px auto 14px!important;
+    justify-content:center!important;
+  }
+  #result .summary-bonus{
+    font-size:11px!important;
+    padding:6px 10px!important;
+    border-radius:999px!important;
+  }
+  #result .result-stats{
+    max-width:620px!important;
+    margin:12px auto 12px!important;
+    gap:10px!important;
+  }
+  #result .result-stats div{
+    min-height:66px!important;
+    padding:10px 12px!important;
+    border-radius:18px!important;
+  }
+  #result .result-stats b{
+    font-size:30px!important;
+    line-height:1!important;
+    margin-bottom:3px!important;
+  }
+  #result .result-stats span{
+    font-size:11px!important;
+  }
+  #result .result-card .hero-actions{
+    margin-top:10px!important;
+    justify-content:center!important;
+    gap:10px!important;
+  }
+  #result .result-card .hero-actions button{
+    min-height:42px!important;
+    padding:10px 16px!important;
+    border-radius:16px!important;
+  }
+}
