@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v25_1_scoring_mobile_polish";
+const CANDLE_QUEST_BUILD = "v25_3_mobile_candle_polish";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v25.1 · Scoring Fix"
+    b.textContent = "v25.3 · Mobile Candle Polish"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1094,16 +1094,17 @@ function drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal=false){
   const bodyBottom = Math.max(yO,yC);
   const bodyH = Math.max(3, bodyBottom - bodyTop);
 
-  // v25: mobile gets thicker candles
-  const effectiveCW = isSignal ? cw * 1.15 : cw;
+  // v25.3: stronger mobile candle bodies; signal candles get a small focus boost.
+  const mobile = isMobile();
+  const effectiveCW = isSignal ? cw * (mobile ? 1.18 : 1.15) : cw;
   const px = Math.round(x) + 0.5;
   const left = Math.round(x - effectiveCW/2);
   const top = Math.round(bodyTop);
-  const width = Math.max(4, Math.round(effectiveCW));
-  const height = Math.max(3, Math.round(bodyH));
+  const width = Math.max(mobile ? 9 : 4, Math.round(effectiveCW));
+  const height = Math.max(mobile ? 4 : 3, Math.round(bodyH));
 
-  // Slightly thicker wicks on mobile
-  const wickWidth = isMobile() ? 2.5 : 2;
+  // v25.3: bolder mobile wicks so candles stay readable on iPhone-scale canvas.
+  const wickWidth = mobile ? 3.25 : 2;
   ctx.strokeStyle = wickColor;
   ctx.lineWidth = wickWidth;
   ctx.lineCap = "butt";
@@ -1150,28 +1151,36 @@ function drawGame(frozen=false){
 
   const mobile = isMobile();
 
-  // v25: Mobile shows fewer candles. Bias toward latest candles.
-  // Slice to the most recent N candles for mobile viewing.
-  const visibleCount = mobile ? Math.min(run.candles.length, 16) : run.candles.length;
+  // v25.3: Mobile keeps the 14-candle read, but draws them in a tighter stage.
+  // This avoids the isolated/spread-out feel without changing the underlying game loop.
+  const mobileVisibleTarget = 14;
+  const visibleCount = mobile ? Math.min(run.candles.length, mobileVisibleTarget) : run.candles.length;
   const visibleCandles = run.candles.slice(run.candles.length - visibleCount);
 
   const candleVals = visibleCandles.flat();
   const visibleMin = Math.min(run.support, ...candleVals);
   const visibleMax = Math.max(run.resistance, ...candleVals);
-  const pad = Math.max(1.25, (run.resistance - run.support) * 0.18);
+  const pad = mobile
+    ? Math.max(0.85, (run.resistance - run.support) * 0.105)
+    : Math.max(1.25, (run.resistance - run.support) * 0.18);
   const min = visibleMin - pad;
   const max = visibleMax + pad;
   const mapY = v => H - 54 - ((v - min) / (max - min)) * (H - 100);
 
   const futurePad = frozen ? 120 : 88;
-  const left = 42;
+  const left = mobile ? 70 : 42;
   const right = W - futurePad;
 
-  // v25: Mobile spacing — slightly wider gap and thicker candle bodies
-  const rawGap = (right - left) / Math.max(1, visibleCandles.length - 1);
-  const gap = mobile ? Math.max(rawGap, 14) : rawGap;
+  // v25.3: tighter mobile candle stage + wider bodies.
+  // Keep the latest candle close to the focus area, but stop 14 candles from spanning the whole canvas.
+  const availableSpan = right - left;
+  const mobileSpan = mobile ? Math.min(availableSpan, Math.max(360, visibleCandles.length * 36)) : availableSpan;
+  const drawRight = mobile ? right - 18 : right;
+  const drawLeft = mobile ? Math.max(left, drawRight - mobileSpan) : left;
+  const rawGap = (drawRight - drawLeft) / Math.max(1, visibleCandles.length - 1);
+  const gap = mobile ? Math.max(24, Math.min(39, rawGap)) : rawGap;
   const cwBase = mobile
-    ? Math.max(8, Math.min(18, gap * 0.52))   // thicker on mobile
+    ? Math.max(13, Math.min(24, gap * 0.68))   // thicker on mobile
     : Math.max(5, Math.min(15, gap * 0.42));   // normal on desktop
   const cw = cwBase;
 
@@ -1249,7 +1258,7 @@ function drawGame(frozen=false){
 
   // Draw candles
   visibleCandles.forEach((c,i)=>{
-    const x = left + i * gap;
+    const x = (mobile ? drawLeft : left) + i * gap;
     const [o,h,l,cl] = c;
     const green = cl >= o;
     const yO=mapY(o), yH=mapY(h), yL=mapY(l), yC=mapY(cl);
