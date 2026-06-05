@@ -1444,6 +1444,55 @@ body[data-skin="gold"] .definition-card{
 }
 
 
+/* v25.9: mobile summary declutter.
+   Remove duplicate bonus-total/longest-streak visual noise and tighten the phone result card. */
+@media(max-width:850px){
+  #result.screen.active{
+    padding-top:8px!important;
+  }
+  #result .result-card{
+    padding:13px 13px 15px!important;
+  }
+  #result #resultTitle{
+    font-size:clamp(30px,8.8vw,42px)!important;
+    margin:2px 0 5px!important;
+  }
+  #result .summary-correct{
+    font-size:clamp(38px,11.8vw,52px)!important;
+    margin:0 0 2px!important;
+  }
+  #result .summary-label{
+    margin-bottom:6px!important;
+  }
+  #result .summary-comment{
+    max-width:82vw!important;
+    margin:5px auto 8px!important;
+    font-size:clamp(14px,3.8vw,18px)!important;
+    line-height:1.12!important;
+  }
+  #result .summary-bonus-row{
+    margin:6px auto 9px!important;
+    gap:6px!important;
+  }
+  #result .summary-bonus{
+    font-size:11px!important;
+    padding:6px 10px!important;
+  }
+  #result .summary-meta,
+  #result .summary-bonus.xp-total{
+    display:none!important;
+  }
+  #result .result-stats{
+    margin:8px 0 9px!important;
+  }
+  #result .result-stats div{
+    min-height:58px!important;
+  }
+  #result .hero-actions{
+    margin-top:8px!important;
+  }
+}
+
 /* v25.8: static answer dock.
    Keep the answer area reserved under the chart throughout the setup/replay phase,
    then swap labels in at Quest Moment instead of creating a pop-up/jump. */

@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v25_8_static_answer_dock";
+const CANDLE_QUEST_BUILD = "v25_9_mobile_summary_declutter";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v25.8 · Static Answer Dock"
+    b.textContent = "v25.9 · Mobile Summary Declutter"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -579,17 +579,12 @@ function endRun(){
   const runComment = pickRunComment(correct);
   const fastLine = (run.fastCount || 0) > 0 ? `<span class="summary-bonus">⚡ ${run.fastCount} fast reads · +${(run.fastCount || 0)*3} XP</span>` : "";
   const perfectLine = correct >= maxQ ? `<span class="summary-bonus perfect">✦ Perfect bonus +50 XP</span>` : "";
-  const earnedLine = bonusXP > 0 ? `<span class="summary-bonus xp-total">Bonus XP included: +${bonusXP}</span>` : "";
+  const bonusRow = (fastLine || perfectLine) ? `<div class="summary-bonus-row">${fastLine}${perfectLine}</div>` : "";
   $("resultBody").innerHTML = `
     <div class="summary-correct">${correct}/${maxQ}</div>
     <div class="summary-label">correct reads</div>
     <div class="summary-comment">${runComment}</div>
-    <div class="summary-meta">Longest streak: ${run.longestStreak || 0}x</div>
-    <div class="summary-bonus-row">
-      ${fastLine}
-      ${perfectLine}
-      ${earnedLine}
-    </div>
+    ${bonusRow}
   `;
 
   run=null;
