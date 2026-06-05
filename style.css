@@ -1442,3 +1442,43 @@ body[data-skin="gold"] .definition-card{
     border-radius:16px!important;
   }
 }
+
+
+/* v25.8: static answer dock.
+   Keep the answer area reserved under the chart throughout the setup/replay phase,
+   then swap labels in at Quest Moment instead of creating a pop-up/jump. */
+.answer-pad.waiting button.placeholder{
+  color:transparent!important;
+  background:linear-gradient(90deg, rgba(210,232,214,.42), rgba(246,255,246,.96), rgba(210,232,214,.42))!important;
+  border-color:rgba(202,228,205,.72)!important;
+  box-shadow:none!important;
+  cursor:default!important;
+  pointer-events:none!important;
+}
+.answer-pad.waiting button.placeholder::after{
+  content:"";
+  display:block;
+  width:38%;
+  height:8px;
+  margin:0 auto;
+  border-radius:999px;
+  background:rgba(116,137,120,.18);
+}
+@media(max-width:850px){
+  body[data-screen="game"] .answer-pad{
+    min-height:104px!important;
+    align-content:stretch!important;
+  }
+  body[data-screen="game"] .answer-pad button{
+    height:46px!important;
+    overflow:hidden!important;
+  }
+}
+@media(max-width:430px){
+  body[data-screen="game"] .answer-pad{
+    min-height:100px!important;
+  }
+  body[data-screen="game"] .answer-pad button{
+    height:44px!important;
+  }
+}

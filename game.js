@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v25_7_desktop_summary_rebalance";
+const CANDLE_QUEST_BUILD = "v25_8_static_answer_dock";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v25.7 · Desktop Summary Rebalance"
+    b.textContent = "v25.8 · Static Answer Dock"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -13,6 +13,21 @@ function showBuildBadge(){
 setTimeout(showBuildBadge, 500);
 
 const $ = id => document.getElementById(id);
+
+function renderAnswerDock(mode="waiting", options=[]){
+  const pad = $("answerPad");
+  if(!pad) return;
+  if(mode === "quest" && options.length){
+    pad.classList.remove("waiting");
+    pad.setAttribute("aria-label", "Quest answer options");
+    pad.innerHTML = options.map(o=>`<button onclick="answer('${o.replace(/'/g,"\\'")}')">${o}</button>`).join("");
+    return;
+  }
+  pad.classList.add("waiting");
+  pad.setAttribute("aria-label", "Answer dock waiting for Quest Moment");
+  pad.innerHTML = [1,2,3,4].map(()=>`<button class="placeholder" disabled aria-hidden="true">—</button>`).join("");
+}
+
 
 const state = loadState();
 let activeWorld = 1;
@@ -515,7 +530,7 @@ function startRun(worldId=activeWorld){
   $("runHint").textContent = "Watch the replay. Timer starts at Quest Moment.";
   $("scoreText").textContent = "0";
   $("timeText").textContent = "—";
-  $("answerPad").innerHTML = "";
+  renderAnswerDock("waiting");
   $("freezeBanner").classList.add("hidden");
   openScreen("game");
   drawGame();
@@ -976,7 +991,7 @@ function finishQuestMoment(){
   run.setupPulse = 0;
   run.nextFreeze = 5 + Math.floor(Math.random()*5);
   $("freezeBanner").classList.add("hidden");
-  $("answerPad").innerHTML = "";
+  renderAnswerDock("waiting");
   $("timeText").textContent = "—";
   $("runHint").textContent = `Quest ${run.questCount}/${run.maxQuests} complete. Watch the channel for the next setup.`;
 }
@@ -996,6 +1011,7 @@ function freezeScenario(){
     run.nextFreeze = run.setupSteps + 1;
     $("timeText").textContent = "—";
     $("runHint").textContent = "Setup forming — watch how price behaves around the channel.";
+    renderAnswerDock("waiting");
     return;
   }
 
@@ -1012,7 +1028,7 @@ function freezeScenario(){
   $("freezeBanner").classList.remove("hidden");
   $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
   const options = shuffle([answer,...shuffle(pool.filter(x=>x!==answer)).slice(0,3)]);
-  $("answerPad").innerHTML = options.map(o=>`<button onclick="answer('${o.replace(/'/g,"\\'")}')">${o}</button>`).join("");
+  renderAnswerDock("quest", options);
   drawGame(true);
   startQuestTimer();
 }
