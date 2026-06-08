@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v25_9_mobile_summary_declutter";
+const CANDLE_QUEST_BUILD = "v26_0_world1_generator_doctrine_engine";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v25.9 · Mobile Summary Declutter"
+    b.textContent = "v26.0 · World 1 Generator Doctrine Engine"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -37,10 +37,10 @@ let miniTimer = null;
 const worlds = [
   {
     id:1, icon:"Ⅰ", title:"Candle Basics", unlock:0,
-    short:"Engulfing, hammer, shooting star and doji.",
+    short:"Hammer, shooting star, doji, bullish/bearish candles, and rejection candles.",
     lesson:"Candles show a battle between buyers and sellers. Your first job is not to predict; it is to recognise who tried, who failed, and where the candle closed.",
     rules:["Body = accepted movement between open and close.","Wick = attempted movement that failed to fully hold.","A pattern matters more when it appears at a useful level."],
-    patterns:["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"]
+    patterns:["Hammer","Shooting Star","Doji","Bullish Candle","Bearish Candle","Bullish Rejection","Bearish Rejection"]
   },
   {
     id:2, icon:"Ⅱ", title:"Levels", unlock:80,
@@ -83,39 +83,53 @@ const skins = [
 const patternDefinitions = {
   "Candle Basics": [
     {
-      name:"Bullish Engulfing",
-      type:"Reversal / strength shift",
-      read:"A strong green candle fully takes control after a weaker red candle.",
-      location:"Most useful near Range Low, support, or after a sell-side flush.",
-      cue:"Sellers pushed first, buyers absorbed it, then closed strong."
-    },
-    {
-      name:"Bearish Engulfing",
-      type:"Reversal / weakness shift",
-      read:"A strong red candle fully takes control after a weaker green candle.",
-      location:"Most useful near Range High, resistance, or after a buy-side push.",
-      cue:"Buyers pushed first, sellers absorbed it, then closed weak."
-    },
-    {
       name:"Hammer",
-      type:"Rejection candle",
-      read:"A candle with a long lower wick and stronger close, showing rejection below.",
-      location:"Best near Range Low or support.",
-      cue:"Price probed lower, failed to hold, then buyers reclaimed."
+      type:"Rejection / buyer recovery",
+      read:"A candle with a long lower wick and a small body near the top. Price probed lower, was rejected, and closed back near the highs.",
+      location:"Most useful near Range Low or support.",
+      cue:"Sellers pushed price down, but buyers rejected the move and closed near the highs."
     },
     {
       name:"Shooting Star",
-      type:"Rejection candle",
-      read:"A candle with a long upper wick and weaker close, showing rejection above.",
-      location:"Best near Range High or resistance.",
-      cue:"Price probed higher, failed to hold, then sellers pushed back."
+      type:"Rejection / seller recovery",
+      read:"A candle with a long upper wick and a small body near the bottom. Price probed higher, was rejected, and closed back near the lows.",
+      location:"Most useful near Range High or resistance.",
+      cue:"Buyers pushed price up, but sellers rejected the move and closed near the lows."
     },
     {
       name:"Doji",
-      type:"Indecision",
-      read:"Open and close are very close together, showing hesitation.",
-      location:"More meaningful at key zones than in the middle of nowhere.",
-      cue:"Neither side achieved a clear close. Wait for confirmation."
+      type:"Indecision / balance",
+      read:"Open and close are nearly equal, producing a tiny or invisible body. Neither side achieved clear control by the close.",
+      location:"More meaningful at key zones than in the middle of the channel.",
+      cue:"Neither buyers nor sellers won. Wait for confirmation before reading direction."
+    },
+    {
+      name:"Bullish Candle",
+      type:"Buyer control",
+      read:"Close is clearly above open. A visible body shows upward movement with wicks that do not dominate the candle.",
+      location:"Anywhere in the channel — context determines strength.",
+      cue:"Buyers controlled from open to close. Clean upward body with modest wicks."
+    },
+    {
+      name:"Bearish Candle",
+      type:"Seller control",
+      read:"Close is clearly below open. A visible body shows downward movement with wicks that do not dominate the candle.",
+      location:"Anywhere in the channel — context determines strength.",
+      cue:"Sellers controlled from open to close. Clean downward body with modest wicks."
+    },
+    {
+      name:"Bullish Rejection",
+      type:"Partial recovery / lower rejection",
+      read:"Lower wick is larger than upper wick. Body sits in the upper portion of the candle. Price rejected lower prices and closed well above the low.",
+      location:"Near Range Low or support — but not as extreme as a Hammer.",
+      cue:"Sellers tried lower, buyers pushed back. Not quite a Hammer — the body is larger or wicks are less extreme."
+    },
+    {
+      name:"Bearish Rejection",
+      type:"Partial failure / upper rejection",
+      read:"Upper wick is larger than lower wick. Body sits in the lower portion of the candle. Price rejected higher prices and closed well below the high.",
+      location:"Near Range High or resistance — but not as extreme as a Shooting Star.",
+      cue:"Buyers tried higher, sellers pushed back. Not quite a Shooting Star — the body is larger or wicks are less extreme."
     }
   ],
   "Levels": [
@@ -592,10 +606,354 @@ function endRun(){
 }
 
 
-// ─── CANDLE ENGINE ─────────────────────────────────────────────────────────────
-// v25: Universal gap-prevention rule + pattern-specific recipes
-// Rule: forced signal candle open MUST equal previous close (or tiny offset)
-// No teleport candles. Every pattern starts from prev close.
+// ─── CANDLE ENGINE v26.0 — DOCTRINE GENERATOR ─────────────────────────────────
+// Architecture:
+//   RECIPE      → defines the law for each World 1 pattern (OHLC structure rules)
+//   GENERATOR   → samples random values within recipe ranges to produce OHLC
+//   VALIDATOR   → checks that generated OHLC satisfies the doctrine before use
+//   DIVERSITY   → pattern history + cooldown prevents 3-4 repeat runs
+//   DEBUG       → console output showing recipe selection + validation result
+
+// ── WORLD 1 PATTERN RECIPES ───────────────────────────────────────────────────
+// All measurements use "total range" = high - low as reference unit (= 1.0)
+// body_pos: 0 = body sits at bottom, 1 = body sits at top (by body midpoint)
+// body_size: fraction of total range occupied by the body
+// upper_wick / lower_wick: fraction of total range
+// ratios are enforced by the validator, not just suggested here
+
+const WORLD1_RECIPES = {
+
+  Hammer: {
+    // Small body near top of candle. Lower wick dominant. Lower wick >= 2x body. Tiny/no upper wick.
+    totalRange:   [1.8, 3.2],   // total candle height (price units)
+    bodyFrac:     [0.06, 0.20], // body is 6–20% of total range
+    bodyPosFrac:  [0.72, 0.96], // body midpoint sits in top 28% of candle
+    upperWickFrac:[0.00, 0.12], // tiny or no upper wick (0–12% of range)
+    lowerWickFrac:[0.60, 0.88], // long lower wick (60–88% of range)
+    // Colour: can be bullish or bearish (both valid by doctrine)
+    colourBias: 0.65,           // 65% chance bullish
+    // Validator thresholds (enforced hard)
+    validate:{
+      lowerWickMinRatio: 2.0,   // lower wick must be >= 2x body
+      upperWickMaxFrac:  0.15,  // upper wick must be <= 15% of range
+      bodyMaxFrac:       0.25,  // body must not exceed 25% of range
+      bodyMinPosFrac:    0.68,  // body midpoint must be in upper 32% of candle
+    }
+  },
+
+  "Shooting Star": {
+    // Small body near bottom of candle. Upper wick dominant. Upper wick >= 2x body. Tiny/no lower wick.
+    totalRange:   [1.8, 3.2],
+    bodyFrac:     [0.06, 0.20],
+    bodyPosFrac:  [0.04, 0.28], // body midpoint in bottom 28% of candle
+    upperWickFrac:[0.60, 0.88],
+    lowerWickFrac:[0.00, 0.12],
+    colourBias: 0.35,           // 35% chance bullish (often bearish, but not required)
+    validate:{
+      upperWickMinRatio: 2.0,
+      lowerWickMaxFrac:  0.15,
+      bodyMaxFrac:       0.25,
+      bodyMaxPosFrac:    0.32,  // body midpoint must be in lower 32% of candle
+    }
+  },
+
+  Doji: {
+    // Open ≈ close. Tiny body. Wicks can be short or long. Neither side dominant.
+    totalRange:   [0.8, 2.8],
+    bodyFrac:     [0.00, 0.06], // body is 0–6% of total range (near-zero)
+    bodyPosFrac:  [0.25, 0.75], // body can be anywhere in middle zone
+    upperWickFrac:[0.20, 0.75], // wicks balanced in proportion
+    lowerWickFrac:[0.20, 0.75],
+    colourBias: 0.5,
+    validate:{
+      bodyMaxFrac:       0.08,  // body must stay tiny
+      minUpperWickFrac:  0.12,  // both wicks must have some presence
+      minLowerWickFrac:  0.12,
+    }
+  },
+
+  "Bullish Candle": {
+    // Close > open. Visible body. Wicks modest. Not doji-like. Not rejection-like.
+    totalRange:   [1.0, 2.2],
+    bodyFrac:     [0.38, 0.72], // body dominates 38–72% of range
+    bodyPosFrac:  [0.35, 0.75], // body in middle-to-upper zone
+    upperWickFrac:[0.05, 0.28], // modest upper wick
+    lowerWickFrac:[0.05, 0.28], // modest lower wick
+    colourBias: 1.0,            // always bullish
+    validate:{
+      bodyMinFrac:      0.30,   // body must be clearly visible
+      bodyMaxFrac:      0.80,
+      upperWickMaxFrac: 0.35,   // wicks must not dominate
+      lowerWickMaxFrac: 0.35,
+      lowerWickMaxRatio:1.5,    // lower wick must not be > 1.5x body (else rejection-like)
+      upperWickMaxRatio:1.5,
+    }
+  },
+
+  "Bearish Candle": {
+    // Close < open. Visible body. Wicks modest. Not doji-like. Not rejection-like.
+    totalRange:   [1.0, 2.2],
+    bodyFrac:     [0.38, 0.72],
+    bodyPosFrac:  [0.25, 0.65],
+    upperWickFrac:[0.05, 0.28],
+    lowerWickFrac:[0.05, 0.28],
+    colourBias: 0.0,            // always bearish
+    validate:{
+      bodyMinFrac:      0.30,
+      bodyMaxFrac:      0.80,
+      upperWickMaxFrac: 0.35,
+      lowerWickMaxFrac: 0.35,
+      upperWickMaxRatio:1.5,
+      lowerWickMaxRatio:1.5,
+    }
+  },
+
+  "Bullish Rejection": {
+    // Lower wick > upper wick. Body in upper portion. Closes well above low.
+    // Less extreme than Hammer (bigger body, more moderate wick ratio).
+    totalRange:   [1.4, 2.8],
+    bodyFrac:     [0.22, 0.45], // larger body than Hammer
+    bodyPosFrac:  [0.52, 0.84], // body in upper half of candle
+    upperWickFrac:[0.00, 0.20], // small upper wick
+    lowerWickFrac:[0.35, 0.65], // lower wick present and dominant
+    colourBias: 0.72,           // often bullish
+    validate:{
+      lowerWickDominant: true,  // lower wick must exceed upper wick
+      bodyMinPosFrac:    0.48,  // body must sit in upper half
+      lowerWickMinFrac:  0.25,  // lower wick must be visible
+      upperWickMaxFrac:  0.25,  // upper wick must not dominate
+      lowerWickMaxRatio: 1.8,   // NOT as extreme as Hammer (< 2x body strictly)
+      bodyMinFrac:       0.18,  // body must be visible (not doji-like)
+    }
+  },
+
+  "Bearish Rejection": {
+    // Upper wick > lower wick. Body in lower portion. Closes well below high.
+    // Less extreme than Shooting Star.
+    totalRange:   [1.4, 2.8],
+    bodyFrac:     [0.22, 0.45],
+    bodyPosFrac:  [0.16, 0.48], // body in lower half
+    upperWickFrac:[0.35, 0.65],
+    lowerWickFrac:[0.00, 0.20],
+    colourBias: 0.28,           // often bearish
+    validate:{
+      upperWickDominant: true,
+      bodyMaxPosFrac:    0.52,  // body must sit in lower half
+      upperWickMinFrac:  0.25,
+      lowerWickMaxFrac:  0.25,
+      upperWickMaxRatio: 1.8,
+      bodyMinFrac:       0.18,
+    }
+  }
+};
+
+// ── RECIPE GENERATOR ──────────────────────────────────────────────────────────
+// Produces [open, high, low, close] from a recipe + anchor price.
+// Returns null if validation fails (caller should retry or use fallback).
+
+function rand(min, max){ return min + Math.random() * (max - min); }
+
+function generateFromRecipe(patternName, anchorPrice, recipe, clampFn){
+  const r = recipe;
+
+  // 1. Pick total candle range (price units)
+  const totalRange = rand(r.totalRange[0], r.totalRange[1]);
+
+  // 2. Pick body size as fraction of total range
+  const bodyFrac = rand(r.bodyFrac[0], r.bodyFrac[1]);
+  const bodySize = bodyFrac * totalRange;
+
+  // 3. Pick body position (body midpoint as fraction from low to high)
+  const bodyPosFrac = rand(r.bodyPosFrac[0], r.bodyPosFrac[1]);
+
+  // 4. Derive low/high
+  const low  = anchorPrice - totalRange * (1 - bodyPosFrac);
+  const high = low + totalRange;
+
+  // 5. Derive body bounds
+  const bodyMid    = low + bodyPosFrac * totalRange;
+  const bodyBottom = bodyMid - bodySize / 2;
+  const bodyTop    = bodyMid + bodySize / 2;
+
+  // 6. Pick colour
+  const bullish = Math.random() < (r.colourBias || 0.5);
+  const open    = bullish ? bodyBottom : bodyTop;
+  const close   = bullish ? bodyTop    : bodyBottom;
+
+  return { open, high, low, close, totalRange, bodySize, bodyPosFrac, bullish };
+}
+
+// ── VALIDATOR ────────────────────────────────────────────────────────────────
+// Returns true if the candle satisfies the doctrine for its pattern.
+
+function validateCandle(patternName, candle){
+  const { open, high, low, close } = candle;
+  const recipe = WORLD1_RECIPES[patternName];
+  if(!recipe || !recipe.validate) return true; // non-W1 patterns pass through
+
+  const v = recipe.validate;
+  const totalRange = high - low;
+  if(totalRange < 0.05) return false; // degenerate candle
+
+  const bodySize    = Math.abs(close - open);
+  const bodyBottom  = Math.min(open, close);
+  const bodyTop     = Math.max(open, close);
+  const bodyMid     = (bodyBottom + bodyTop) / 2;
+  const upperWick   = high - bodyTop;
+  const lowerWick   = bodyBottom - low;
+
+  const bodyFrac      = bodySize / totalRange;
+  const upperWickFrac = upperWick / totalRange;
+  const lowerWickFrac = lowerWick / totalRange;
+  const bodyPosFrac   = (bodyMid - low) / totalRange; // 0=bottom,1=top
+
+  // Hard doctrine checks
+  if(v.lowerWickMinRatio  !== undefined && bodySize > 0.001 && lowerWick / bodySize < v.lowerWickMinRatio) return false;
+  if(v.upperWickMinRatio  !== undefined && bodySize > 0.001 && upperWick / bodySize < v.upperWickMinRatio) return false;
+  if(v.upperWickMaxFrac   !== undefined && upperWickFrac > v.upperWickMaxFrac)  return false;
+  if(v.lowerWickMaxFrac   !== undefined && lowerWickFrac > v.lowerWickMaxFrac)  return false;
+  if(v.bodyMaxFrac        !== undefined && bodyFrac > v.bodyMaxFrac)            return false;
+  if(v.bodyMinFrac        !== undefined && bodyFrac < v.bodyMinFrac)            return false;
+  if(v.bodyMinPosFrac     !== undefined && bodyPosFrac < v.bodyMinPosFrac)      return false;
+  if(v.bodyMaxPosFrac     !== undefined && bodyPosFrac > v.bodyMaxPosFrac)      return false;
+  if(v.minUpperWickFrac   !== undefined && upperWickFrac < v.minUpperWickFrac)  return false;
+  if(v.minLowerWickFrac   !== undefined && lowerWickFrac < v.minLowerWickFrac)  return false;
+  if(v.lowerWickDominant  && lowerWick <= upperWick)                            return false;
+  if(v.upperWickDominant  && upperWick <= lowerWick)                            return false;
+  if(v.lowerWickMaxRatio  !== undefined && bodySize > 0.001 && lowerWick / bodySize > v.lowerWickMaxRatio) return false;
+  if(v.upperWickMaxRatio  !== undefined && bodySize > 0.001 && upperWick / bodySize > v.upperWickMaxRatio) return false;
+  if(v.lowerWickMinFrac   !== undefined && lowerWickFrac < v.lowerWickMinFrac)  return false;
+  if(v.upperWickMinFrac   !== undefined && upperWickFrac < v.upperWickMinFrac)  return false;
+
+  return true;
+}
+
+// ── WORLD 1 SIGNAL CANDLE GENERATOR ──────────────────────────────────────────
+// Attempts up to MAX_ATTEMPTS to generate a valid candle from the recipe.
+// Falls back to a safe hardcoded candle if all attempts fail (should be rare).
+
+function generateWorld1Candle(patternName, anchorPrice, clampFn){
+  const recipe = WORLD1_RECIPES[patternName];
+  if(!recipe) return null; // not a W1 pattern
+
+  const MAX_ATTEMPTS = 12;
+  for(let attempt = 0; attempt < MAX_ATTEMPTS; attempt++){
+    const result = generateFromRecipe(patternName, anchorPrice, recipe, clampFn);
+    const candle = {
+      open:  clampFn(result.open),
+      high:  clampFn(result.high),
+      low:   clampFn(result.low),
+      close: clampFn(result.close)
+    };
+    // Ensure OHLC integrity after clamping
+    candle.high = Math.max(candle.high, candle.open, candle.close);
+    candle.low  = Math.min(candle.low,  candle.open, candle.close);
+
+    if(validateCandle(patternName, candle)){
+      // Debug log
+      debugLogCandle(patternName, candle, attempt + 1, true);
+      return candle;
+    }
+  }
+  // Fallback: return deterministic safe candle and log failure
+  const fallback = buildFallbackCandle(patternName, anchorPrice, clampFn);
+  debugLogCandle(patternName, fallback, MAX_ATTEMPTS, false);
+  return fallback;
+}
+
+// Deterministic fallback per pattern — always valid but less varied
+function buildFallbackCandle(patternName, anchor, clampFn){
+  let o, h, l, c;
+  const a = anchor;
+  switch(patternName){
+    case "Hammer":
+      o = a + 0.35; c = a + 0.45; h = a + 0.55; l = a - 1.55; break;
+    case "Shooting Star":
+      o = a - 0.35; c = a - 0.45; h = a + 1.55; l = a - 0.55; break;
+    case "Doji":
+      o = a; c = a + 0.05; h = a + 0.9; l = a - 0.9; break;
+    case "Bullish Candle":
+      o = a - 0.55; c = a + 0.55; h = a + 0.75; l = a - 0.72; break;
+    case "Bearish Candle":
+      o = a + 0.55; c = a - 0.55; h = a + 0.72; l = a - 0.75; break;
+    case "Bullish Rejection":
+      o = a + 0.15; c = a + 0.45; h = a + 0.55; l = a - 0.95; break;
+    case "Bearish Rejection":
+      o = a - 0.15; c = a - 0.45; h = a + 0.95; l = a - 0.55; break;
+    default:
+      o = a; c = a + 0.3; h = a + 0.55; l = a - 0.55;
+  }
+  const candle = {
+    open:  clampFn(o), high:  clampFn(h),
+    low:   clampFn(l), close: clampFn(c)
+  };
+  candle.high = Math.max(candle.high, candle.open, candle.close);
+  candle.low  = Math.min(candle.low,  candle.open, candle.close);
+  return candle;
+}
+
+// ── DEBUG LOGGER ──────────────────────────────────────────────────────────────
+const CQ_DEBUG = true; // set false to silence in production
+
+function debugLogCandle(patternName, candle, attempts, passed){
+  if(!CQ_DEBUG) return;
+  const { open, high, low, close } = candle;
+  const totalRange = high - low;
+  const bodySize   = Math.abs(close - open);
+  const upperWick  = high - Math.max(open, close);
+  const lowerWick  = Math.min(open, close) - low;
+  console.groupCollapsed(
+    `%cCQ Generator%c ${patternName} — ${passed ? '✅ VALID' : '⚠️ FALLBACK'} (attempt ${attempts})`,
+    'background:#1a2e22;color:#31c977;padding:2px 6px;border-radius:4px;font-weight:800',
+    'color:inherit;font-weight:normal'
+  );
+  console.log('OHLC:       ', `O=${open.toFixed(3)} H=${high.toFixed(3)} L=${low.toFixed(3)} C=${close.toFixed(3)}`);
+  console.log('Total range:', totalRange.toFixed(3));
+  console.log('Body size:  ', bodySize.toFixed(3), `(${(bodySize/totalRange*100).toFixed(1)}% of range)`);
+  console.log('Upper wick: ', upperWick.toFixed(3), `(${(upperWick/totalRange*100).toFixed(1)}% of range)`);
+  console.log('Lower wick: ', lowerWick.toFixed(3), `(${(lowerWick/totalRange*100).toFixed(1)}% of range)`);
+  if(bodySize > 0.001){
+    console.log('UW/Body:    ', (upperWick/bodySize).toFixed(2), '  LW/Body:', (lowerWick/bodySize).toFixed(2));
+  }
+  console.log('Direction:  ', close >= open ? '🟢 Bullish' : '🔴 Bearish');
+  console.groupEnd();
+}
+
+// ── DIVERSITY ENGINE ──────────────────────────────────────────────────────────
+// Prevents the same pattern appearing 3–4 times in a row.
+
+const PATTERN_HISTORY_SIZE = 3;
+
+function pickDiversePattern(pool, history){
+  // Count recent appearances
+  const recent = history.slice(-PATTERN_HISTORY_SIZE);
+
+  // Filter out patterns that appeared in last 2 slots (hard anti-double)
+  const lastTwo = history.slice(-2);
+  let candidates = pool.filter(p => !lastTwo.includes(p));
+
+  // If we've filtered everything (tiny pool), relax to just no-immediate-repeat
+  if(candidates.length === 0){
+    const last = history[history.length - 1];
+    candidates = pool.filter(p => p !== last);
+  }
+  if(candidates.length === 0) candidates = [...pool];
+
+  // Weight: lower weight for patterns seen more recently
+  const weights = candidates.map(p => {
+    const recentCount = recent.filter(r => r === p).length;
+    return Math.pow(0.35, recentCount); // each recent appearance reduces weight heavily
+  });
+
+  // Weighted random pick
+  const totalWeight = weights.reduce((s, w) => s + w, 0);
+  let roll = Math.random() * totalWeight;
+  for(let i = 0; i < candidates.length; i++){
+    roll -= weights[i];
+    if(roll <= 0) return candidates[i];
+  }
+  return candidates[candidates.length - 1];
+}
 
 function addCandle(forced=null){
   if(!run) return;
@@ -701,6 +1059,11 @@ function addCandle(forced=null){
   // 5. Range Expansion: big candles, stays INSIDE channel
   // 6. Trend patterns: no gaps, continuous from prev close
 
+  // ─── FORCED PATTERN CANDLES ────────────────────────────────────────────────
+  // v26.0: World 1 patterns use recipe-based generator + validator.
+  // All other worlds fall through to their original recipes below.
+  // Universal rule: open = prev (gap prevention)
+
   if(!forced && run.setupSteps > 0 && run.setupTarget !== null){
     transitionCandle();
     run.setupSteps--;
@@ -712,45 +1075,45 @@ function addCandle(forced=null){
     const S = run.support;
     const M = run.midpoint;
 
-    // v25: All forced candles open from prev (gap-free)
+    // v26.0: All forced candles open from prev (gap-free)
     o = prev;
 
-    if(p==="Bullish Engulfing"){
-      // Strong green body engulfing prior, near Range Low
-      // Open from prev, close strongly above
+    // ── WORLD 1: recipe-based generation ──────────────────────────────────
+    if(WORLD1_RECIPES[p]){
+      // Anchor the candle around the current price (contextual)
+      // For patterns with a zone target, nudge anchor toward the zone
+      let anchor = prev;
+      const lowerPatterns = ["Hammer", "Bullish Rejection", "Bullish Candle"];
+      const upperPatterns = ["Shooting Star", "Bearish Rejection", "Bearish Candle"];
+      if(lowerPatterns.includes(p))       anchor = Math.max(prev, S + 0.4);
+      else if(upperPatterns.includes(p))  anchor = Math.min(prev, R - 0.4);
+      // else Doji stays at prev
+
+      const generated = generateWorld1Candle(p, anchor, clampToWorld);
+      if(generated){
+        // Snap open to prev (gap prevention) while keeping proportions
+        const shift = prev - generated.open;
+        o = prev;
+        c = clampToWorld(generated.close + shift);
+        h = clampToWorld(generated.high  + shift);
+        l = clampToWorld(generated.low   + shift);
+      } else {
+        normalCandle();
+      }
+    }
+
+    // ── WORLD 2+ PATTERNS (unchanged from v25.9) ───────────────────────────
+    else if(p==="Bullish Engulfing"){
       o = prev + (Math.random()-0.5)*0.15;
       c = clampToWorld(Math.max(S + 1.4, prev + 1.5 + Math.random()*0.4));
       h = c + 0.3 + Math.random()*0.2;
       l = Math.min(o, S + 0.2) - 0.2;
     }
     else if(p==="Bearish Engulfing"){
-      // Strong red body engulfing prior, near Range High
       o = prev + (Math.random()-0.5)*0.15;
       c = clampToWorld(Math.min(R - 1.4, prev - 1.5 - Math.random()*0.4));
       h = Math.max(o, R - 0.2) + 0.2;
       l = c - 0.3 - Math.random()*0.2;
-    }
-    else if(p==="Hammer"){
-      // Long lower wick, closes near top. Near Range Low.
-      o = prev;
-      const closeTarget = Math.max(S + 1.0, prev + 0.4 + Math.random()*0.5);
-      c = clampToWorld(closeTarget);
-      h = c + 0.25 + Math.random()*0.2;
-      l = Math.min(o, c) - 1.4 - Math.random()*0.5;
-    }
-    else if(p==="Shooting Star"){
-      // Long upper wick, closes near bottom. Near Range High.
-      o = prev;
-      const closeTarget = Math.min(R - 1.0, prev - 0.4 - Math.random()*0.5);
-      c = clampToWorld(closeTarget);
-      l = c - 0.25 - Math.random()*0.2;
-      h = Math.max(o, c) + 1.4 + Math.random()*0.5;
-    }
-    else if(p==="Doji"){
-      o = prev;
-      c = o + (Math.random()-0.5)*0.18;
-      h = Math.max(o,c) + 0.9 + Math.random()*0.4;
-      l = Math.min(o,c) - 0.9 - Math.random()*0.4;
     }
     else if(p==="Support Reclaim"){
       o = prev;
@@ -777,81 +1140,58 @@ function addCandle(forced=null){
       h = c + 0.28;
     }
     else if(p==="Level Break"){
-      // Closes beyond Range High but not as decisively as Clean Breakout
       o = prev;
       c = clampToWorld(R + 0.75 + Math.random()*0.3);
       h = c + 0.32;
       l = o - 0.28;
     }
-
-    // ─── BREAKOUT PATTERNS (v25 distinct recipes) ──────────────────────────
     else if(p==="Clean Breakout"){
-      // BODY must close clearly outside Range High.
-      // Open near resistance, strong bull body, close well above R.
-      // Distinguishable from Range Expansion: body is OUTSIDE.
-      o = Math.min(prev, R - 0.3);  // opens just below or at resistance
-      c = clampToWorld(R + 1.8 + Math.random()*0.5);  // close well above R
-      h = c + 0.35 + Math.random()*0.2;  // wick above close
-      l = o - 0.2;  // minimal lower wick
+      o = Math.min(prev, R - 0.3);
+      c = clampToWorld(R + 1.8 + Math.random()*0.5);
+      h = c + 0.35 + Math.random()*0.2;
+      l = o - 0.2;
     }
     else if(p==="Failed Breakout"){
-      // WICK above Range High, body closes BACK INSIDE range.
-      // Visually distinct: spike up then rejection close
       o = Math.min(prev, R - 0.2);
-      h = R + 1.25 + Math.random()*0.4;  // wick clearly outside
-      c = clampToWorld(R - 0.9 - Math.random()*0.35);  // close BACK INSIDE range
+      h = R + 1.25 + Math.random()*0.4;
+      c = clampToWorld(R - 0.9 - Math.random()*0.35);
       l = c - 0.25;
     }
     else if(p==="Breakdown"){
-      // Mirror of Clean Breakout downward.
-      // BODY closes clearly outside Range Low.
-      o = Math.max(prev, S + 0.3);  // opens just above or at support
-      c = clampToWorld(S - 1.8 - Math.random()*0.5);  // close well below S
-      l = c - 0.35 - Math.random()*0.2;  // wick below close
-      h = o + 0.2;  // minimal upper wick
+      o = Math.max(prev, S + 0.3);
+      c = clampToWorld(S - 1.8 - Math.random()*0.5);
+      l = c - 0.35 - Math.random()*0.2;
+      h = o + 0.2;
     }
     else if(p==="Range Expansion"){
-      // STAYS INSIDE the channel — key distinction from Clean Breakout.
-      // Bigger-than-normal candles, strong directional movement,
-      // but both open and close remain between S and R.
-      // Direction biased toward which half of channel we're in.
       const pos = (prev - S) / Math.max(1, R - S);
       const dir = pos < 0.5 ? 1 : -1;
       if(dir > 0){
-        // Expanding upward from lower half — but close stays below R
         o = clampToWorld(Math.max(S + 0.5, prev - 0.3));
         c = clampToWorld(Math.min(R - 0.55, o + 2.1 + Math.random()*0.4));
-        h = Math.min(R - 0.15, c + 0.55);  // wick stays inside or just at boundary
+        h = Math.min(R - 0.15, c + 0.55);
         l = Math.max(S + 0.15, o - 0.4);
       } else {
-        // Expanding downward from upper half — but close stays above S
         o = clampToWorld(Math.min(R - 0.5, prev + 0.3));
         c = clampToWorld(Math.max(S + 0.55, o - 2.1 - Math.random()*0.4));
-        l = Math.max(S + 0.15, c - 0.55);  // wick stays inside or just at boundary
+        l = Math.max(S + 0.15, c - 0.55);
         h = Math.min(R - 0.15, o + 0.4);
       }
     }
     else if(p==="Retest Hold"){
-      // After breakout context: hold above old Range High.
-      // No gap. Pullback toward R then close above it.
       o = prev;
-      l = Math.min(o - 0.4, R - 0.1);  // dips toward retest level
-      c = clampToWorld(Math.max(o + 0.8, R + 0.6));  // closes above R = holds
+      l = Math.min(o - 0.4, R - 0.1);
+      c = clampToWorld(Math.max(o + 0.8, R + 0.6));
       h = c + 0.3;
     }
-
-    // ─── TREND PATTERNS (v25: all gap-free, start from prev) ────────────────
     else if(p==="Pullback Hold"){
-      // Trend context: price pulls back (tests lower structure),
-      // then buyers respond → close above open. No jump.
       run.regime="trend"; run.trendDir=1;
       o = prev;
-      l = o - 1.0 - Math.random()*0.25;  // pullback lower wick
-      c = clampToWorld(o + 1.1 + Math.random()*0.25);  // bullish close from prev
+      l = o - 1.0 - Math.random()*0.25;
+      c = clampToWorld(o + 1.1 + Math.random()*0.25);
       h = c + 0.3 + Math.random()*0.15;
     }
     else if(p==="Uptrend Continuation"){
-      // Larger bullish candle, continuous from prev close.
       run.regime="trend"; run.trendDir=1;
       o = prev;
       c = clampToWorld(o + 1.3 + Math.random()*0.35);
@@ -859,7 +1199,6 @@ function addCandle(forced=null){
       l = o - 0.28 - Math.random()*0.15;
     }
     else if(p==="Downtrend Continuation"){
-      // Larger bearish candle, continuous from prev close.
       run.regime="trend"; run.trendDir=-1;
       o = prev;
       c = clampToWorld(o - 1.3 - Math.random()*0.35);
@@ -867,11 +1206,8 @@ function addCandle(forced=null){
       l = c - 0.32 - Math.random()*0.18;
     }
     else if(p==="Trend Break"){
-      // Breaks current trend structure. In a downtrend context this is
-      // a strong bullish reversal; continuous from prev.
       run.regime="trend";
       o = prev;
-      // Trend break: goes against the prior trend director strongly
       const breakDir = run.trendDir < 0 ? 1 : -1;
       if(breakDir > 0){
         c = clampToWorld(o + 1.65 + Math.random()*0.3);
@@ -885,12 +1221,10 @@ function addCandle(forced=null){
       run.trendDir = breakDir;
     }
     else if(p==="Lower High"){
-      // Bounce fails. In a downtrend: price rallies (wick up),
-      // then closes weak. Continuous from prev. No gap.
       run.regime="trend"; run.trendDir=-1;
       o = prev;
-      h = o + 0.75 + Math.random()*0.2;   // rally attempt wick
-      c = clampToWorld(o - 0.9 - Math.random()*0.25);   // close weak = lower high
+      h = o + 0.75 + Math.random()*0.2;
+      c = clampToWorld(o - 0.9 - Math.random()*0.25);
       l = c - 0.28;
     }
     else if(p==="Good Read Bad Trade"||p==="Stop Too Wide"){
@@ -997,7 +1331,14 @@ function freezeScenario(){
   const pool = run.world.patterns;
 
   if(!run.setupPattern){
-    run.setupPattern = pool[Math.floor(Math.random()*pool.length)];
+    // v26.0: Use diversity engine for World 1 pattern selection
+    if(!run.patternHistory) run.patternHistory = [];
+    const chosen = pickDiversePattern(pool, run.patternHistory);
+    run.patternHistory.push(chosen);
+    // Keep history bounded
+    if(run.patternHistory.length > 8) run.patternHistory.shift();
+
+    run.setupPattern = chosen;
     run.setupTarget = getSetupTarget(run.setupPattern);
     run.setupZone = getSetupZone(run.setupPattern);
     run.setupSteps = 4 + Math.floor(Math.random()*2);
@@ -1031,8 +1372,17 @@ function freezeScenario(){
 function getSetupTarget(pattern){
   if(!run) return 100;
   const R = run.resistance, S = run.support, M = run.midpoint;
-  const upper = ["Bearish Engulfing","Shooting Star","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
-  const lower = ["Bullish Engulfing","Hammer","Support Reclaim","Range Bounce","Breakdown"];
+
+  // v26.0: World 1 patterns
+  const w1Lower  = ["Hammer","Bullish Rejection","Bullish Candle"];
+  const w1Upper  = ["Shooting Star","Bearish Rejection","Bearish Candle"];
+  const w1Middle = ["Doji"];
+  if(w1Lower.includes(pattern))  return S + 0.75;
+  if(w1Upper.includes(pattern))  return R - 0.75;
+  if(w1Middle.includes(pattern)) return M;
+
+  const upper = ["Bearish Engulfing","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
+  const lower = ["Bullish Engulfing","Support Reclaim","Range Bounce","Breakdown"];
   const trendUp = ["Uptrend Continuation","Pullback Hold"];
   const trendDown = ["Downtrend Continuation","Trend Break","Lower High"];
   if(upper.includes(pattern)) return R - 0.75;
@@ -1045,11 +1395,19 @@ function getSetupTarget(pattern){
 function getSetupZone(pattern){
   if(!run) return null;
   const R = run.resistance, S = run.support, M = run.midpoint;
-  const upper = ["Bearish Engulfing","Shooting Star","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
-  const lower = ["Bullish Engulfing","Hammer","Support Reclaim","Range Bounce","Breakdown"];
+
+  // v26.0: World 1 patterns
+  const w1Lower  = ["Hammer","Bullish Rejection","Bullish Candle"];
+  const w1Upper  = ["Shooting Star","Bearish Rejection","Bearish Candle"];
+  if(w1Lower.includes(pattern))  return {low:S-1.3, high:S+1.3, label:"setup zone: range low"};
+  if(w1Upper.includes(pattern))  return {low:R-1.3, high:R+1.3, label:"setup zone: range high"};
+  if(pattern === "Doji")         return {low:M-1.1, high:M+1.1, label:"setup zone: channel mean"};
+
+  const upper = ["Bearish Engulfing","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
+  const lower = ["Bullish Engulfing","Support Reclaim","Range Bounce","Breakdown"];
   if(upper.includes(pattern)) return {low:R-1.3, high:R+1.3, label:"setup zone: range high"};
   if(lower.includes(pattern)) return {low:S-1.3, high:S+1.3, label:"setup zone: range low"};
-  if(pattern === "Mean Chop" || pattern === "No-Trade Chop" || pattern === "Doji") return {low:M-1.1, high:M+1.1, label:"setup zone: channel mean"};
+  if(pattern === "Mean Chop" || pattern === "No-Trade Chop") return {low:M-1.1, high:M+1.1, label:"setup zone: channel mean"};
   return {low:run.price-1.2, high:run.price+1.2, label:"setup zone"};
 }
 
