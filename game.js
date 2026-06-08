@@ -37,10 +37,10 @@ let miniTimer = null;
 const worlds = [
   {
     id:1, icon:"Ⅰ", title:"Candle Basics", unlock:0,
-    short:"Hammer, shooting star, doji, bullish/bearish candles, and rejection candles.",
+    short:"Engulfing, hammer, shooting star and doji.",
     lesson:"Candles show a battle between buyers and sellers. Your first job is not to predict; it is to recognise who tried, who failed, and where the candle closed.",
     rules:["Body = accepted movement between open and close.","Wick = attempted movement that failed to fully hold.","A pattern matters more when it appears at a useful level."],
-    patterns:["Hammer","Shooting Star","Doji","Bullish Candle","Bearish Candle","Bullish Rejection","Bearish Rejection"]
+    patterns:["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"]
   },
   {
     id:2, icon:"Ⅱ", title:"Levels", unlock:80,
@@ -1373,20 +1373,13 @@ function getSetupTarget(pattern){
   if(!run) return 100;
   const R = run.resistance, S = run.support, M = run.midpoint;
 
-  // v26.0: World 1 patterns
-  const w1Lower  = ["Hammer","Bullish Rejection","Bullish Candle"];
-  const w1Upper  = ["Shooting Star","Bearish Rejection","Bearish Candle"];
-  const w1Middle = ["Doji"];
-  if(w1Lower.includes(pattern))  return S + 0.75;
-  if(w1Upper.includes(pattern))  return R - 0.75;
-  if(w1Middle.includes(pattern)) return M;
-
-  const upper = ["Bearish Engulfing","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
-  const lower = ["Bullish Engulfing","Support Reclaim","Range Bounce","Breakdown"];
+  const upper = ["Bearish Engulfing","Shooting Star","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
+  const lower = ["Bullish Engulfing","Hammer","Support Reclaim","Range Bounce","Breakdown"];
   const trendUp = ["Uptrend Continuation","Pullback Hold"];
   const trendDown = ["Downtrend Continuation","Trend Break","Lower High"];
   if(upper.includes(pattern)) return R - 0.75;
   if(lower.includes(pattern)) return S + 0.75;
+  if(pattern === "Doji") return M;
   if(trendUp.includes(pattern)) return run.price + 0.45;
   if(trendDown.includes(pattern)) return run.price - 0.45;
   return M;
@@ -1396,18 +1389,11 @@ function getSetupZone(pattern){
   if(!run) return null;
   const R = run.resistance, S = run.support, M = run.midpoint;
 
-  // v26.0: World 1 patterns
-  const w1Lower  = ["Hammer","Bullish Rejection","Bullish Candle"];
-  const w1Upper  = ["Shooting Star","Bearish Rejection","Bearish Candle"];
-  if(w1Lower.includes(pattern))  return {low:S-1.3, high:S+1.3, label:"setup zone: range low"};
-  if(w1Upper.includes(pattern))  return {low:R-1.3, high:R+1.3, label:"setup zone: range high"};
-  if(pattern === "Doji")         return {low:M-1.1, high:M+1.1, label:"setup zone: channel mean"};
-
-  const upper = ["Bearish Engulfing","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
-  const lower = ["Bullish Engulfing","Support Reclaim","Range Bounce","Breakdown"];
+  const upper = ["Bearish Engulfing","Shooting Star","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
+  const lower = ["Bullish Engulfing","Hammer","Support Reclaim","Range Bounce","Breakdown"];
   if(upper.includes(pattern)) return {low:R-1.3, high:R+1.3, label:"setup zone: range high"};
   if(lower.includes(pattern)) return {low:S-1.3, high:S+1.3, label:"setup zone: range low"};
-  if(pattern === "Mean Chop" || pattern === "No-Trade Chop") return {low:M-1.1, high:M+1.1, label:"setup zone: channel mean"};
+  if(pattern === "Doji" || pattern === "Mean Chop" || pattern === "No-Trade Chop") return {low:M-1.1, high:M+1.1, label:"setup zone: channel mean"};
   return {low:run.price-1.2, high:run.price+1.2, label:"setup zone"};
 }
 
