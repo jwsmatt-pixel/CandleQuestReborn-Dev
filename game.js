@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_1_world1_generator_doctrine_engine";
+const CANDLE_QUEST_BUILD = "v26_1_1_tiny_candle_render_cleanup";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.1 · World 1 Generator Doctrine Engine"
+    b.textContent = "v26.1.1 · Tiny Candle Render Cleanup"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1326,32 +1326,70 @@ function answer(label){
 function drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal=false){
   const color = green ? "#31c977" : "#ff5b5b";
   const wickColor = green ? "#19a463" : "#e04444";
-  const bodyTop = Math.min(yO,yC);
-  const bodyBottom = Math.max(yO,yC);
-  const bodyH = Math.max(3, bodyBottom - bodyTop);
-
-  // v25.3: stronger mobile candle bodies; signal candles get a small focus boost.
   const mobile = isMobile();
-  const effectiveCW = isSignal ? cw * (mobile ? 1.18 : 1.15) : cw;
-  const px = Math.round(x) + 0.5;
-  const left = Math.round(x - effectiveCW/2);
-  const top = Math.round(bodyTop);
-  const width = Math.max(mobile ? 9 : 4, Math.round(effectiveCW));
-  const height = Math.max(mobile ? 4 : 3, Math.round(bodyH));
 
-  // v25.3: bolder mobile wicks so candles stay readable on iPhone-scale canvas.
+  // v26.1.1: Tiny Candle Render Cleanup
+  // Very small candle bodies were sometimes drawn at sub-pixel sizes, which made
+  // dojis/thin candles look clipped or shorter on one side. This renderer keeps
+  // the body symmetrical around the wick and draws tiny bodies as clean doji
+  // lines instead of malformed mini-rectangles.
+  const effectiveCW = isSignal ? cw * (mobile ? 1.18 : 1.15) : cw;
+  let width = Math.max(mobile ? 9 : 5, Math.round(effectiveCW));
+  if(width % 2 === 0) width += 1; // odd width centres cleanly on x + 0.5
+
+  const centerX = Math.round(x) + 0.5;
+  const left = Math.round(centerX - width / 2);
+
+  const highY = Math.round(Math.min(yH, yL)) + 0.5;
+  const lowY  = Math.round(Math.max(yH, yL)) + 0.5;
+  const bodyTopRaw = Math.min(yO, yC);
+  const bodyBottomRaw = Math.max(yO, yC);
+  const rawBodyH = Math.abs(yC - yO);
+  const bodyMid = (bodyTopRaw + bodyBottomRaw) / 2;
+
+  const minBodyH = mobile ? 5 : 4;
+  const dojiLineThreshold = mobile ? 4.5 : 3.5;
   const wickWidth = mobile ? 3.25 : 2;
+
+  // Wick first, body second, so the open/close body remains visually dominant.
   ctx.strokeStyle = wickColor;
   ctx.lineWidth = wickWidth;
   ctx.lineCap = "butt";
   ctx.beginPath();
-  ctx.moveTo(px, Math.round(yH));
-  ctx.lineTo(px, Math.round(yL));
+  ctx.moveTo(centerX, highY);
+  ctx.lineTo(centerX, lowY);
   ctx.stroke();
 
   ctx.fillStyle = color;
-  ctx.fillRect(left, top, width, height);
   ctx.strokeStyle = wickColor;
+
+  if(rawBodyH <= dojiLineThreshold){
+    // Clean doji/tiny-body treatment: a crisp horizontal open/close mark.
+    const y = Math.round(bodyMid) + 0.5;
+    ctx.lineWidth = mobile ? 4 : 3;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(left, y);
+    ctx.lineTo(left + width, y);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+
+    // Subtle outline pass keeps the line readable against the wick without
+    // making it look like a broken rectangle.
+    ctx.lineWidth = 1;
+    ctx.lineCap = "butt";
+    ctx.beginPath();
+    ctx.moveTo(left, y);
+    ctx.lineTo(left + width, y);
+    ctx.strokeStyle = wickColor;
+    ctx.stroke();
+    return;
+  }
+
+  const height = Math.max(minBodyH, Math.round(rawBodyH));
+  const top = Math.round(bodyMid - height / 2);
+
+  ctx.fillRect(left, top, width, height);
   ctx.lineWidth = 1;
   ctx.strokeRect(left + 0.5, top + 0.5, width - 1, height - 1);
 }
