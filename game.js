@@ -1323,75 +1323,63 @@ function answer(label){
 
 
 // ─── DRAWING ENGINE ────────────────────────────────────────────────────────────
+// v26.1.1: Tiny Candle Render Cleanup.
+// - Body width snapped to whole pixels and forced ODD so the wick centres exactly.
+// - Wick drawn as a whole-pixel fillRect (no half-pixel stroke blur), centred on body.
+// - Minimum visible body height for tiny candles.
+// - Bodies below the doji threshold render as a clean, centred horizontal doji bar.
+// - All x/y snapped to whole pixels so left/right edges are symmetrical (no clipped side).
+// Colour direction logic, spacing, and layout are unchanged.
 function drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal=false){
   const color = green ? "#31c977" : "#ff5b5b";
   const wickColor = green ? "#19a463" : "#e04444";
   const mobile = isMobile();
 
-  // v26.1.1: Tiny Candle Render Cleanup
-  // Very small candle bodies were sometimes drawn at sub-pixel sizes, which made
-  // dojis/thin candles look clipped or shorter on one side. This renderer keeps
-  // the body symmetrical around the wick and draws tiny bodies as clean doji
-  // lines instead of malformed mini-rectangles.
+  // Signal candles keep their small focus boost (v25.3 behaviour).
   const effectiveCW = isSignal ? cw * (mobile ? 1.18 : 1.15) : cw;
-  let width = Math.max(mobile ? 9 : 5, Math.round(effectiveCW));
-  if(width % 2 === 0) width += 1; // odd width centres cleanly on x + 0.5
 
-  const centerX = Math.round(x) + 0.5;
-  const left = Math.round(centerX - width / 2);
+  // Symmetrical body width: whole pixels, forced odd so a centre column exists.
+  let bodyW = Math.max(mobile ? 9 : 5, Math.round(effectiveCW));
+  if(bodyW % 2 === 0) bodyW += 1;
 
-  const highY = Math.round(Math.min(yH, yL)) + 0.5;
-  const lowY  = Math.round(Math.max(yH, yL)) + 0.5;
-  const bodyTopRaw = Math.min(yO, yC);
-  const bodyBottomRaw = Math.max(yO, yC);
-  const rawBodyH = Math.abs(yC - yO);
-  const bodyMid = (bodyTopRaw + bodyBottomRaw) / 2;
+  // Snap the candle centre to a whole pixel; derive a perfectly symmetric left edge.
+  const centerX = Math.round(x);
+  const left = centerX - (bodyW - 1) / 2;
 
-  const minBodyH = mobile ? 5 : 4;
-  const dojiLineThreshold = mobile ? 4.5 : 3.5;
-  const wickWidth = mobile ? 3.25 : 2;
+  // Body vertical extent (whole pixels).
+  const rawTop = Math.min(yO, yC);
+  const rawBottom = Math.max(yO, yC);
+  const top = Math.round(rawTop);
+  let bodyH = Math.round(rawBottom - rawTop);
 
-  // Wick first, body second, so the open/close body remains visually dominant.
-  ctx.strokeStyle = wickColor;
-  ctx.lineWidth = wickWidth;
-  ctx.lineCap = "butt";
-  ctx.beginPath();
-  ctx.moveTo(centerX, highY);
-  ctx.lineTo(centerX, lowY);
-  ctx.stroke();
+  const minBodyH = mobile ? 4 : 3;   // minimum visible body height
+  const dojiH = mobile ? 4 : 3;      // thickness of the doji-style bar
+
+  // Wick: whole-pixel rect centred through the body (no anti-aliased stroke).
+  const wickW = mobile ? 3 : 2;
+  const wickX = centerX - Math.floor(wickW / 2);
+  const wickTop = Math.round(yH);
+  const wickBottom = Math.round(yL);
+  ctx.fillStyle = wickColor;
+  ctx.fillRect(wickX, wickTop, wickW, Math.max(1, wickBottom - wickTop));
 
   ctx.fillStyle = color;
   ctx.strokeStyle = wickColor;
+  ctx.lineWidth = 1;
 
-  if(rawBodyH <= dojiLineThreshold){
-    // Clean doji/tiny-body treatment: a crisp horizontal open/close mark.
-    const y = Math.round(bodyMid) + 0.5;
-    ctx.lineWidth = mobile ? 4 : 3;
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.moveTo(left, y);
-    ctx.lineTo(left + width, y);
-    ctx.strokeStyle = color;
-    ctx.stroke();
-
-    // Subtle outline pass keeps the line readable against the wick without
-    // making it look like a broken rectangle.
-    ctx.lineWidth = 1;
-    ctx.lineCap = "butt";
-    ctx.beginPath();
-    ctx.moveTo(left, y);
-    ctx.lineTo(left + width, y);
-    ctx.strokeStyle = wickColor;
-    ctx.stroke();
+  if(bodyH < minBodyH){
+    // Tiny / doji body: render an intentional, clean horizontal bar
+    // centred on the open/close midpoint instead of a malformed sliver.
+    const midY = Math.round((rawTop + rawBottom) / 2);
+    const lineTop = midY - Math.floor(dojiH / 2);
+    ctx.fillRect(left, lineTop, bodyW, dojiH);
+    ctx.strokeRect(left + 0.5, lineTop + 0.5, bodyW - 1, dojiH - 1);
     return;
   }
 
-  const height = Math.max(minBodyH, Math.round(rawBodyH));
-  const top = Math.round(bodyMid - height / 2);
-
-  ctx.fillRect(left, top, width, height);
-  ctx.lineWidth = 1;
-  ctx.strokeRect(left + 0.5, top + 0.5, width - 1, height - 1);
+  bodyH = Math.max(minBodyH, bodyH);
+  ctx.fillRect(left, top, bodyW, bodyH);
+  ctx.strokeRect(left + 0.5, top + 0.5, bodyW - 1, bodyH - 1);
 }
 
 function drawLevelLabel(ctx, text, x, y, color){
