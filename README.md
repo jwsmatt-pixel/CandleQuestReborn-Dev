@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2.3 · Result Flow Stepper`  
-**Build marker:** `v26_2_3_result_flow_stepper`  
-**Base:** `v26.2.2 · Missed Reads Coach Carousel`  
-**Status:** Active development / iOS summary-flow polish
+**Current build:** `v26.2.4 · Mobile Result Polish`  
+**Build marker:** `v26_2_4_mobile_result_polish`  
+**Base:** `v26.2.3 · Result Flow Stepper`  
+**Status:** Active development / iOS result-screen polish
 
 ---
 
@@ -76,6 +76,13 @@ Players learn by:
 - transparent setup-zone guidance
 - Quest Moment banner: `QUEST MOMENT · READ THE CHANNEL`
 - cleaned tiny-body/doji candle rendering from v26.1.1
+
+### v26.2.4 Mobile Result Polish
+
+- keeps the v26.2.3 two-step result flow
+- further reduces the mobile `X/10` score size
+- tightens the result title, correct-reads label, comment, bonus pill, and stat cards on iPhone
+- leaves the missed-reads coach carousel, gameplay, scoring, XP, timer, and generator untouched
 
 ### v26.2.3 Result Flow Stepper
 

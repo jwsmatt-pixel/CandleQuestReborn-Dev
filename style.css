@@ -2061,3 +2061,69 @@ body[data-screen="result"] .topbar{
     font-size:clamp(32px, 10.5vw, 48px)!important;
   }
 }
+
+
+/* v26.2.4 — Mobile Result Polish
+   Tighten the score-first result screen on iOS without touching the coach carousel or gameplay. */
+@media(max-width:850px){
+  #result[data-step="score"] .result-card{
+    padding-top:10px!important;
+  }
+  #result[data-step="score"] .result-card > .eyebrow{
+    font-size:11px!important;
+    letter-spacing:.18em!important;
+    margin-bottom:2px!important;
+  }
+  #result[data-step="score"] #resultTitle{
+    font-size:clamp(26px, 7vw, 36px)!important;
+    line-height:.9!important;
+    margin-bottom:2px!important;
+  }
+  #result[data-step="score"] .summary-correct{
+    font-size:clamp(26px, 8.6vw, 40px)!important;
+    line-height:.86!important;
+    margin:0!important;
+  }
+  #result[data-step="score"] .summary-label{
+    font-size:10px!important;
+    letter-spacing:.14em!important;
+    margin-top:0!important;
+  }
+  #result[data-step="score"] .summary-comment{
+    font-size:clamp(16px, 4.25vw, 21px)!important;
+    line-height:1.05!important;
+    max-width:94%!important;
+    margin:7px auto!important;
+  }
+  #result[data-step="score"] .summary-bonus-row{
+    margin:6px 0 3px!important;
+  }
+  #result[data-step="score"] .summary-bonus{
+    font-size:11px!important;
+    padding:6px 10px!important;
+  }
+  #result[data-step="score"] .summary-step-actions{
+    margin:8px 0 1px!important;
+  }
+  #result[data-step="score"] .result-stats{
+    margin:8px 0!important;
+  }
+  #result[data-step="score"] .result-stats div{
+    min-height:52px!important;
+    padding:7px!important;
+  }
+  #result[data-step="score"] .result-stats b{
+    font-size:clamp(21px, 5.8vw, 29px)!important;
+  }
+}
+@media(max-width:430px){
+  #result[data-step="score"] #resultTitle{
+    font-size:clamp(25px, 6.8vw, 34px)!important;
+  }
+  #result[data-step="score"] .summary-correct{
+    font-size:clamp(24px, 8vw, 37px)!important;
+  }
+  #result[data-step="score"] .summary-comment{
+    font-size:clamp(15px, 4vw, 19px)!important;
+  }
+}

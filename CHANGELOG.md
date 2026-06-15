@@ -1,5 +1,42 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.4 · Mobile Result Polish
+
+Status: current active iOS result-screen polish / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_4_mobile_result_polish`.
+- Updated build badge to `v26.2.4 · Mobile Result Polish`.
+- Further reduced the mobile `X/10` score size on the score-first result step.
+- Tightened mobile result title, correct-reads label, comment spacing, bonus pill, stat cards, and score-step vertical rhythm.
+- Preserved the v26.2.3 two-step result flow and coach carousel.
+
+### Preserved
+
+- v26.2.3 result stepper
+- v26.2.2 coach carousel visuals
+- missed-read grouping and tracking
+- v26.1.1 tiny candle renderer cleanup
+- v26.1 generator doctrine engine
+- active World 1 answer pool
+- scoring
+- XP
+- timer
+- static answer dock
+- Pattern Library
+- shop
+- mobile/desktop gameplay layout
+
+### Testing required
+
+- iPhone result screen after a run.
+- Confirm `X/10` no longer dominates the score screen.
+- Confirm result title/comment have breathing room.
+- Confirm Review missed reads still opens the carousel.
+- Confirm Play Again and Lesson Map remain easy to tap.
+
+---
 ## v26.2.3 · Result Flow Stepper
 
 Status: current active iOS summary-flow polish / test candidate

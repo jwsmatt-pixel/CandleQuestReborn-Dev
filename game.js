@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_2_3_result_flow_stepper";
+const CANDLE_QUEST_BUILD = "v26_2_4_mobile_result_polish";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.2.3 · Result Flow Stepper"
+    b.textContent = "v26.2.4 · Mobile Result Polish"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
