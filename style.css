@@ -1532,18 +1532,20 @@ body[data-skin="gold"] .definition-card{
   }
 }
 
-/* v26.2: Missed Reads Review
-   Adds an end-of-run learning review without interrupting the speedrun loop. */
+/* v26.2.1: Visual Missed Reads Review
+   Turns the end-of-run review into compact visual coach cards.
+   The intent is Shape → Location learning, not text-heavy explanation. */
 .missed-review{
   margin:14px auto 12px;
-  max-width:620px;
+  max-width:720px;
   text-align:left;
   background:rgba(7,18,15,.055);
   border:1.5px solid rgba(7,18,15,.13);
-  border-radius:20px;
+  border-radius:22px;
   padding:12px;
 }
 .missed-review.clean{
+  max-width:520px;
   text-align:center;
   display:flex;
   flex-direction:column;
@@ -1565,7 +1567,7 @@ body[data-skin="gold"] .definition-card{
   align-items:center;
   justify-content:space-between;
   gap:10px;
-  margin-bottom:9px;
+  margin-bottom:10px;
 }
 .missed-review-head b{
   font-size:14px;
@@ -1581,87 +1583,276 @@ body[data-skin="gold"] .definition-card{
   border:1px solid var(--line);
   border-radius:999px;
   padding:5px 8px;
+  white-space:nowrap;
 }
-.missed-card{
+.missed-coach-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.missed-coach-card{
+  display:grid;
+  grid-template-columns:86px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
   background:#fff;
   border:1px solid rgba(7,18,15,.12);
-  border-radius:16px;
-  padding:10px 11px;
-  margin:8px 0 0;
+  border-radius:18px;
+  padding:9px;
+  box-shadow:0 8px 22px rgba(7,18,15,.055);
 }
-.missed-topline{
+.missed-visual{
+  position:relative;
+  height:72px;
+  border-radius:15px;
+  overflow:hidden;
+  background:linear-gradient(180deg,rgba(7,18,15,.96),rgba(12,31,21,.94));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.035);
+}
+.missed-visual::before{
+  content:"";
+  position:absolute;
+  inset:9px 8px;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 1px,transparent 1px 18px);
+  opacity:.55;
+}
+.missed-level-line{
+  position:absolute;
+  left:8px;
+  right:8px;
+  height:2px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 0 8px rgba(255,255,255,.24);
+}
+.missed-visual--hammer .missed-level-line,
+.missed-visual--bullish-engulfing .missed-level-line{
+  bottom:17px;
+}
+.missed-visual--shooting-star .missed-level-line,
+.missed-visual--bearish-engulfing .missed-level-line{
+  top:17px;
+}
+.missed-visual--doji .missed-level-line,
+.missed-visual--generic .missed-level-line{
+  top:35px;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.72) 0 9px,transparent 9px 15px);
+}
+.mini-candle{
+  position:absolute;
+  display:block;
+}
+.mini-candle .wick,
+.mini-candle .body{
+  position:absolute;
+  display:block;
+  left:50%;
+  transform:translateX(-50%);
+}
+.mini-candle .wick{
+  width:3px;
+  border-radius:999px;
+}
+.mini-candle .body{
+  border-radius:3px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.16);
+}
+.mini-candle.green .wick,
+.mini-candle.green .body{ background:#31c977; }
+.mini-candle.red .wick,
+.mini-candle.red .body{ background:#ff5b5b; }
+.mini-candle--single{
+  left:50%;
+  top:10px;
+  width:28px;
+  height:52px;
+  transform:translateX(-50%);
+}
+.missed-visual--hammer .mini-candle--single .wick{
+  top:8px;
+  height:43px;
+}
+.missed-visual--hammer .mini-candle--single .body{
+  top:13px;
+  width:18px;
+  height:12px;
+}
+.missed-visual--shooting-star .mini-candle--single .wick{
+  top:2px;
+  height:43px;
+}
+.missed-visual--shooting-star .mini-candle--single .body{
+  top:31px;
+  width:18px;
+  height:12px;
+}
+.missed-visual--doji .mini-candle--single .wick,
+.missed-visual--generic .mini-candle--single .wick{
+  top:9px;
+  height:38px;
+  background:#31c977;
+}
+.missed-visual--doji .mini-candle--single .body,
+.missed-visual--generic .mini-candle--single .body{
+  top:27px;
+  width:24px;
+  height:4px;
+  border-radius:999px;
+  background:#31c977;
+}
+.mini-candle--prior{
+  left:28px;
+  top:18px;
+  width:22px;
+  height:38px;
+}
+.mini-candle--engulf{
+  left:55px;
+  top:11px;
+  width:24px;
+  height:52px;
+}
+.mini-candle--prior .wick{
+  top:3px;
+  height:31px;
+}
+.mini-candle--prior .body{
+  top:12px;
+  width:13px;
+  height:15px;
+}
+.mini-candle--engulf .wick{
+  top:2px;
+  height:45px;
+}
+.mini-candle--engulf .body{
+  top:8px;
+  width:19px;
+  height:32px;
+}
+.missed-coach-copy{
+  min-width:0;
+}
+.missed-coach-title{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:10px;
-  margin-bottom:6px;
+  gap:8px;
+  margin-bottom:4px;
 }
-.missed-topline span{
+.missed-coach-title strong{
   color:var(--green-dark);
   font-size:13px;
   font-weight:950;
+  line-height:1.05;
 }
-.missed-topline small{
+.missed-coach-title small{
+  flex:0 0 auto;
   color:var(--muted);
-  font-size:11px;
-  font-weight:850;
+  font-size:10px;
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  background:rgba(7,18,15,.055);
+  border:1px solid rgba(7,18,15,.09);
+  border-radius:999px;
+  padding:3px 6px;
 }
-.missed-card p{
-  margin:0 0 5px;
+.missed-coach-card p{
+  margin:0 0 6px;
   color:var(--ink);
-  font-size:13px;
-  line-height:1.28;
-  font-weight:750;
+  font-size:12px;
+  line-height:1.22;
+  font-weight:820;
 }
-.missed-card em{
+.missed-cue-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  margin-bottom:5px;
+}
+.missed-cue-tags span{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:900;
+  line-height:1.05;
+  background:rgba(49,201,119,.08);
+  border:1px solid rgba(49,201,119,.16);
+  border-radius:999px;
+  padding:4px 6px;
+}
+.missed-coach-card em{
   display:block;
   color:var(--muted);
-  font-size:12px;
-  line-height:1.25;
+  font-size:10.5px;
+  line-height:1.16;
   font-style:normal;
-  font-weight:750;
-}
-.missed-more{
-  margin-top:9px;
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-  font-weight:900;
+  font-weight:820;
 }
 @media(max-width:850px){
   #result .missed-review{
     margin:9px auto 8px!important;
     padding:9px!important;
-    border-radius:17px!important;
-    max-width:88vw!important;
+    border-radius:18px!important;
+    max-width:90vw!important;
   }
   #result .missed-review-head{
-    margin-bottom:6px!important;
+    margin-bottom:7px!important;
+    align-items:flex-start!important;
   }
   #result .missed-review-head b{
     font-size:13px!important;
   }
   #result .missed-review-head span{
-    font-size:10px!important;
+    font-size:9.5px!important;
     padding:4px 7px!important;
   }
-  #result .missed-card{
-    padding:8px 9px!important;
-    margin-top:6px!important;
-    border-radius:14px!important;
+  #result .missed-coach-grid{
+    grid-template-columns:1fr!important;
+    gap:7px!important;
   }
-  #result .missed-topline{
-    align-items:flex-start!important;
-    flex-direction:column!important;
-    gap:2px!important;
+  #result .missed-coach-card{
+    grid-template-columns:74px minmax(0,1fr)!important;
+    gap:8px!important;
+    padding:8px!important;
+    border-radius:15px!important;
+  }
+  #result .missed-visual{
+    height:62px!important;
+    border-radius:13px!important;
+  }
+  #result .missed-coach-title{
+    margin-bottom:3px!important;
+  }
+  #result .missed-coach-title strong{
+    font-size:12px!important;
+  }
+  #result .missed-coach-title small{
+    font-size:9px!important;
+    padding:3px 5px!important;
+  }
+  #result .missed-coach-card p{
+    font-size:11.3px!important;
+    line-height:1.17!important;
+    margin-bottom:5px!important;
+  }
+  #result .missed-cue-tags{
+    gap:3px!important;
     margin-bottom:4px!important;
   }
-  #result .missed-card p{
-    font-size:12px!important;
-    line-height:1.22!important;
+  #result .missed-cue-tags span{
+    font-size:9.2px!important;
+    padding:3px 5px!important;
   }
-  #result .missed-card em{
-    font-size:11px!important;
-    line-height:1.18!important;
+  #result .missed-coach-card em{
+    font-size:9.5px!important;
+  }
+}
+@media(max-width:430px){
+  #result .missed-coach-card{
+    grid-template-columns:68px minmax(0,1fr)!important;
+  }
+  #result .missed-visual{
+    height:58px!important;
   }
 }

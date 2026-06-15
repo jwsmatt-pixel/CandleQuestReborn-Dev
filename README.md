@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2 · Missed Reads Review`  
-**Build marker:** `v26_2_missed_reads_review`  
-**Base:** `v26.1.1 · Tiny Candle Render Cleanup`  
-**Status:** Active development / World 1 learning-loop upgrade
+**Current build:** `v26.2.1 · Visual Missed Reads Review`  
+**Build marker:** `v26_2_1_visual_missed_reads_review`  
+**Base:** `v26.2 · Missed Reads Review`  
+**Status:** Active development / World 1 visual coach upgrade
 
 ---
 
@@ -12,6 +12,14 @@
 Candle Quest Reborn is a mobile-first chart-reading game built to turn candlestick recognition into deliberate practice.
 
 The long-term vision is to become a **trader's gym**: simple on the surface, intelligent underneath, and focused on repeated high-quality chart-reading reps.
+
+Core learning doctrine:
+
+```text
+Shape → Location → Context → Quality → Risk → Execution
+```
+
+Candle Quest should not teach players to memorise chart shapes alone. It should train players to read market behaviour. World 1 begins with shape recognition, then future worlds should add one decision layer at a time.
 
 Players learn by:
 
@@ -54,7 +62,7 @@ Players learn by:
 - fast-read bonus
 - perfect-run bonus
 - run-complete summary tiers
-- end-of-run missed reads review
+- end-of-run visual missed reads review
 - Pattern Library
 - basic cosmetic shop scaffold
 
@@ -89,7 +97,9 @@ Gameplay
 
 v26.1.1 builds on that by improving the **canvas renderer** so tiny candles, dojis, and small-body candles look clean and symmetrical rather than clipped or malformed.
 
-v26.2 adds the first compact learning-review layer: wrong answers and timeouts are stored during the run and shown underneath the normal summary so the speedrun loop stays uninterrupted.
+v26.2 added the first learning-review layer: wrong answers and timeouts are stored during the run and shown underneath the normal summary so the speedrun loop stays uninterrupted.
+
+v26.2.1 tightens that layer into **visual missed-read coach cards**. Instead of long written review cards, missed reads are grouped by correct pattern and shown as compact visual tiles with a simple shape cue and key level cue.
 
 ---
 
@@ -155,20 +165,21 @@ v26.1 keeps Bullish/Bearish Engulfing as active gameplay patterns while using do
 
 ---
 
-## v26.2 focus
+## v26.2.1 focus
 
-v26.2 adds a compact **Missed Reads Review** to the end-of-run summary.
+v26.2.1 upgrades the missed-read review into a compact **Visual Missed Reads Review**.
 
 Primary focus:
 
 - keep the active gameplay loop fast and uninterrupted
-- track wrong answers and timeouts during a run
-- show a short review of missed reads underneath the normal summary
-- explain what the correct pattern showed
-- limit the review to the first few misses so mobile summary remains readable
+- group missed reads by correct pattern
+- show all missed pattern types from the run
+- replace text-heavy review cards with visual pattern cue cards
+- include one simple shape cue and one key level cue
+- remove “review later” language until a persistent review/stat page exists
 - preserve the v26.1.1 renderer, v26.1 generator, answer pool, XP, scoring, timer, static answer dock, Pattern Library, shop, mobile layout, and desktop layout
 
-This build should be tested on desktop and iPhone to confirm the summary still feels clean and useful.
+This build should be tested on desktop and iPhone to confirm the summary feels more visual, compact, and intuitive.
 
 ---
 
@@ -177,6 +188,10 @@ This build should be tested on desktop and iPhone to confirm the summary still f
 Current mantra:
 
 > Polish the existing core until every question feels fair. Then expand.
+
+Design filter:
+
+> Does this feature move the player from recognising shapes toward reading market behaviour?
 
 Do not rush new worlds yet.
 

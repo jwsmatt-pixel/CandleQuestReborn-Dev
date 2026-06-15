@@ -1,5 +1,54 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.1 · Visual Missed Reads Review
+
+Status: current active visual coach upgrade / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_1_visual_missed_reads_review`.
+- Updated build badge to `v26.2.1 · Visual Missed Reads Review`.
+- Replaced the text-heavy missed-read review with compact visual coach cards.
+- Grouped missed reads by correct pattern instead of listing only the first three misses.
+- Removed the `+ more missed reads to review later` language.
+- Added one generic visual card per missed World 1 candle structure:
+  - Bullish Engulfing
+  - Bearish Engulfing
+  - Hammer
+  - Shooting Star
+  - Doji
+- Added simple shape and level cues to each missed-read card.
+- Added common wrong-choice/confusion summary per missed pattern.
+- Updated `README.md`, `CHANGELOG.md`, and `CHECKPOINT_SUMMARY.md` to reflect the Shape → Location → Context → Quality → Risk → Execution doctrine.
+
+### Preserved
+
+- v26.2 missed-read tracking
+- v26.1.1 tiny candle renderer cleanup
+- v26.1 World 1 generator doctrine engine
+- active World 1 answer pool
+- scoring
+- XP
+- timer
+- static answer dock
+- Pattern Library
+- shop
+- mobile gameplay layout
+- desktop gameplay layout
+- game progression
+
+### Testing required
+
+- Desktop full run with multiple wrong answers.
+- iPhone full run with multiple wrong answers.
+- Confirm missed reads group by pattern.
+- Confirm all missed pattern types from the run appear.
+- Confirm visual cards are readable and not too crowded on mobile.
+- Confirm clean-run message still appears when no reads are missed.
+- Confirm timer / XP / Streak / Summary still work.
+
+---
+
 ## v26.2 · Missed Reads Review
 
 Status: current active learning-loop upgrade / test candidate

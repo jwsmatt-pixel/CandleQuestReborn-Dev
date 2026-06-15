@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_2_missed_reads_review";
+const CANDLE_QUEST_BUILD = "v26_2_1_visual_missed_reads_review";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.2 · Missed Reads Review"
+    b.textContent = "v26.2.1 · Visual Missed Reads Review"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -419,26 +419,41 @@ function pickRunComment(correct){
 }
 
 
-const missedReadNotes = {
+const missedReadCoach = {
   "Bullish Engulfing": {
-    why:"The green candle took control after weakness and closed strongly through the prior body.",
-    cue:"Look for a red/weak candle first, then a stronger green body that absorbs it."
+    visual:"bullish-engulfing",
+    shape:"Two-candle control shift",
+    level:"Range Low / support",
+    cue:"Green body took control after prior red weakness.",
+    tag:"Body takeover"
   },
   "Bearish Engulfing": {
-    why:"The red candle took control after strength and closed strongly through the prior body.",
-    cue:"Look for a green/strong candle first, then a stronger red body that absorbs it."
+    visual:"bearish-engulfing",
+    shape:"Two-candle control shift",
+    level:"Range High / resistance",
+    cue:"Red body took control after prior green strength.",
+    tag:"Body takeover"
   },
   "Hammer": {
-    why:"The candle rejected below with a long lower wick and closed back near the upper body area.",
-    cue:"Look for failed downside pressure near Range Low or support."
+    visual:"hammer",
+    shape:"Long lower wick",
+    level:"Range Low / support",
+    cue:"Lower wick rejected the sell push and closed near the top.",
+    tag:"Lower rejection"
   },
   "Shooting Star": {
-    why:"The candle rejected above with a long upper wick and closed back near the lower body area.",
-    cue:"Look for failed upside pressure near Range High or resistance."
+    visual:"shooting-star",
+    shape:"Long upper wick",
+    level:"Range High / resistance",
+    cue:"Upper wick rejected the buy push and closed near the lows.",
+    tag:"Upper rejection"
   },
   "Doji": {
-    why:"The open and close were very close together, showing hesitation rather than clear control.",
-    cue:"Look for a tiny body with indecision, especially around the Channel Mean or a key zone."
+    visual:"doji",
+    shape:"Tiny body",
+    level:"Channel Mean / key zone",
+    cue:"Open and close stayed almost equal — neither side took control.",
+    tag:"Indecision"
   }
 };
 
@@ -455,16 +470,77 @@ function escapeHTML(value){
 function recordMissedRead(correct, chosen){
   if(!run || !correct) return;
   if(!run.missedReads) run.missedReads = [];
-  const note = missedReadNotes[correct] || {
-    why:"The correct answer matched the final candle and its location better than the selected option.",
-    cue:"Review the candle body, wick direction, and where it formed in the channel."
+  const coach = missedReadCoach[correct] || {
+    visual:"generic",
+    shape:"Best matching structure",
+    level:"Key chart zone",
+    cue:"Review the candle body, wick direction, and where it formed in the channel.",
+    tag:"Review"
   };
   run.missedReads.push({
     correct,
     chosen: chosen || "Timeout",
-    why: note.why,
-    cue: note.cue
+    shape: coach.shape,
+    level: coach.level,
+    cue: coach.cue,
+    tag: coach.tag,
+    visual: coach.visual
   });
+}
+
+function getChoiceSummary(items){
+  const counts = {};
+  items.forEach(m=>{
+    const choice = m.chosen || "Timeout";
+    counts[choice] = (counts[choice] || 0) + 1;
+  });
+  return Object.entries(counts)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,2)
+    .map(([choice,count])=>count > 1 ? `${choice} ×${count}` : choice)
+    .join(", ");
+}
+
+function groupMissedReads(missedReads){
+  const groups = new Map();
+  (Array.isArray(missedReads) ? missedReads : []).forEach(m=>{
+    if(!m || !m.correct) return;
+    if(!groups.has(m.correct)) groups.set(m.correct, []);
+    groups.get(m.correct).push(m);
+  });
+  return Array.from(groups.entries()).map(([correct,items])=>{
+    const coach = missedReadCoach[correct] || items[0] || {};
+    return {
+      correct,
+      count: items.length,
+      choices: getChoiceSummary(items),
+      shape: coach.shape || items[0]?.shape || "Best matching structure",
+      level: coach.level || items[0]?.level || "Key chart zone",
+      cue: coach.cue || items[0]?.cue || "Review the candle body, wick direction, and where it formed in the channel.",
+      tag: coach.tag || items[0]?.tag || "Review",
+      visual: coach.visual || items[0]?.visual || "generic"
+    };
+  }).sort((a,b)=>b.count-a.count || a.correct.localeCompare(b.correct));
+}
+
+function renderMiniPatternVisual(visual){
+  const safeVisual = ["bullish-engulfing","bearish-engulfing","hammer","shooting-star","doji"].includes(visual) ? visual : "generic";
+  if(safeVisual === "bullish-engulfing" || safeVisual === "bearish-engulfing"){
+    const bull = safeVisual === "bullish-engulfing";
+    return `
+      <div class="missed-visual missed-visual--${safeVisual}" aria-hidden="true">
+        <span class="missed-level-line"></span>
+        <span class="mini-candle mini-candle--prior ${bull ? 'red' : 'green'}"><i class="wick"></i><i class="body"></i></span>
+        <span class="mini-candle mini-candle--engulf ${bull ? 'green' : 'red'}"><i class="wick"></i><i class="body"></i></span>
+      </div>
+    `;
+  }
+  return `
+    <div class="missed-visual missed-visual--${safeVisual}" aria-hidden="true">
+      <span class="missed-level-line"></span>
+      <span class="mini-candle mini-candle--single ${safeVisual === 'shooting-star' ? 'red' : 'green'}"><i class="wick"></i><i class="body"></i></span>
+    </div>
+  `;
 }
 
 function renderMissedReadsReview(missedReads){
@@ -472,25 +548,32 @@ function renderMissedReadsReview(missedReads){
   if(!missed.length){
     return `<div class="missed-review clean"><b>No missed reads.</b><span>Clean round — run it back and build the streak.</span></div>`;
   }
-  const shown = missed.slice(0,3);
-  const more = missed.length - shown.length;
+  const groups = groupMissedReads(missed);
   return `
-    <div class="missed-review">
+    <div class="missed-review visual-review">
       <div class="missed-review-head">
-        <b>Review your missed reads</b>
-        <span>${missed.length} ${missed.length === 1 ? "miss" : "misses"}</span>
+        <b>Review missed reads</b>
+        <span>${missed.length} ${missed.length === 1 ? "miss" : "misses"} · ${groups.length} ${groups.length === 1 ? "pattern" : "patterns"}</span>
       </div>
-      ${shown.map(m=>`
-        <article class="missed-card">
-          <div class="missed-topline">
-            <span>Answer: ${escapeHTML(m.correct)}</span>
-            <small>You chose: ${escapeHTML(m.chosen)}</small>
-          </div>
-          <p>${escapeHTML(m.why)}</p>
-          <em>${escapeHTML(m.cue)}</em>
-        </article>
-      `).join("")}
-      ${more > 0 ? `<div class="missed-more">+${more} more missed ${more === 1 ? "read" : "reads"} to review later.</div>` : ""}
+      <div class="missed-coach-grid">
+        ${groups.map(g=>`
+          <article class="missed-coach-card">
+            ${renderMiniPatternVisual(g.visual)}
+            <div class="missed-coach-copy">
+              <div class="missed-coach-title">
+                <strong>${escapeHTML(g.correct)}</strong>
+                <small>${g.count > 1 ? `missed ×${g.count}` : "missed"}</small>
+              </div>
+              <p>${escapeHTML(g.cue)}</p>
+              <div class="missed-cue-tags">
+                <span>Shape: ${escapeHTML(g.shape)}</span>
+                <span>Level: ${escapeHTML(g.level)}</span>
+              </div>
+              ${g.choices ? `<em>Confused with: ${escapeHTML(g.choices)}</em>` : ""}
+            </div>
+          </article>
+        `).join("")}
+      </div>
     </div>
   `;
 }

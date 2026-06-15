@@ -1,22 +1,40 @@
-# Candle Quest Reborn — v26.2 Checkpoint Summary
+# Candle Quest Reborn — v26.2.1 Checkpoint Summary
 
 ## Current build
 
-**v26.2 · Missed Reads Review**  
-Build marker: `v26_2_missed_reads_review`
+**v26.2.1 · Visual Missed Reads Review**  
+Build marker: `v26_2_1_visual_missed_reads_review`
 
 ## Base build
 
-**v26.1.1 · Tiny Candle Render Cleanup**  
-Build marker: `v26_1_1_tiny_candle_render_cleanup`
+**v26.2 · Missed Reads Review**  
+Build marker: `v26_2_missed_reads_review`
 
 ## Current status
 
 Active development checkpoint.
 
-The project now has the clean v26 documentation/package foundation, the v26.1.1 tiny candle renderer cleanup, and the first end-of-run learning-review layer.
+The project now has the clean v26 documentation/package foundation, the v26.1 generator doctrine engine, the v26.1.1 tiny candle renderer cleanup, and a more visual end-of-run review layer.
 
-Treat this as the current learning-loop test build until desktop and iPhone testing confirms that the missed-read review adds useful feedback without making the mobile summary feel crowded.
+v26.2.1 should be treated as the current visual-coach test build until desktop and iPhone testing confirms the missed-read cards feel intuitive and compact.
+
+## Core design doctrine
+
+Candle Quest should not teach players to memorise chart shapes alone. It should train players to read market behaviour.
+
+Master learning ladder:
+
+```text
+Shape → Location → Context → Quality → Risk → Execution
+```
+
+World 1 starts with shape recognition. Future worlds should add one decision layer at a time.
+
+Feature filter:
+
+```text
+Does this feature move the player from recognising shapes toward reading market behaviour?
+```
 
 ## What this package contains
 
@@ -31,22 +49,34 @@ Treat this as the current learning-loop test build until desktop and iPhone test
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.2
+## What changed in v26.2.1
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.2.
-- Added `missedReads` tracking inside each run.
-- Wrong answers now record the correct pattern, chosen answer, and a short review note.
-- Timeouts now record as missed reads with `Timeout` as the selected answer.
-- End-of-run summary now shows a compact `Review your missed reads` section underneath the normal score/comment/XP summary.
-- Clean runs show a small positive clean-run message.
-- Review cards are limited to the first three missed reads to keep mobile readable.
-- Added mobile/desktop CSS for missed-read review cards.
-- Changed the result body container from a paragraph to a div so summary/review cards render cleanly.
+- Updated the build marker and build badge to v26.2.1.
+- Preserved missed-read tracking from v26.2.
+- Replaced text-heavy missed-read cards with compact visual coach cards.
+- Missed reads are now grouped by correct pattern.
+- All missed pattern types from the run are shown instead of only the first three misses.
+- Removed `+ more missed reads to review later` because no persistent review page exists yet.
+- Added one generic visual cue card for each World 1 active answer:
+  - Bullish Engulfing
+  - Bearish Engulfing
+  - Hammer
+  - Shooting Star
+  - Doji
+- Each card now includes:
+  - mini visual pattern cue
+  - correct pattern name
+  - miss count
+  - simple shape cue
+  - simple key level cue
+  - common wrong-choice summary where available
+- Updated mobile/desktop CSS for the visual coach cards.
 
 ### Preserved
 
+- v26.2 missed-read tracking
 - v26.1.1 tiny candle renderer cleanup
 - v26.1 generator recipes
 - v26.1 validation logic
@@ -62,24 +92,6 @@ Treat this as the current learning-loop test build until desktop and iPhone test
 - desktop gameplay layout
 - progression
 
-## Confirmed from v26.1.1 base
-
-Before the v26.1.1 renderer patch, v26.1 had been confirmed to have:
-
-- Desktop loads
-- iPhone loads
-- Start Run works
-- Static answer dock works
-- Active game layout feels good
-- World 1 active answers are correct
-- Bullish Candle / Bearish Candle are not active gameplay answers
-- Pattern Library corrected
-- Play Again works
-- Timer / Streak / XP run as intended
-- Repeats feel reduced
-- No significant final-candle gaps observed
-- Summary screen looks good on desktop
-
 ## Current World 1 active answer pool
 
 - Bullish Engulfing
@@ -88,51 +100,54 @@ Before the v26.1.1 renderer patch, v26.1 had been confirmed to have:
 - Shooting Star
 - Doji
 
-## Current World 1 doctrine/reference concepts
+## Current review philosophy
 
-- Hammer
-- Shooting Star
-- Doji
-- Bullish Candle
-- Bearish Candle
-- Bullish Rejection
-- Bearish Rejection
+The review screen should be a visual coach screen, not a literary review.
 
-Important distinction:
+Current rule:
 
-Bullish Candle / Bearish Candle are not the same as Bullish Engulfing / Bearish Engulfing.
+```text
+Pattern shape + key level + one cue
+```
 
-Bullish Candle and Bearish Candle are reference concepts only at this stage. They should not appear as active World 1 quiz answers unless intentionally enabled later.
+Comparative coach cards are intentionally deferred. For now, each missed pattern receives one generic visual cue card. Later builds can compare common confusion pairs such as:
+
+- Hammer vs Bullish Engulfing
+- Shooting Star vs Bearish Engulfing
+- Support Reclaim vs Range Bounce
+- Clean Breakout vs Range Expansion
 
 ## Next recommended test
 
 Use GitHub Pages with:
 
 ```text
-?fresh=262
+?fresh=2621
 ```
 
 Then check:
 
-1. Desktop full run with at least one wrong answer
-2. iPhone full run with at least one wrong answer
+1. Desktop full run with multiple wrong answers
+2. iPhone full run with multiple wrong answers
 3. Timeout behaviour records a missed read
-4. Clean/perfect run summary stays uncluttered
-5. Missed-read cards are useful but not too large
-6. Tiny candle/doji rendering still looks clean
-7. Hammer / Shooting Star / Doji readability
-8. Bullish/Bearish Engulfing readability
-9. Pattern answer labels remain correct
-10. Repetition/diversity still feels controlled
-11. Pattern Library opens
-12. Add to Home Screen / PWA behaviour
+4. Missed reads group by pattern
+5. All missed pattern types appear
+6. No `review later` language appears
+7. Visual cue cards are readable on mobile
+8. Clean/perfect run summary stays uncluttered
+9. Tiny candle/doji rendering still looks clean
+10. Hammer / Shooting Star / Doji readability
+11. Bullish/Bearish Engulfing readability
+12. Pattern answer labels remain correct
+13. Repetition/diversity still feels controlled
+14. Pattern Library opens
+15. Add to Home Screen / PWA behaviour remains unchanged
 
 ## Known watch points
 
-- Confirm missed-read review does not make the mobile summary feel too crowded.
-- Confirm wrong answers and timeouts both appear correctly in the review.
-- Mobile wick width from v26.1.1 should still read clearly on iPhone.
-- Dojis should still look intentional, not too flat or overly digital.
+- Visual review cards may need tighter mobile spacing after iPhone testing.
+- The visual icons are generic teaching cues, not exact replays of missed candles.
+- Comparative coach cards are a future feature, not included in v26.2.1.
 - The larger market-rhythm issue remains separate: background candles can still feel too flat or low-volatility.
 
 ## Next intended work
@@ -141,13 +156,14 @@ Recommended sequence:
 
 ```text
 v26.3 · Natural Candle Rhythm Pass
-v26.4 · Engulfing Doctrine Engine
+v26.4 · Comparative Coach Cards / Confusion Pair Tracking
+v26.5 · Engulfing Doctrine Engine
 ```
 
-Do not combine market rhythm and engulfing doctrine until v26.2 has been tested on desktop and iPhone.
+Do not combine market rhythm, comparative cards, and engulfing doctrine into one patch.
 
 ## Current development philosophy
 
 > Polish the existing core until every question feels fair. Then expand.
 
-The game has moved from pure UI polish into generator-doctrine and candle-quality work. Human visual testing is now more important than code-only validation.
+The game has moved from pure UI polish into generator doctrine, candle-quality work, and learning-loop design. Human visual testing is now more important than code-only validation.
