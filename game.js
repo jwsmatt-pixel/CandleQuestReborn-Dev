@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_1_1_tiny_candle_render_cleanup_claude";
+const CANDLE_QUEST_BUILD = "v26_2_missed_reads_review";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.1.1 · Tiny Candle Render Cleanup [Claude]"
+    b.textContent = "v26.2 · Missed Reads Review"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -418,6 +418,83 @@ function pickRunComment(correct){
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
+
+const missedReadNotes = {
+  "Bullish Engulfing": {
+    why:"The green candle took control after weakness and closed strongly through the prior body.",
+    cue:"Look for a red/weak candle first, then a stronger green body that absorbs it."
+  },
+  "Bearish Engulfing": {
+    why:"The red candle took control after strength and closed strongly through the prior body.",
+    cue:"Look for a green/strong candle first, then a stronger red body that absorbs it."
+  },
+  "Hammer": {
+    why:"The candle rejected below with a long lower wick and closed back near the upper body area.",
+    cue:"Look for failed downside pressure near Range Low or support."
+  },
+  "Shooting Star": {
+    why:"The candle rejected above with a long upper wick and closed back near the lower body area.",
+    cue:"Look for failed upside pressure near Range High or resistance."
+  },
+  "Doji": {
+    why:"The open and close were very close together, showing hesitation rather than clear control.",
+    cue:"Look for a tiny body with indecision, especially around the Channel Mean or a key zone."
+  }
+};
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>'"]/g, ch => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    "'":"&#39;",
+    '"':"&quot;"
+  }[ch]));
+}
+
+function recordMissedRead(correct, chosen){
+  if(!run || !correct) return;
+  if(!run.missedReads) run.missedReads = [];
+  const note = missedReadNotes[correct] || {
+    why:"The correct answer matched the final candle and its location better than the selected option.",
+    cue:"Review the candle body, wick direction, and where it formed in the channel."
+  };
+  run.missedReads.push({
+    correct,
+    chosen: chosen || "Timeout",
+    why: note.why,
+    cue: note.cue
+  });
+}
+
+function renderMissedReadsReview(missedReads){
+  const missed = Array.isArray(missedReads) ? missedReads : [];
+  if(!missed.length){
+    return `<div class="missed-review clean"><b>No missed reads.</b><span>Clean round — run it back and build the streak.</span></div>`;
+  }
+  const shown = missed.slice(0,3);
+  const more = missed.length - shown.length;
+  return `
+    <div class="missed-review">
+      <div class="missed-review-head">
+        <b>Review your missed reads</b>
+        <span>${missed.length} ${missed.length === 1 ? "miss" : "misses"}</span>
+      </div>
+      ${shown.map(m=>`
+        <article class="missed-card">
+          <div class="missed-topline">
+            <span>Answer: ${escapeHTML(m.correct)}</span>
+            <small>You chose: ${escapeHTML(m.chosen)}</small>
+          </div>
+          <p>${escapeHTML(m.why)}</p>
+          <em>${escapeHTML(m.cue)}</em>
+        </article>
+      `).join("")}
+      ${more > 0 ? `<div class="missed-more">+${more} more missed ${more === 1 ? "read" : "reads"} to review later.</div>` : ""}
+    </div>
+  `;
+}
+
 function updateStreakHud(){
   const hud = document.querySelector(".game-hud");
   if(!hud) return;
@@ -518,6 +595,7 @@ function startRun(worldId=activeWorld){
     correctCount:0,
     fastCount:0,
     longestStreak:0,
+    missedReads:[],
     maxQuests:10,
     questTime:7,
     questLeft:7,
@@ -580,11 +658,13 @@ function endRun(){
   const fastLine = (run.fastCount || 0) > 0 ? `<span class="summary-bonus">⚡ ${run.fastCount} fast reads · +${(run.fastCount || 0)*3} XP</span>` : "";
   const perfectLine = correct >= maxQ ? `<span class="summary-bonus perfect">✦ Perfect bonus +50 XP</span>` : "";
   const bonusRow = (fastLine || perfectLine) ? `<div class="summary-bonus-row">${fastLine}${perfectLine}</div>` : "";
+  const missedReview = renderMissedReadsReview(run.missedReads || []);
   $("resultBody").innerHTML = `
     <div class="summary-correct">${correct}/${maxQ}</div>
     <div class="summary-label">correct reads</div>
     <div class="summary-comment">${runComment}</div>
     ${bonusRow}
+    ${missedReview}
   `;
 
   run=null;
@@ -1179,6 +1259,7 @@ function timeoutQuestMoment(){
   if(lostStreak) showStreakLost();
   $("scoreText").textContent = run.score;
   if(!lostStreak) updateStreakHud();
+  recordMissedRead(run.current, "Timeout");
   $("runHint").textContent = `Time up — answer was ${run.current}.`;
   document.querySelectorAll("#answerPad button").forEach(b=>{
     b.disabled = true;
@@ -1304,6 +1385,7 @@ function answer(label){
     const gained = baseScore + comboBonus + speedBonus + underTwoBonus;
     run.score += gained;
   } else {
+    recordMissedRead(run.current, label);
     const lostStreak = (run.combo || 0) >= 2;
     run.combo = 0;
     run.score = Math.max(0, run.score - 5);
@@ -1323,63 +1405,64 @@ function answer(label){
 
 
 // ─── DRAWING ENGINE ────────────────────────────────────────────────────────────
-// v26.1.1: Tiny Candle Render Cleanup.
-// - Body width snapped to whole pixels and forced ODD so the wick centres exactly.
-// - Wick drawn as a whole-pixel fillRect (no half-pixel stroke blur), centred on body.
-// - Minimum visible body height for tiny candles.
-// - Bodies below the doji threshold render as a clean, centred horizontal doji bar.
-// - All x/y snapped to whole pixels so left/right edges are symmetrical (no clipped side).
-// Colour direction logic, spacing, and layout are unchanged.
 function drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal=false){
   const color = green ? "#31c977" : "#ff5b5b";
   const wickColor = green ? "#19a463" : "#e04444";
   const mobile = isMobile();
 
-  // Signal candles keep their small focus boost (v25.3 behaviour).
+  // v26.1.1: Tiny Candle Render Cleanup
+  // Previous renderer rounded wick centre, body width, and body left edge separately.
+  // That made very small bodies/dojis look clipped or off-centre. This version snaps
+  // one true candle centre first, derives the body from that centre, and draws the
+  // wick through the same column.
   const effectiveCW = isSignal ? cw * (mobile ? 1.18 : 1.15) : cw;
-
-  // Symmetrical body width: whole pixels, forced odd so a centre column exists.
-  let bodyW = Math.max(mobile ? 9 : 5, Math.round(effectiveCW));
-  if(bodyW % 2 === 0) bodyW += 1;
-
-  // Snap the candle centre to a whole pixel; derive a perfectly symmetric left edge.
   const centerX = Math.round(x);
-  const left = centerX - (bodyW - 1) / 2;
 
-  // Body vertical extent (whole pixels).
-  const rawTop = Math.min(yO, yC);
-  const rawBottom = Math.max(yO, yC);
-  const top = Math.round(rawTop);
-  let bodyH = Math.round(rawBottom - rawTop);
+  let bodyW = Math.max(mobile ? 9 : 5, Math.round(effectiveCW));
+  if(bodyW % 2 === 0) bodyW += 1; // odd width gives a true centre column
+  const left = centerX - Math.floor(bodyW / 2);
 
-  const minBodyH = mobile ? 4 : 3;   // minimum visible body height
-  const dojiH = mobile ? 4 : 3;      // thickness of the doji-style bar
+  const yHigh = Math.round(Math.min(yH, yL));
+  const yLow = Math.round(Math.max(yH, yL));
+  const bodyTopRaw = Math.min(yO, yC);
+  const bodyBottomRaw = Math.max(yO, yC);
+  const bodyMid = Math.round((bodyTopRaw + bodyBottomRaw) / 2);
+  const rawBodyH = Math.abs(yC - yO);
+  const minBodyH = mobile ? 4 : 3;
+  const isTinyBody = rawBodyH < minBodyH;
 
-  // Wick: whole-pixel rect centred through the body (no anti-aliased stroke).
+  // Whole-pixel wick avoids fractional stroke blur and stays centred through body.
   const wickW = mobile ? 3 : 2;
-  const wickX = centerX - Math.floor(wickW / 2);
-  const wickTop = Math.round(yH);
-  const wickBottom = Math.round(yL);
+  const wickLeft = centerX - Math.floor(wickW / 2);
   ctx.fillStyle = wickColor;
-  ctx.fillRect(wickX, wickTop, wickW, Math.max(1, wickBottom - wickTop));
+  ctx.fillRect(wickLeft, yHigh, wickW, Math.max(1, yLow - yHigh));
 
   ctx.fillStyle = color;
-  ctx.strokeStyle = wickColor;
-  ctx.lineWidth = 1;
 
-  if(bodyH < minBodyH){
-    // Tiny / doji body: render an intentional, clean horizontal bar
-    // centred on the open/close midpoint instead of a malformed sliver.
-    const midY = Math.round((rawTop + rawBottom) / 2);
-    const lineTop = midY - Math.floor(dojiH / 2);
-    ctx.fillRect(left, lineTop, bodyW, dojiH);
-    ctx.strokeRect(left + 0.5, lineTop + 0.5, bodyW - 1, dojiH - 1);
+  if(isTinyBody){
+    // Render doji/tiny bodies as clean horizontal bars instead of malformed slivers.
+    const barH = mobile ? 3 : 2;
+    const barTop = bodyMid - Math.floor(barH / 2);
+    ctx.fillRect(left, barTop, bodyW, barH);
     return;
   }
 
-  bodyH = Math.max(minBodyH, bodyH);
+  let bodyH = Math.max(minBodyH, Math.round(rawBodyH));
+  let top = Math.round(bodyTopRaw);
+
+  // If rounding would detach the body from its midpoint, re-centre it.
+  if(bodyH === minBodyH && rawBodyH < minBodyH + 1){
+    top = bodyMid - Math.floor(bodyH / 2);
+  }
+
   ctx.fillRect(left, top, bodyW, bodyH);
-  ctx.strokeRect(left + 0.5, top + 0.5, bodyW - 1, bodyH - 1);
+
+  // Stroke only when there is enough height to avoid broken-looking tiny outlines.
+  if(bodyH >= 5){
+    ctx.strokeStyle = wickColor;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(left + 0.5, top + 0.5, bodyW - 1, bodyH - 1);
+  }
 }
 
 function drawLevelLabel(ctx, text, x, y, color){

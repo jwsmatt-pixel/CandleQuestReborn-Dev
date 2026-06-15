@@ -1531,3 +1531,137 @@ body[data-skin="gold"] .definition-card{
     height:44px!important;
   }
 }
+
+/* v26.2: Missed Reads Review
+   Adds an end-of-run learning review without interrupting the speedrun loop. */
+.missed-review{
+  margin:14px auto 12px;
+  max-width:620px;
+  text-align:left;
+  background:rgba(7,18,15,.055);
+  border:1.5px solid rgba(7,18,15,.13);
+  border-radius:20px;
+  padding:12px;
+}
+.missed-review.clean{
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  background:rgba(49,201,119,.09);
+  border-color:rgba(49,201,119,.24);
+}
+.missed-review.clean b{
+  color:var(--green-dark);
+  font-size:14px;
+}
+.missed-review.clean span{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+.missed-review-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:9px;
+}
+.missed-review-head b{
+  font-size:14px;
+  color:var(--ink);
+}
+.missed-review-head span{
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:5px 8px;
+}
+.missed-card{
+  background:#fff;
+  border:1px solid rgba(7,18,15,.12);
+  border-radius:16px;
+  padding:10px 11px;
+  margin:8px 0 0;
+}
+.missed-topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:6px;
+}
+.missed-topline span{
+  color:var(--green-dark);
+  font-size:13px;
+  font-weight:950;
+}
+.missed-topline small{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:850;
+}
+.missed-card p{
+  margin:0 0 5px;
+  color:var(--ink);
+  font-size:13px;
+  line-height:1.28;
+  font-weight:750;
+}
+.missed-card em{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.25;
+  font-style:normal;
+  font-weight:750;
+}
+.missed-more{
+  margin-top:9px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:900;
+}
+@media(max-width:850px){
+  #result .missed-review{
+    margin:9px auto 8px!important;
+    padding:9px!important;
+    border-radius:17px!important;
+    max-width:88vw!important;
+  }
+  #result .missed-review-head{
+    margin-bottom:6px!important;
+  }
+  #result .missed-review-head b{
+    font-size:13px!important;
+  }
+  #result .missed-review-head span{
+    font-size:10px!important;
+    padding:4px 7px!important;
+  }
+  #result .missed-card{
+    padding:8px 9px!important;
+    margin-top:6px!important;
+    border-radius:14px!important;
+  }
+  #result .missed-topline{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+    gap:2px!important;
+    margin-bottom:4px!important;
+  }
+  #result .missed-card p{
+    font-size:12px!important;
+    line-height:1.22!important;
+  }
+  #result .missed-card em{
+    font-size:11px!important;
+    line-height:1.18!important;
+  }
+}

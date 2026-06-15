@@ -1,8 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.1 · World 1 Generator Doctrine Engine`  
-**Build marker:** `v26_1_world1_generator_doctrine_engine`  
-**Status:** Active development / generator-doctrine testing checkpoint
+**Current build:** `v26.2 · Missed Reads Review`  
+**Build marker:** `v26_2_missed_reads_review`  
+**Base:** `v26.1.1 · Tiny Candle Render Cleanup`  
+**Status:** Active development / World 1 learning-loop upgrade
 
 ---
 
@@ -53,6 +54,7 @@ Players learn by:
 - fast-read bonus
 - perfect-run bonus
 - run-complete summary tiers
+- end-of-run missed reads review
 - Pattern Library
 - basic cosmetic shop scaffold
 
@@ -65,10 +67,11 @@ Players learn by:
 - solid Range Low line
 - transparent setup-zone guidance
 - Quest Moment banner: `QUEST MOMENT · READ THE CHANNEL`
+- cleaned tiny-body/doji candle rendering from v26.1.1
 
 ### Current engine work
 
-v26.1 introduces the first doctrine-based generator layer for World 1.
+v26.1 introduced the first doctrine-based generator layer for World 1.
 
 The goal is to move Candle Quest away from loose visual approximation and toward:
 
@@ -83,6 +86,10 @@ Validation
 ↓
 Gameplay
 ```
+
+v26.1.1 builds on that by improving the **canvas renderer** so tiny candles, dojis, and small-body candles look clean and symmetrical rather than clipped or malformed.
+
+v26.2 adds the first compact learning-review layer: wrong answers and timeouts are stored during the run and shown underneath the normal summary so the speedrun loop stays uninterrupted.
 
 ---
 
@@ -148,20 +155,20 @@ v26.1 keeps Bullish/Bearish Engulfing as active gameplay patterns while using do
 
 ---
 
-## v26.1 focus
+## v26.2 focus
 
-v26.1 is a generator-doctrine testing checkpoint.
+v26.2 adds a compact **Missed Reads Review** to the end-of-run summary.
 
 Primary focus:
 
-- World 1 candle structure quality
-- recipe-based generation
-- validation rules
-- anti-repeat pattern diversity
-- smoother candle continuity
-- clearer distinction between similar single-candle ideas
+- keep the active gameplay loop fast and uninterrupted
+- track wrong answers and timeouts during a run
+- show a short review of missed reads underneath the normal summary
+- explain what the correct pattern showed
+- limit the review to the first few misses so mobile summary remains readable
+- preserve the v26.1.1 renderer, v26.1 generator, answer pool, XP, scoring, timer, static answer dock, Pattern Library, shop, mobile layout, and desktop layout
 
-This build should be treated as a test checkpoint until World 1 has been manually audited on desktop and iPhone.
+This build should be tested on desktop and iPhone to confirm the summary still feels clean and useful.
 
 ---
 
@@ -177,9 +184,10 @@ The current priority is:
 
 1. make existing questions fair
 2. make generated candles respect doctrine
-3. prevent repetitive pattern sequences
-4. align Pattern Library language with gameplay
-5. build the Pattern Bible as the source of truth
+3. make rendered candles visually trustworthy
+4. prevent repetitive pattern sequences
+5. align Pattern Library language with gameplay
+6. build the Pattern Bible as the source of truth
 
 ---
 
@@ -212,96 +220,53 @@ Pattern → Memorisation
 
 ---
 
+## Next intended work
+
+Suggested next sequence:
+
+```text
+v26.3 · Natural Candle Rhythm Pass
+v26.4 · Engulfing Doctrine Engine
+```
+
+The next larger quality issue is that background candle sequences can still feel too flat or low-volatility. That should be addressed separately from this v26.2 learning-review patch.
+
+---
+
 ## How to run locally
 
 ### Option 1 — Open directly
 
 Open `index.html` in a browser.
 
-### Option 2 — Use local server on Windows
+### Option 2 — Use the launcher
 
-Double click:
+On Windows, run:
 
 ```text
 START_GAME.bat
 ```
 
-Then open:
+---
+
+## GitHub Pages notes
+
+Expected root structure:
 
 ```text
-http://127.0.0.1:8123
+index.html
+style.css
+game.js
+manifest.webmanifest
+README.md
+CHANGELOG.md
+CHECKPOINT_SUMMARY.md
+START_GAME.bat
+icons/
 ```
 
----
-
-## iPhone / PWA testing
-
-Recommended:
-
-1. Upload the folder to GitHub Pages or another static host.
-2. Open the page in Safari.
-3. Tap Share.
-4. Tap Add to Home Screen.
-
-This build includes:
-
-- mobile web app meta tags
-- PWA manifest
-- app icons
-- touch-first layout
-- iPhone install tip
-
----
-
-## GitHub Pages cache busting
-
-After uploading a new build, use a fresh query string:
+Use a cache-busting URL after uploading a new build, for example:
 
 ```text
-?fresh=261
+?fresh=262
 ```
-
-Example:
-
-```text
-https://your-github-pages-url/?fresh=261
-```
-
----
-
-## Recommended test checklist
-
-Before calling v26.1 stable, verify:
-
-- Start Run works
-- candles render immediately
-- static answer dock appears during setup
-- placeholder answers appear before Quest Moment
-- Quest Moment appears
-- real answer labels appear in the dock
-- timer shows `—` during replay/setup
-- 7-second timer starts only during Quest Moment
-- answer buttons work
-- score does not double count
-- streak tracker works
-- `STREAK LOST` still flashes/shakes
-- live `+XP` beside score still works
-- run ends after 10 Quest Moments
-- summary page works
-- Pattern Library opens
-- desktop only shows one XP/Shop block
-- mobile chart remains readable
-- full Quest Map channel remains visible
-- same pattern does not repeat 3–4 times in a row
-- Hammer / Shooting Star / Doji examples visually respect doctrine
-- Bullish Engulfing and Bearish Engulfing remain active where expected
-
----
-
-## Project principle
-
-The game should stay simple on the surface and become more intelligent underneath.
-
-The Pattern Bible defines the law.
-
-The generator should obey the law.

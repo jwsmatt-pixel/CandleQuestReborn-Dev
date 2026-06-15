@@ -1,8 +1,103 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2 · Missed Reads Review
+
+Status: current active learning-loop upgrade / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_missed_reads_review`.
+- Updated build badge to `v26.2 · Missed Reads Review`.
+- Added missed-read tracking for wrong answers and timeouts during a run.
+- Added an end-of-run `Review your missed reads` section underneath the normal summary.
+- Added compact pattern-specific review notes for the current World 1 active answers:
+  - Bullish Engulfing
+  - Bearish Engulfing
+  - Hammer
+  - Shooting Star
+  - Doji
+- Limited the visible review to the first three missed reads, with a small overflow note when there are more.
+- Added a clean-run message when no reads were missed.
+- Added CSS for desktop and mobile missed-read review cards.
+- Changed the result body container from a paragraph to a div so summary/review cards render cleanly.
+
+### Preserved
+
+- v26.1.1 tiny candle renderer cleanup
+- v26.1 World 1 generator doctrine engine
+- active World 1 answer pool
+- scoring
+- XP
+- timer
+- static answer dock
+- Pattern Library
+- shop
+- mobile gameplay layout
+- desktop gameplay layout
+- summary score/stat hierarchy
+- game progression
+
+### Testing required
+
+- Desktop full run with at least one wrong answer.
+- iPhone full run with at least one wrong answer.
+- Timeout review card appears correctly.
+- Perfect/clean run summary remains uncluttered.
+- Play Again and Lesson Map still work.
+- Timer / XP / Streak still work.
+
+---
+
+## v26.1.1 · Tiny Candle Render Cleanup
+
+Status: current active renderer test / strong checkpoint candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_1_1_tiny_candle_render_cleanup`.
+- Updated build badge to `v26.1.1 · Tiny Candle Render Cleanup`.
+- Reworked the `drawFlatCandle()` canvas renderer only.
+- Fixed tiny candle and doji rendering so very small bodies no longer appear clipped, uneven, or malformed.
+- Forced candle body widths to use symmetrical odd-number sizing so the body has a true visual centre.
+- Derived body position from the same snapped candle centre used by the wick.
+- Drew the wick as a whole-pixel rectangle through the body centre to reduce fractional stroke blur.
+- Rendered tiny-body candles as clean doji-style horizontal bars.
+- Preserved candle colour direction logic, signal-candle focus boost, chart spacing, and layout.
+
+### Preserved
+
+- `W1_RECIPES`
+- `_generateW1Candle`
+- `_validateW1Candle`
+- `_pickDiversePattern`
+- active World 1 answer pool
+- scoring
+- XP
+- timer
+- static answer dock
+- Pattern Library
+- summary screen
+- shop
+- mobile layout
+- desktop layout
+- game progression
+
+### Testing status
+
+- JavaScript syntax check passed.
+- Requires visual desktop and iPhone comparison against v26.1 original renderer before final lock.
+
+### Known watch points
+
+- Confirm mobile wick weight still reads clearly after the renderer cleanup.
+- Confirm dojis look intentional rather than too flat.
+- Confirm Hammer / Shooting Star / Doji remain visually obvious.
+
+---
+
 ## v26.1 · World 1 Generator Doctrine Engine
 
-Status: current test checkpoint
+Status: strong generator checkpoint / base for v26.1.1
 
 ### Changed
 
@@ -20,15 +115,22 @@ Status: current test checkpoint
 
 ### Testing status
 
-- Desktop was reported working after the v26 generator upload.
-- Full iPhone test still required.
-- Manual gameplay audit still required.
+- Desktop loads.
+- iPhone loads.
+- Start Run works.
+- Static answer dock works.
+- Active game layout feels good.
+- World 1 active answers are correct.
+- Pattern Library has been corrected.
+- Play Again works.
+- Timer / Streak / XP run as intended.
+- Repeats feel reduced.
+- No significant final-candle gaps observed.
+- Summary screen looks good on desktop.
 
 ### Known watch points
 
-- Confirm Bullish Engulfing / Bearish Engulfing remain active gameplay choices where expected.
-- Confirm Bullish Candle / Bearish Candle do not appear as active answers unless intentionally enabled.
-- Confirm World 1 patterns do not repeat 3–4 times in a row.
+- Continue human fairness testing of World 1 generator output.
 - Confirm doctrine-generated candles feel visually fair to a human tester, not just valid by code.
 
 ---
