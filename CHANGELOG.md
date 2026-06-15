@@ -1,5 +1,53 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.3 · Result Flow Stepper
+
+Status: current active iOS summary-flow polish / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_3_result_flow_stepper`.
+- Updated build badge to `v26.2.3 · Result Flow Stepper`.
+- Split the run-complete result into two steps:
+  - Score step: result title, `X/10`, comment, bonus, stats, and navigation.
+  - Review step: missed-reads coach carousel and review navigation.
+- Added `showResultStep()` for switching between score and review inside the result screen.
+- Hid the global Candle Quest header and XP/Shop wallet on the result screen.
+- Removed the numbered carousel dots under the coach carousel.
+- Preserved side arrows on desktop and swipe behaviour on iPhone.
+- Reduced the mobile `X/10` summary score size slightly to reduce cramped layout.
+
+### Preserved
+
+- v26.2.2 coach carousel visuals
+- missed-read grouping
+- v26.1.1 tiny candle renderer cleanup
+- v26.1 generator doctrine engine
+- active World 1 answer pool
+- scoring
+- XP
+- timer
+- static answer dock
+- Pattern Library
+- shop
+- mobile gameplay layout
+- desktop gameplay layout
+- game progression
+
+### Testing required
+
+- Desktop run with several missed patterns.
+- iPhone run with several missed patterns.
+- Confirm result screen opens on the score step first.
+- Confirm Review missed reads opens the coach carousel step.
+- Confirm Back to score works.
+- Confirm numbered dots are gone.
+- Confirm side arrows remain on desktop.
+- Confirm iPhone swipe remains smooth.
+- Confirm result page requires much less vertical scrolling on iOS.
+
+---
+
 ## v26.2.2 · Missed Reads Coach Carousel
 
 Status: current active visual coach-carousel upgrade / test candidate

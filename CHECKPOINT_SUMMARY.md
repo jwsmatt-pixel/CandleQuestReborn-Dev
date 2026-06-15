@@ -1,14 +1,14 @@
-# Candle Quest Reborn — v26.2.2 Checkpoint Summary
+# Candle Quest Reborn — v26.2.3 Checkpoint Summary
 
 ## Current build
 
-**v26.2.2 · Missed Reads Coach Carousel**  
-Build marker: `v26_2_2_missed_reads_coach_carousel`
+**v26.2.3 · Result Flow Stepper**  
+Build marker: `v26_2_3_result_flow_stepper`
 
 ## Base build
 
-**v26.2.1 · Visual Missed Reads Review**  
-Build marker: `v26_2_1_visual_missed_reads_review`
+**v26.2.2 · Missed Reads Coach Carousel**  
+Build marker: `v26_2_2_missed_reads_coach_carousel`
 
 ## Current status
 
@@ -16,7 +16,7 @@ Active development checkpoint.
 
 The project now has the clean v26 documentation/package foundation, the v26.1 generator doctrine engine, the v26.1.1 tiny candle renderer cleanup, and a more visual end-of-run review layer.
 
-v26.2.2 should be treated as the current visual coach-carousel test build until desktop and iPhone testing confirms the coach slides feel intuitive, swipeable, and compact enough for repeated runs.
+v26.2.3 should be treated as the current result-flow test build until desktop and iPhone testing confirms the two-step summary reduces vertical scroll while preserving the coach carousel learning value.
 
 ## Core design doctrine
 
@@ -49,32 +49,25 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.2.2
+## What changed in v26.2.3
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.2.2.
-- Preserved missed-read tracking and grouping from v26.2/v26.2.1.
-- Replaced the compact missed-read card grid with a swipeable coach carousel.
-- Each missed pattern type now appears as one larger visual coach slide.
-- Added generic chart-style visual panels for each World 1 active answer:
-  - Bullish Engulfing
-  - Bearish Engulfing
-  - Hammer
-  - Shooting Star
-  - Doji
-- Each slide includes:
-  - large visual pattern diagram
-  - correct pattern name
-  - miss count
-  - concise shape cue
-  - concise key level cue
-  - common wrong-choice summary where available
-- Added desktop arrow/dot navigation and iPhone horizontal swipe support.
-- Kept the feature focused on Shape + Location learning rather than text-heavy explanation.
+- Updated the build marker and build badge to v26.2.3.
+- Preserved the v26.2.2 coach carousel visuals and missed-read grouping.
+- Split the result screen into two steps:
+  - score step first
+  - missed-reads coach carousel second
+- Added `showResultStep()` for navigating between result steps.
+- Removed numbered carousel dots under the coach carousel.
+- Kept side arrows on desktop and horizontal swipe on iPhone.
+- Hid the global Candle Quest header and XP/Shop wallet on the result screen.
+- Reduced the mobile `X/10` score size slightly.
+- Kept the feature focused on Shape + Location learning while reducing vertical scroll on iOS.
 
 ### Preserved
 
+- v26.2.2 coach carousel
 - v26.2 missed-read tracking
 - v26.1.1 tiny candle renderer cleanup
 - v26.1 generator recipes

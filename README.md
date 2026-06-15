@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2.2 · Missed Reads Coach Carousel`  
-**Build marker:** `v26_2_2_missed_reads_coach_carousel`  
-**Base:** `v26.2.1 · Visual Missed Reads Review`  
-**Status:** Active development / World 1 coach-carousel upgrade
+**Current build:** `v26.2.3 · Result Flow Stepper`  
+**Build marker:** `v26_2_3_result_flow_stepper`  
+**Base:** `v26.2.2 · Missed Reads Coach Carousel`  
+**Status:** Active development / iOS summary-flow polish
 
 ---
 
@@ -76,6 +76,15 @@ Players learn by:
 - transparent setup-zone guidance
 - Quest Moment banner: `QUEST MOMENT · READ THE CHANNEL`
 - cleaned tiny-body/doji candle rendering from v26.1.1
+
+### v26.2.3 Result Flow Stepper
+
+- splits the run-complete result into two cleaner steps
+- Step 1 shows score, run tier, short comment, bonuses, and stats
+- Step 2 shows the missed-reads coach carousel
+- hides the global title/XP/shop header on the result screen to reduce iOS vertical scroll
+- removes the numbered carousel dots while keeping side arrows and iPhone swipe
+- slightly reduces the mobile `X/10` summary score size
 
 ### v26.2.2 Coach Carousel
 

@@ -1926,3 +1926,138 @@ body[data-skin="gold"] .definition-card{
   #result .coach-cue-list{grid-template-columns:1fr!important;}
   #result .coach-slide-top small{display:none!important;}
 }
+
+/* v26.2.3 — Result Flow Stepper
+   Keep the run-complete score and missed-read coach carousel as separate steps,
+   especially on iOS, so the summary no longer becomes one long vertical page. */
+body[data-screen="result"] .topbar{
+  display:none!important;
+}
+#result.screen.active{
+  padding-top:0!important;
+}
+#result .result-step{
+  display:none;
+}
+#result .result-step.active{
+  display:block;
+}
+#result[data-step="review"] .result-card > .eyebrow,
+#result[data-step="review"] #resultTitle,
+#result[data-step="review"] .result-stats{
+  display:none!important;
+}
+#result[data-step="review"] .result-card{
+  padding-top:18px!important;
+}
+.summary-step-actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin:14px 0 4px;
+}
+.summary-step-actions button{
+  border:0;
+  border-radius:18px;
+  padding:12px 16px;
+  font-weight:950;
+  cursor:pointer;
+}
+.review-back-row{
+  margin-top:10px;
+}
+#result .coach-carousel-dots{
+  display:none!important;
+}
+#result[data-step="review"] .result-card .hero-actions{
+  margin-top:10px!important;
+}
+@media(max-width:850px){
+  body[data-screen="result"] #app{
+    padding-top:10px!important;
+  }
+  #result.screen.active{
+    align-items:flex-start!important;
+  }
+  #result .result-card{
+    width:min(100%, 96vw)!important;
+    padding:12px!important;
+    border-radius:24px!important;
+  }
+  #result .result-card > .eyebrow{
+    margin-bottom:3px!important;
+    font-size:12px!important;
+  }
+  #result #resultTitle{
+    font-size:clamp(30px, 8vw, 42px)!important;
+    line-height:.93!important;
+    margin-bottom:4px!important;
+  }
+  #result .summary-correct{
+    font-size:clamp(34px, 11vw, 52px)!important;
+    line-height:.88!important;
+    margin:2px 0 0!important;
+  }
+  #result .summary-label{
+    font-size:11px!important;
+    letter-spacing:.12em!important;
+    margin-top:0!important;
+  }
+  #result .summary-comment{
+    font-size:clamp(18px, 4.8vw, 24px)!important;
+    line-height:1.08!important;
+    max-width:92%!important;
+    margin:8px auto!important;
+  }
+  #result .summary-bonus-row{
+    margin:7px 0 4px!important;
+  }
+  #result .summary-step-actions{
+    margin:10px 0 2px!important;
+  }
+  #result .result-stats{
+    gap:8px!important;
+    margin:10px 0!important;
+  }
+  #result .result-stats div{
+    min-height:58px!important;
+    padding:8px!important;
+    border-radius:16px!important;
+  }
+  #result .result-stats b{
+    font-size:clamp(23px, 6.5vw, 32px)!important;
+  }
+  #result .result-card .hero-actions{
+    margin-top:8px!important;
+    gap:8px!important;
+  }
+  #result .result-card .hero-actions button,
+  #result .summary-step-actions button{
+    padding:11px 14px!important;
+    border-radius:16px!important;
+  }
+  #result[data-step="review"] .missed-review{
+    margin:0 auto 6px!important;
+    max-width:94vw!important;
+  }
+  #result[data-step="review"] .missed-review-head{
+    margin-bottom:6px!important;
+  }
+  #result[data-step="review"] .coach-chart{
+    min-height:220px!important;
+  }
+  #result[data-step="review"] .coach-slide-copy h3{
+    font-size:clamp(26px, 7.5vw, 36px)!important;
+  }
+}
+@media(max-width:430px){
+  #result[data-step="review"] .coach-chart{
+    min-height:205px!important;
+  }
+  #result #resultTitle{
+    font-size:clamp(28px, 7.5vw, 38px)!important;
+  }
+  #result .summary-correct{
+    font-size:clamp(32px, 10.5vw, 48px)!important;
+  }
+}

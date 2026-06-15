@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_2_2_missed_reads_coach_carousel";
+const CANDLE_QUEST_BUILD = "v26_2_3_result_flow_stepper";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.2.2 · Missed Reads Coach Carousel"
+    b.textContent = "v26.2.3 · Result Flow Stepper"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -573,6 +573,16 @@ function scrollMissedCoachTo(index){
   track.children[index].scrollIntoView({behavior:"smooth", block:"nearest", inline:"center"});
 }
 
+function showResultStep(step="score"){
+  const result = $("result");
+  if(!result) return;
+  const cleanStep = step === "review" ? "review" : "score";
+  result.dataset.step = cleanStep;
+  result.querySelectorAll(".result-step").forEach(panel=>{
+    panel.classList.toggle("active", panel.dataset.stepPanel === cleanStep);
+  });
+}
+
 function renderMissedReadsReview(missedReads){
   const missed = Array.isArray(missedReads) ? missedReads : [];
   if(!missed.length){
@@ -611,9 +621,6 @@ function renderMissedReadsReview(missedReads){
           `).join("")}
         </div>
         <button class="coach-nav coach-nav--next" type="button" aria-label="Next missed read" onclick="scrollMissedCoach(1)">›</button>
-      </div>
-      <div class="coach-carousel-dots" aria-label="Missed read carousel shortcuts">
-        ${groups.map((g,i)=>`<button type="button" onclick="scrollMissedCoachTo(${i})" aria-label="Review ${escapeHTML(g.correct)}"><span>${i+1}</span></button>`).join("")}
       </div>
     </div>
   `;
@@ -783,17 +790,31 @@ function endRun(){
   const fastLine = (run.fastCount || 0) > 0 ? `<span class="summary-bonus">⚡ ${run.fastCount} fast reads · +${(run.fastCount || 0)*3} XP</span>` : "";
   const perfectLine = correct >= maxQ ? `<span class="summary-bonus perfect">✦ Perfect bonus +50 XP</span>` : "";
   const bonusRow = (fastLine || perfectLine) ? `<div class="summary-bonus-row">${fastLine}${perfectLine}</div>` : "";
+  const missedCount = (run.missedReads || []).length;
   const missedReview = renderMissedReadsReview(run.missedReads || []);
+  const reviewButton = missedCount > 0
+    ? `<button class="secondary result-review-btn" onclick="showResultStep('review')">Review missed reads</button>`
+    : `<button class="secondary result-review-btn" onclick="showResultStep('review')">View clean-run coach note</button>`;
+
   $("resultBody").innerHTML = `
-    <div class="summary-correct">${correct}/${maxQ}</div>
-    <div class="summary-label">correct reads</div>
-    <div class="summary-comment">${runComment}</div>
-    ${bonusRow}
-    ${missedReview}
+    <div class="result-step result-step-score active" data-step-panel="score">
+      <div class="summary-correct">${correct}/${maxQ}</div>
+      <div class="summary-label">correct reads</div>
+      <div class="summary-comment">${runComment}</div>
+      ${bonusRow}
+      <div class="summary-step-actions">${reviewButton}</div>
+    </div>
+    <div class="result-step result-step-review" data-step-panel="review">
+      ${missedReview}
+      <div class="summary-step-actions review-back-row">
+        <button class="secondary" onclick="showResultStep('score')">← Back to score</button>
+      </div>
+    </div>
   `;
 
   run=null;
   openScreen("result");
+  showResultStep("score");
 }
 
 
