@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_2_1_visual_missed_reads_review";
+const CANDLE_QUEST_BUILD = "v26_2_2_missed_reads_coach_carousel";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.2.1 · Visual Missed Reads Review"
+    b.textContent = "v26.2.2 · Missed Reads Coach Carousel"
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -523,24 +523,54 @@ function groupMissedReads(missedReads){
   }).sort((a,b)=>b.count-a.count || a.correct.localeCompare(b.correct));
 }
 
-function renderMiniPatternVisual(visual){
+
+function renderCoachPatternVisual(visual){
   const safeVisual = ["bullish-engulfing","bearish-engulfing","hammer","shooting-star","doji"].includes(visual) ? visual : "generic";
+  const levelText = {
+    "bullish-engulfing":"Range Low / support",
+    "bearish-engulfing":"Range High / resistance",
+    "hammer":"Range Low / support",
+    "shooting-star":"Range High / resistance",
+    "doji":"Channel Mean / key zone",
+    "generic":"Key level"
+  }[safeVisual] || "Key level";
+
   if(safeVisual === "bullish-engulfing" || safeVisual === "bearish-engulfing"){
     const bull = safeVisual === "bullish-engulfing";
     return `
-      <div class="missed-visual missed-visual--${safeVisual}" aria-hidden="true">
-        <span class="missed-level-line"></span>
-        <span class="mini-candle mini-candle--prior ${bull ? 'red' : 'green'}"><i class="wick"></i><i class="body"></i></span>
-        <span class="mini-candle mini-candle--engulf ${bull ? 'green' : 'red'}"><i class="wick"></i><i class="body"></i></span>
+      <div class="coach-chart coach-chart--${safeVisual}" aria-hidden="true">
+        <span class="coach-grid"></span>
+        <span class="coach-level coach-level--main"><i>${levelText}</i></span>
+        <span class="coach-candle coach-candle--prior ${bull ? 'red' : 'green'}"><i class="wick"></i><i class="body"></i></span>
+        <span class="coach-candle coach-candle--engulf ${bull ? 'green' : 'red'}"><i class="wick"></i><i class="body"></i></span>
+        <span class="coach-note coach-note--prior">prior ${bull ? 'weakness' : 'strength'}</span>
+        <span class="coach-note coach-note--engulf">body takes control</span>
       </div>
     `;
   }
+
   return `
-    <div class="missed-visual missed-visual--${safeVisual}" aria-hidden="true">
-      <span class="missed-level-line"></span>
-      <span class="mini-candle mini-candle--single ${safeVisual === 'shooting-star' ? 'red' : 'green'}"><i class="wick"></i><i class="body"></i></span>
+    <div class="coach-chart coach-chart--${safeVisual}" aria-hidden="true">
+      <span class="coach-grid"></span>
+      <span class="coach-level coach-level--main"><i>${levelText}</i></span>
+      <span class="coach-candle coach-candle--single ${safeVisual === 'shooting-star' ? 'red' : 'green'}"><i class="wick"></i><i class="body"></i></span>
+      <span class="coach-note coach-note--wick">${safeVisual === 'shooting-star' ? 'long upper wick' : safeVisual === 'hammer' ? 'long lower wick' : 'open ≈ close'}</span>
+      <span class="coach-note coach-note--body">${safeVisual === 'doji' ? 'indecision body' : safeVisual === 'shooting-star' ? 'body near lows' : 'body near top'}</span>
     </div>
   `;
+}
+
+function scrollMissedCoach(direction){
+  const track = $("missedCoachCarousel");
+  if(!track) return;
+  const amount = Math.max(240, track.clientWidth * 0.92);
+  track.scrollBy({left: direction * amount, behavior:"smooth"});
+}
+
+function scrollMissedCoachTo(index){
+  const track = $("missedCoachCarousel");
+  if(!track || !track.children[index]) return;
+  track.children[index].scrollIntoView({behavior:"smooth", block:"nearest", inline:"center"});
 }
 
 function renderMissedReadsReview(missedReads){
@@ -550,33 +580,45 @@ function renderMissedReadsReview(missedReads){
   }
   const groups = groupMissedReads(missed);
   return `
-    <div class="missed-review visual-review">
+    <div class="missed-review coach-carousel-review">
       <div class="missed-review-head">
-        <b>Review missed reads</b>
+        <div>
+          <b>Review missed reads</b>
+          <small>Swipe through each pattern cue</small>
+        </div>
         <span>${missed.length} ${missed.length === 1 ? "miss" : "misses"} · ${groups.length} ${groups.length === 1 ? "pattern" : "patterns"}</span>
       </div>
-      <div class="missed-coach-grid">
-        ${groups.map(g=>`
-          <article class="missed-coach-card">
-            ${renderMiniPatternVisual(g.visual)}
-            <div class="missed-coach-copy">
-              <div class="missed-coach-title">
-                <strong>${escapeHTML(g.correct)}</strong>
-                <small>${g.count > 1 ? `missed ×${g.count}` : "missed"}</small>
+      <div class="coach-carousel-shell">
+        <button class="coach-nav coach-nav--prev" type="button" aria-label="Previous missed read" onclick="scrollMissedCoach(-1)">‹</button>
+        <div class="missed-coach-carousel" id="missedCoachCarousel" tabindex="0" aria-label="Missed read coach carousel">
+          ${groups.map((g,i)=>`
+            <article class="missed-coach-slide">
+              <div class="coach-slide-top">
+                <span>${i+1}/${groups.length}</span>
+                <small>${g.count > 1 ? `missed ×${g.count}` : "missed once"}</small>
               </div>
-              <p>${escapeHTML(g.cue)}</p>
-              <div class="missed-cue-tags">
-                <span>Shape: ${escapeHTML(g.shape)}</span>
-                <span>Level: ${escapeHTML(g.level)}</span>
+              ${renderCoachPatternVisual(g.visual)}
+              <div class="coach-slide-copy">
+                <h3>${escapeHTML(g.correct)}</h3>
+                <p>${escapeHTML(g.cue)}</p>
+                <div class="coach-cue-list">
+                  <span><b>Shape</b>${escapeHTML(g.shape)}</span>
+                  <span><b>Level</b>${escapeHTML(g.level)}</span>
+                </div>
+                ${g.choices ? `<em>Confused with: ${escapeHTML(g.choices)}</em>` : ""}
               </div>
-              ${g.choices ? `<em>Confused with: ${escapeHTML(g.choices)}</em>` : ""}
-            </div>
-          </article>
-        `).join("")}
+            </article>
+          `).join("")}
+        </div>
+        <button class="coach-nav coach-nav--next" type="button" aria-label="Next missed read" onclick="scrollMissedCoach(1)">›</button>
+      </div>
+      <div class="coach-carousel-dots" aria-label="Missed read carousel shortcuts">
+        ${groups.map((g,i)=>`<button type="button" onclick="scrollMissedCoachTo(${i})" aria-label="Review ${escapeHTML(g.correct)}"><span>${i+1}</span></button>`).join("")}
       </div>
     </div>
   `;
 }
+
 
 function updateStreakHud(){
   const hud = document.querySelector(".game-hud");

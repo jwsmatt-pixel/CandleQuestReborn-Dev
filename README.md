@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2.1 · Visual Missed Reads Review`  
-**Build marker:** `v26_2_1_visual_missed_reads_review`  
-**Base:** `v26.2 · Missed Reads Review`  
-**Status:** Active development / World 1 visual coach upgrade
+**Current build:** `v26.2.2 · Missed Reads Coach Carousel`  
+**Build marker:** `v26_2_2_missed_reads_coach_carousel`  
+**Base:** `v26.2.1 · Visual Missed Reads Review`  
+**Status:** Active development / World 1 coach-carousel upgrade
 
 ---
 
@@ -62,7 +62,7 @@ Players learn by:
 - fast-read bonus
 - perfect-run bonus
 - run-complete summary tiers
-- end-of-run visual missed reads review
+- end-of-run missed-reads coach carousel
 - Pattern Library
 - basic cosmetic shop scaffold
 
@@ -76,6 +76,15 @@ Players learn by:
 - transparent setup-zone guidance
 - Quest Moment banner: `QUEST MOMENT · READ THE CHANNEL`
 - cleaned tiny-body/doji candle rendering from v26.1.1
+
+### v26.2.2 Coach Carousel
+
+- Missed reads are grouped by correct pattern.
+- The review now uses large swipeable coach slides instead of compact grid cards.
+- Each slide shows a generic TradingView-style visual cue for the missed pattern.
+- Each slide reinforces shape and location with concise labels.
+- iPhone users can swipe horizontally through missed patterns.
+- Desktop users can use arrows, dots, or horizontal scrolling.
 
 ### Current engine work
 
@@ -99,7 +108,7 @@ v26.1.1 builds on that by improving the **canvas renderer** so tiny candles, doj
 
 v26.2 added the first learning-review layer: wrong answers and timeouts are stored during the run and shown underneath the normal summary so the speedrun loop stays uninterrupted.
 
-v26.2.1 tightens that layer into **visual missed-read coach cards**. Instead of long written review cards, missed reads are grouped by correct pattern and shown as compact visual tiles with a simple shape cue and key level cue.
+v26.2.1 tightened that layer into compact visual missed-read coach cards. v26.2.2 then expands the review into a swipeable **Missed Reads Coach Carousel**, with larger chart-style visual slides that teach each missed pattern through Shape + Location cues.
 
 ---
 
@@ -165,21 +174,23 @@ v26.1 keeps Bullish/Bearish Engulfing as active gameplay patterns while using do
 
 ---
 
-## v26.2.1 focus
+## v26.2.2 focus
 
-v26.2.1 upgrades the missed-read review into a compact **Visual Missed Reads Review**.
+v26.2.2 upgrades the missed-read review into a swipeable **Missed Reads Coach Carousel**.
 
 Primary focus:
 
 - keep the active gameplay loop fast and uninterrupted
 - group missed reads by correct pattern
 - show all missed pattern types from the run
-- replace text-heavy review cards with visual pattern cue cards
-- include one simple shape cue and one key level cue
-- remove “review later” language until a persistent review/stat page exists
+- replace compact grid cards with larger coach slides
+- add generic chart-style visuals for each missed World 1 pattern
+- include one simple shape cue and one key level cue per slide
+- support iPhone horizontal swipe
+- support desktop arrows, dots, and horizontal scroll
 - preserve the v26.1.1 renderer, v26.1 generator, answer pool, XP, scoring, timer, static answer dock, Pattern Library, shop, mobile layout, and desktop layout
 
-This build should be tested on desktop and iPhone to confirm the summary feels more visual, compact, and intuitive.
+This build should be tested on desktop and iPhone to confirm the summary feels more visual, intuitive, and swipe-friendly without bloating the post-run flow.
 
 ---
 

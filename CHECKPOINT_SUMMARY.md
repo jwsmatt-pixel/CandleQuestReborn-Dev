@@ -1,14 +1,14 @@
-# Candle Quest Reborn — v26.2.1 Checkpoint Summary
+# Candle Quest Reborn — v26.2.2 Checkpoint Summary
 
 ## Current build
 
-**v26.2.1 · Visual Missed Reads Review**  
-Build marker: `v26_2_1_visual_missed_reads_review`
+**v26.2.2 · Missed Reads Coach Carousel**  
+Build marker: `v26_2_2_missed_reads_coach_carousel`
 
 ## Base build
 
-**v26.2 · Missed Reads Review**  
-Build marker: `v26_2_missed_reads_review`
+**v26.2.1 · Visual Missed Reads Review**  
+Build marker: `v26_2_1_visual_missed_reads_review`
 
 ## Current status
 
@@ -16,7 +16,7 @@ Active development checkpoint.
 
 The project now has the clean v26 documentation/package foundation, the v26.1 generator doctrine engine, the v26.1.1 tiny candle renderer cleanup, and a more visual end-of-run review layer.
 
-v26.2.1 should be treated as the current visual-coach test build until desktop and iPhone testing confirms the missed-read cards feel intuitive and compact.
+v26.2.2 should be treated as the current visual coach-carousel test build until desktop and iPhone testing confirms the coach slides feel intuitive, swipeable, and compact enough for repeated runs.
 
 ## Core design doctrine
 
@@ -49,30 +49,29 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.2.1
+## What changed in v26.2.2
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.2.1.
-- Preserved missed-read tracking from v26.2.
-- Replaced text-heavy missed-read cards with compact visual coach cards.
-- Missed reads are now grouped by correct pattern.
-- All missed pattern types from the run are shown instead of only the first three misses.
-- Removed `+ more missed reads to review later` because no persistent review page exists yet.
-- Added one generic visual cue card for each World 1 active answer:
+- Updated the build marker and build badge to v26.2.2.
+- Preserved missed-read tracking and grouping from v26.2/v26.2.1.
+- Replaced the compact missed-read card grid with a swipeable coach carousel.
+- Each missed pattern type now appears as one larger visual coach slide.
+- Added generic chart-style visual panels for each World 1 active answer:
   - Bullish Engulfing
   - Bearish Engulfing
   - Hammer
   - Shooting Star
   - Doji
-- Each card now includes:
-  - mini visual pattern cue
+- Each slide includes:
+  - large visual pattern diagram
   - correct pattern name
   - miss count
-  - simple shape cue
-  - simple key level cue
+  - concise shape cue
+  - concise key level cue
   - common wrong-choice summary where available
-- Updated mobile/desktop CSS for the visual coach cards.
+- Added desktop arrow/dot navigation and iPhone horizontal swipe support.
+- Kept the feature focused on Shape + Location learning rather than text-heavy explanation.
 
 ### Preserved
 
@@ -110,7 +109,7 @@ Current rule:
 Pattern shape + key level + one cue
 ```
 
-Comparative coach cards are intentionally deferred. For now, each missed pattern receives one generic visual cue card. Later builds can compare common confusion pairs such as:
+Comparative coach cards are intentionally deferred. For now, each missed pattern receives one generic visual coach slide in the carousel. Later builds can compare common confusion pairs such as:
 
 - Hammer vs Bullish Engulfing
 - Shooting Star vs Bearish Engulfing
@@ -133,7 +132,7 @@ Then check:
 4. Missed reads group by pattern
 5. All missed pattern types appear
 6. No `review later` language appears
-7. Visual cue cards are readable on mobile
+7. Coach carousel slides are readable on mobile
 8. Clean/perfect run summary stays uncluttered
 9. Tiny candle/doji rendering still looks clean
 10. Hammer / Shooting Star / Doji readability
@@ -145,9 +144,9 @@ Then check:
 
 ## Known watch points
 
-- Visual review cards may need tighter mobile spacing after iPhone testing.
+- Coach carousel slides may need tighter mobile spacing after iPhone testing.
 - The visual icons are generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v26.2.1.
+- Comparative coach cards are a future feature, not included in v26.2.2.
 - The larger market-rhythm issue remains separate: background candles can still feel too flat or low-volatility.
 
 ## Next intended work

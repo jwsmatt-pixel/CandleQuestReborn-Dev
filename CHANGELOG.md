@@ -1,5 +1,50 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.2 · Missed Reads Coach Carousel
+
+Status: current active visual coach-carousel upgrade / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_2_missed_reads_coach_carousel`.
+- Updated build badge to `v26.2.2 · Missed Reads Coach Carousel`.
+- Replaced the compact missed-read card grid with a swipeable coach carousel.
+- Each missed pattern type now appears as a larger visual coach slide.
+- Added generic TradingView-style chart panels for missed World 1 patterns.
+- Added arrows and dot navigation for desktop.
+- Optimised the carousel for horizontal swipe on iPhone.
+- Kept the review grouped by correct pattern and preserved common wrong-choice summaries.
+- Reinforced the learning ladder by presenting each miss as Shape + Location, not a text-heavy report.
+
+### Preserved
+
+- v26.2.1 missed-read grouping
+- v26.2 missed-read tracking
+- v26.1.1 tiny candle renderer cleanup
+- v26.1 World 1 generator doctrine engine
+- active World 1 answer pool
+- scoring
+- XP
+- timer
+- static answer dock
+- Pattern Library
+- shop
+- mobile gameplay layout
+- desktop gameplay layout
+- game progression
+
+### Testing required
+
+- Desktop full run with several missed patterns.
+- iPhone full run with several missed patterns.
+- Confirm carousel swipes horizontally on iPhone.
+- Confirm arrows and dots work on desktop.
+- Confirm Play Again and Lesson Map remain easy to reach.
+- Confirm clean-run message still appears when no reads are missed.
+- Confirm timer / XP / Streak / Summary still work.
+
+---
+
 ## v26.2.1 · Visual Missed Reads Review
 
 Status: current active visual coach upgrade / test candidate
