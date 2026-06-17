@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2.8 - Mobile Result Header Lock`  
-**Build marker:** `v26_2_8_mobile_result_header_lock`  
+**Current build:** `v26.2.9 - Mobile Result Header Scale`  
+**Build marker:** `v26_2_9_mobile_result_header_scale`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / iOS result-screen header lock
+**Status:** Active development / iOS result-screen header scale
 
 ---
 

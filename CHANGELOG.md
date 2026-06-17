@@ -1,5 +1,50 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.9 - Mobile Result Header Scale
+
+Status: current active iOS result-screen header scale / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_9_mobile_result_header_scale`.
+- Updated build badge to `v26.2.9 - Mobile Result Header Scale`.
+- Slightly increased the mobile score-summary run title size while preserving the v26.2.8 centered header alignment and margins.
+- Slightly increased the mobile `X/10` score size so it reads as the main result moment again.
+- Increased the mobile feedback sentence size and line-height for a more confident read.
+- Nudged the mobile `RUN COMPLETE` and `CORRECT READS` labels up slightly while keeping them secondary.
+
+### Preserved
+
+- v26.2.8 mobile result header alignment and spacing structure
+- mobile result card vertical placement
+- stat cards
+- Play Again, Lesson Map, and Review missed reads positioning
+- coach overlay and carousel content
+- gameplay
+- scoring
+- XP
+- timer
+- generator
+- active World 1 answer pool
+- Pattern Library
+- missed-read tracking data
+- removed numbered carousel pagination
+- hidden homepage title/XP/shop header on the result screen
+
+### Testing required
+
+- iPhone full run to the score summary.
+- Confirm `RUN COMPLETE`, run title, `X/10`, `CORRECT READS`, and the feedback sentence stay centered and balanced.
+- Confirm the run title and `X/10` feel stronger without moving the result card.
+- Confirm the feedback sentence is readable and not cramped.
+- Confirm Review missed reads opens the bottom-sheet coach overlay and Back to score dismisses it.
+- Confirm coach cards still swipe horizontally on iPhone.
+- Confirm Play Again, Lesson Map, and Review missed reads remain visible and tappable.
+- Desktop full run with missed reads to confirm the result screen and carousel arrows remain acceptable.
+- Homepage check to confirm Candle Quest title, XP, and Shop remain visible outside the result screen.
+
+---
+
 ## v26.2.8 - Mobile Result Header Lock
 
 Status: current active iOS result-screen header lock / test candidate

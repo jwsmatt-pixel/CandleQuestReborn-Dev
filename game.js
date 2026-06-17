@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_2_8_mobile_result_header_lock";
+const CANDLE_QUEST_BUILD = "v26_2_9_mobile_result_header_scale";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.2.8 - Mobile Result Header Lock";
+    b.textContent = "v26.2.9 - Mobile Result Header Scale";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
