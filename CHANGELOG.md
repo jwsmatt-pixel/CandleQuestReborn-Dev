@@ -1,5 +1,41 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.5 · Result Flow QA Lock
+
+Status: current active result-flow QA lock / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_5_result_flow_qa_lock`.
+- Updated build badge to `v26.2.5 · Result Flow QA Lock`.
+- Added a result-flow CSS lock layer to keep score/review result steps separated.
+- Reinforced desktop coach carousel arrows and mobile horizontal swipe behaviour.
+
+### Preserved
+
+- gameplay
+- scoring
+- XP
+- timer
+- generator
+- active World 1 answer pool
+- Pattern Library
+- v26.2.3 result stepper
+- v26.2.4 mobile result polish
+- desktop carousel arrows
+- mobile swipe behaviour
+
+### Testing required
+
+- Desktop full run with missed reads.
+- Confirm Review missed reads opens the carousel step.
+- Confirm desktop carousel arrows remain visible and scroll slides.
+- iPhone full run with missed reads.
+- Confirm mobile swipe remains smooth and arrows stay hidden.
+- Confirm Play Again and Lesson Map still work from the score step.
+
+---
+
 ## v26.2.4 · Mobile Result Polish
 
 Status: current active iOS result-screen polish / test candidate

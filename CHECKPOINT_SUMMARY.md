@@ -1,14 +1,14 @@
-# Candle Quest Reborn — v26.2.4 Checkpoint Summary
+# Candle Quest Reborn — v26.2.5 Checkpoint Summary
 
 ## Current build
 
-**v26.2.4 · Mobile Result Polish**  
-Build marker: `v26_2_4_mobile_result_polish`
+**v26.2.5 · Result Flow QA Lock**  
+Build marker: `v26_2_5_result_flow_qa_lock`
 
 ## Base build
 
-**v26.2.3 · Result Flow Stepper**  
-Build marker: `v26_2_3_result_flow_stepper`
+**v26.2.4 · Mobile Result Polish**  
+Build marker: `v26_2_4_mobile_result_polish`
 
 ## Current status
 
@@ -16,7 +16,7 @@ Active development checkpoint.
 
 The project now has the clean v26 documentation/package foundation, the v26.1 generator doctrine engine, the v26.1.1 tiny candle renderer cleanup, and a more visual end-of-run review layer.
 
-v26.2.4 should be treated as the current iOS result-screen polish build. It preserves the v26.2.3 two-step summary and coach carousel, while reducing the oversized mobile `X/10` score and tightening the score-step spacing.
+v26.2.5 should be treated as the current result-flow QA lock build. It preserves the v26.2.3 two-step summary, the v26.2.4 mobile result polish, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -49,16 +49,16 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.2.4
+## What changed in v26.2.5
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.2.4.
-- Preserved the v26.2.3 result-flow stepper.
-- Further reduced the mobile `X/10` score size.
-- Tightened the mobile result title, correct-reads label, summary comment, bonus pill, stat cards, and score-step spacing.
-- Left the coach carousel untouched.
-- Kept the feature focused on a clean first result screen plus optional visual review.
+- Updated the build marker and build badge to v26.2.5.
+- Added a result-flow CSS lock layer.
+- Kept the score and review result steps explicitly separated.
+- Reinforced desktop coach carousel arrows.
+- Reinforced mobile horizontal swipe behaviour.
+- Left gameplay, scoring, XP, timer, generator, answer pool, and library content untouched.
 
 ### Preserved
 

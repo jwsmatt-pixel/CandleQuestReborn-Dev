@@ -2127,3 +2127,31 @@ body[data-screen="result"] .topbar{
     font-size:clamp(15px, 4vw, 19px)!important;
   }
 }
+
+/* v26.2.5 - Result Flow QA Lock
+   Locks the v26.2.3/v26.2.4 result flow polish without changing gameplay or carousel content. */
+#result[data-step="score"] .result-step-review,
+#result[data-step="review"] .result-step-score{
+  display:none!important;
+}
+#result[data-step="review"] .coach-carousel-shell{
+  align-items:stretch;
+}
+#result[data-step="review"] .missed-coach-carousel{
+  overscroll-behavior-x:contain;
+}
+@media(min-width:851px){
+  #result[data-step="review"] .coach-nav{
+    display:block!important;
+  }
+}
+@media(max-width:850px){
+  #result[data-step="review"] .coach-nav{
+    display:none!important;
+  }
+  #result[data-step="review"] .missed-coach-carousel{
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-x pan-y;
+  }
+}
