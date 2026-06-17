@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2.4 · Mobile Result Polish`  
-**Build marker:** `v26_2_4_mobile_result_polish`  
+**Current build:** `v26.2.7 - Mobile Result Coach Overlay`  
+**Build marker:** `v26_2_7_mobile_result_coach_overlay`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / iOS result-screen polish
+**Status:** Active development / iOS result-screen coach overlay
 
 ---
 

@@ -1,22 +1,20 @@
-# Candle Quest Reborn — v26.2.6 Checkpoint Summary
+# Candle Quest Reborn - v26.2.7 Checkpoint Summary
 
 ## Current build
 
-**v26.2.6 · Mobile Result Vertical Balance**  
-Build marker: `v26_2_6_mobile_result_vertical_balance`
+**v26.2.7 - Mobile Result Coach Overlay**
+Build marker: `v26_2_7_mobile_result_coach_overlay`
 
 ## Base build
 
-**v26.2.5 · Result Flow QA Lock**  
-Build marker: `v26_2_5_result_flow_qa_lock`
+**v26.2.6 - Mobile Result Vertical Balance**
+Build marker: `v26_2_6_mobile_result_vertical_balance`
 
 ## Current status
 
 Active development checkpoint.
 
-The project now has the clean v26 documentation/package foundation, the v26.1 generator doctrine engine, the v26.1.1 tiny candle renderer cleanup, and a more visual end-of-run review layer.
-
-v26.2.6 should be treated as the current mobile result vertical-balance build. It preserves the v26.2.3 two-step summary, the v26.2.4 mobile result polish, the v26.2.5 result-flow lock, desktop carousel arrows, and mobile swipe behaviour.
+v26.2.7 should be treated as the current mobile result coach-overlay build. It preserves the v26.2.6 locked mobile summary typography, the v26.2.5 result-flow QA lock on desktop, the v26.2.2 coach carousel content, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -25,7 +23,7 @@ Candle Quest should not teach players to memorise chart shapes alone. It should 
 Master learning ladder:
 
 ```text
-Shape → Location → Context → Quality → Risk → Execution
+Shape -> Location -> Context -> Quality -> Risk -> Execution
 ```
 
 World 1 starts with shape recognition. Future worlds should add one decision layer at a time.
@@ -49,21 +47,22 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.2.6
+## What changed in v26.2.7
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.2.6.
-- Added a mobile-only result score-step vertical balance layer.
-- Kept the v26.2.5 result-flow CSS lock in place.
-- Used more iPhone viewport height for the score card without shrinking the title, score, or comment text.
-- Moved the mobile score-step stat cards and Play Again / Lesson Map buttons lower.
+- Updated the build marker and build badge to v26.2.7.
+- Rebalanced the mobile result score card so the score summary sits closer to the middle of the iPhone viewport.
+- Kept the existing score, title, and comment font sizes from the prior mobile result polish.
+- Changed the mobile missed-reads review from a separate full result step into a bottom-sheet overlay layered over the score summary.
+- Kept desktop on the existing separate review step, with side arrows preserved.
+- Kept the existing coach carousel markup, cards, content, grouping, and swipe behaviour.
 - Left gameplay, scoring, XP, timer, generator, answer pool, and library content untouched.
 
 ### Preserved
 
-- v26.2.2 coach carousel
-- v26.2.5 result-flow lock
+- v26.2.2 coach carousel content
+- v26.2.5 desktop result-flow lock
 - v26.2 missed-read tracking
 - v26.1.1 tiny candle renderer cleanup
 - v26.1 generator recipes
@@ -90,9 +89,15 @@ Does this feature move the player from recognising shapes toward reading market 
 
 ## Current review philosophy
 
-The review screen should be a visual coach screen, not a literary review.
+The review should feel like coaching attached to the score page, not a disconnected second result window.
 
 Current rule:
+
+```text
+Score summary remains the base screen; missed-read coaching opens as a dismissible mobile overlay.
+```
+
+Coach slide content remains:
 
 ```text
 Pattern shape + key level + one cue
@@ -110,32 +115,35 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 Use GitHub Pages with:
 
 ```text
-?fresh=2621
+?fresh=2627
 ```
 
 Then check:
 
-1. Desktop full run with multiple wrong answers
-2. iPhone full run with multiple wrong answers
-3. Timeout behaviour records a missed read
-4. Missed reads group by pattern
-5. All missed pattern types appear
-6. No `review later` language appears
-7. Coach carousel slides are readable on mobile
-8. Clean/perfect run summary stays uncluttered
-9. Tiny candle/doji rendering still looks clean
-10. Hammer / Shooting Star / Doji readability
-11. Bullish/Bearish Engulfing readability
-12. Pattern answer labels remain correct
-13. Repetition/diversity still feels controlled
-14. Pattern Library opens
-15. Add to Home Screen / PWA behaviour remains unchanged
+1. Desktop app loads
+2. iPhone/mobile app loads
+3. Start Run works
+4. Complete a run with at least one missed read
+5. Mobile result lands on the score summary as the main screen
+6. Score/title/comment sizes remain unchanged from v26.2.6
+7. Score summary feels centred and balanced on iPhone
+8. Review missed reads opens the coach carousel as a bottom-sheet overlay
+9. Coach overlay can be dismissed back to score summary
+10. Coach carousel still swipes on iPhone
+11. Play Again remains tappable
+12. Lesson Map remains tappable
+13. Desktop result flow remains readable
+14. Desktop carousel arrows still work
+15. No numbered pagination appears
+16. Homepage still shows Candle Quest title, XP, and Shop
+17. Result screen still hides homepage title, XP, and Shop
+18. Gameplay/scoring/timer/generator remain unchanged
 
 ## Known watch points
 
-- Coach carousel slides may need tighter mobile spacing after iPhone testing.
-- The visual icons are generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v26.2.2.
+- The bottom-sheet height may still need device-specific tuning after real iPhone testing.
+- Coach carousel slides remain generic teaching cues, not exact replays of missed candles.
+- Comparative coach cards are a future feature, not included in v26.2.7.
 - The larger market-rhythm issue remains separate: background candles can still feel too flat or low-volatility.
 
 ## Next intended work
@@ -143,9 +151,9 @@ Then check:
 Recommended sequence:
 
 ```text
-v26.3 · Natural Candle Rhythm Pass
-v26.4 · Comparative Coach Cards / Confusion Pair Tracking
-v26.5 · Engulfing Doctrine Engine
+v26.3 - Natural Candle Rhythm Pass
+v26.4 - Comparative Coach Cards / Confusion Pair Tracking
+v26.5 - Engulfing Doctrine Engine
 ```
 
 Do not combine market rhythm, comparative cards, and engulfing doctrine into one patch.

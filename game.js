@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_2_6_mobile_result_vertical_balance";
+const CANDLE_QUEST_BUILD = "v26_2_7_mobile_result_coach_overlay";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.2.6 · Mobile Result Vertical Balance"
+    b.textContent = "v26.2.7 - Mobile Result Coach Overlay";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -577,9 +577,15 @@ function showResultStep(step="score"){
   const result = $("result");
   if(!result) return;
   const cleanStep = step === "review" ? "review" : "score";
-  result.dataset.step = cleanStep;
+  const useMobileOverlay = isMobile();
+  result.dataset.review = useMobileOverlay && cleanStep === "review" ? "open" : "closed";
+  result.dataset.step = useMobileOverlay ? "score" : cleanStep;
   result.querySelectorAll(".result-step").forEach(panel=>{
-    panel.classList.toggle("active", panel.dataset.stepPanel === cleanStep);
+    const panelStep = panel.dataset.stepPanel;
+    const active = useMobileOverlay
+      ? (panelStep === "score" || (cleanStep === "review" && panelStep === "review"))
+      : panelStep === cleanStep;
+    panel.classList.toggle("active", active);
   });
 }
 
@@ -807,7 +813,7 @@ function endRun(){
     <div class="result-step result-step-review" data-step-panel="review">
       ${missedReview}
       <div class="summary-step-actions review-back-row">
-        <button class="secondary" onclick="showResultStep('score')">← Back to score</button>
+        <button class="secondary result-review-close" onclick="showResultStep('score')">Back to score</button>
       </div>
     </div>
   `;

@@ -1,5 +1,44 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.7 - Mobile Result Coach Overlay
+
+Status: current active iOS result-screen coach overlay / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_7_mobile_result_coach_overlay`.
+- Updated build badge to `v26.2.7 - Mobile Result Coach Overlay`.
+- Rebalanced the mobile score summary so the run-complete content sits nearer the middle of the iPhone result card without shrinking the locked title, score, or comment sizes.
+- Changed mobile Review missed reads behavior from a separate result step into a bottom-sheet coach overlay layered over the score summary.
+- Added a dismiss path back to the score summary while keeping Play Again and Lesson Map visible on the base result screen.
+
+### Preserved
+
+- gameplay
+- scoring
+- XP
+- timer
+- generator
+- active World 1 answer pool
+- Pattern Library
+- missed-read tracking data
+- existing coach carousel cards/content
+- mobile carousel swipe behaviour
+- desktop result step and carousel arrow behaviour
+- hidden homepage title/XP/shop header on the result screen
+- removed numbered carousel pagination
+
+### Testing required
+
+- iPhone full run with at least one missed read.
+- Confirm the result lands on the score summary first.
+- Confirm Review missed reads opens as a bottom-sheet overlay and Back to score dismisses it.
+- Confirm coach cards still swipe horizontally on iPhone.
+- Confirm Play Again and Lesson Map remain visible and tappable after dismissing the overlay.
+- Desktop full run with missed reads to confirm the carousel step and side arrows still work.
+- Homepage check to confirm Candle Quest title, XP, and Shop remain visible outside the result screen.
+
+---
 ## v26.2.6 · Mobile Result Vertical Balance
 
 Status: current active iOS result-screen vertical balance / test candidate
