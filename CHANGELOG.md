@@ -1,5 +1,47 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.8 - Mobile Result Header Lock
+
+Status: current active iOS result-screen header lock / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_8_mobile_result_header_lock`.
+- Updated build badge to `v26.2.8 - Mobile Result Header Lock`.
+- Added one mobile-only score-header contract for `RUN COMPLETE`, run title, `X/10`, `CORRECT READS`, and the feedback sentence.
+- Improved mobile result-header spacing with explicit line-height, margins, centered alignment, and a readable feedback sentence width.
+- Neutralized the v26.2.4 score-step title/score/comment sizing rules so they no longer compete with the new v26.2.8 header lock.
+
+### Preserved
+
+- gameplay
+- scoring
+- XP
+- timer
+- generator
+- active World 1 answer pool
+- Pattern Library
+- missed-read tracking data
+- existing coach carousel cards/content
+- mobile coach overlay and swipe behaviour
+- desktop result layout and carousel arrow behaviour
+- hidden homepage title/XP/shop header on the result screen
+- removed numbered carousel pagination
+- v26.2.7 mobile result card vertical balance
+
+### Testing required
+
+- iPhone full run to the score summary.
+- Confirm `RUN COMPLETE`, run title, `X/10`, `CORRECT READS`, and the feedback sentence feel evenly spaced.
+- Confirm the feedback sentence wraps readably and does not feel squeezed.
+- Confirm Review missed reads opens the bottom-sheet coach overlay and Back to score dismisses it.
+- Confirm coach cards still swipe horizontally on iPhone.
+- Confirm Play Again, Lesson Map, and Review missed reads remain visible and tappable.
+- Desktop full run with missed reads to confirm the result screen and carousel arrows remain acceptable.
+- Homepage check to confirm Candle Quest title, XP, and Shop remain visible outside the result screen.
+
+---
+
 ## v26.2.7 - Mobile Result Coach Overlay
 
 Status: current active iOS result-screen coach overlay / test candidate

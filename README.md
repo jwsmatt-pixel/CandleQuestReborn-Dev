@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2.7 - Mobile Result Coach Overlay`  
-**Build marker:** `v26_2_7_mobile_result_coach_overlay`  
+**Current build:** `v26.2.8 - Mobile Result Header Lock`  
+**Build marker:** `v26_2_8_mobile_result_header_lock`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / iOS result-screen coach overlay
+**Status:** Active development / iOS result-screen header lock
 
 ---
 
