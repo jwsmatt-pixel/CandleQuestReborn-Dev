@@ -2155,3 +2155,43 @@ body[data-screen="result"] .topbar{
     touch-action:pan-x pan-y;
   }
 }
+
+/* v26.2.6 - Mobile Result Vertical Balance
+   Use more of the iPhone score-step height without shrinking the locked summary type. */
+@media(max-width:850px){
+  body[data-screen="result"] #app{
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+  }
+  #result.screen.active{
+    flex:1;
+    display:flex!important;
+    align-items:stretch!important;
+  }
+  #result[data-step="score"] .result-card{
+    min-height:calc(100dvh - 34px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+  }
+  #result[data-step="score"] #resultBody{
+    flex:0 0 auto;
+  }
+  #result[data-step="score"] .result-stats{
+    margin-top:auto!important;
+    margin-bottom:12px!important;
+  }
+  #result[data-step="score"] .result-card .hero-actions{
+    margin-top:0!important;
+    padding-bottom:2px;
+  }
+}
+@media(max-width:430px){
+  #result[data-step="score"] .result-card{
+    min-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+  }
+  #result[data-step="score"] .result-stats{
+    margin-bottom:10px!important;
+  }
+}

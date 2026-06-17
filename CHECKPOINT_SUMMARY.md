@@ -1,14 +1,14 @@
-# Candle Quest Reborn — v26.2.5 Checkpoint Summary
+# Candle Quest Reborn — v26.2.6 Checkpoint Summary
 
 ## Current build
 
-**v26.2.5 · Result Flow QA Lock**  
-Build marker: `v26_2_5_result_flow_qa_lock`
+**v26.2.6 · Mobile Result Vertical Balance**  
+Build marker: `v26_2_6_mobile_result_vertical_balance`
 
 ## Base build
 
-**v26.2.4 · Mobile Result Polish**  
-Build marker: `v26_2_4_mobile_result_polish`
+**v26.2.5 · Result Flow QA Lock**  
+Build marker: `v26_2_5_result_flow_qa_lock`
 
 ## Current status
 
@@ -16,7 +16,7 @@ Active development checkpoint.
 
 The project now has the clean v26 documentation/package foundation, the v26.1 generator doctrine engine, the v26.1.1 tiny candle renderer cleanup, and a more visual end-of-run review layer.
 
-v26.2.5 should be treated as the current result-flow QA lock build. It preserves the v26.2.3 two-step summary, the v26.2.4 mobile result polish, desktop carousel arrows, and mobile swipe behaviour.
+v26.2.6 should be treated as the current mobile result vertical-balance build. It preserves the v26.2.3 two-step summary, the v26.2.4 mobile result polish, the v26.2.5 result-flow lock, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -49,20 +49,21 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.2.5
+## What changed in v26.2.6
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.2.5.
-- Added a result-flow CSS lock layer.
-- Kept the score and review result steps explicitly separated.
-- Reinforced desktop coach carousel arrows.
-- Reinforced mobile horizontal swipe behaviour.
+- Updated the build marker and build badge to v26.2.6.
+- Added a mobile-only result score-step vertical balance layer.
+- Kept the v26.2.5 result-flow CSS lock in place.
+- Used more iPhone viewport height for the score card without shrinking the title, score, or comment text.
+- Moved the mobile score-step stat cards and Play Again / Lesson Map buttons lower.
 - Left gameplay, scoring, XP, timer, generator, answer pool, and library content untouched.
 
 ### Preserved
 
 - v26.2.2 coach carousel
+- v26.2.5 result-flow lock
 - v26.2 missed-read tracking
 - v26.1.1 tiny candle renderer cleanup
 - v26.1 generator recipes

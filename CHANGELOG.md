@@ -1,5 +1,41 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.6 · Mobile Result Vertical Balance
+
+Status: current active iOS result-screen vertical balance / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_6_mobile_result_vertical_balance`.
+- Updated build badge to `v26.2.6 · Mobile Result Vertical Balance`.
+- Added a mobile-only score-step balance layer so the result card uses more of the iPhone viewport height.
+- Moved the mobile score-step stat cards and Play Again / Lesson Map buttons lower without reducing the locked title, score, or comment type sizes.
+
+### Preserved
+
+- gameplay
+- scoring
+- XP
+- timer
+- generator
+- active World 1 answer pool
+- Pattern Library
+- v26.2.3 two-step result flow
+- Review missed reads button
+- missed-reads coach carousel layout
+- mobile carousel swipe behaviour
+- desktop result layout
+
+### Testing required
+
+- iPhone full run to the score screen.
+- Confirm the score screen still fits without awkward scrolling.
+- Confirm stat cards and Play Again / Lesson Map sit lower and reduce bottom dead space.
+- Confirm Review missed reads opens the carousel and Back to score returns correctly.
+- Desktop run-complete check to confirm the result screen remains acceptable.
+
+---
+
 ## v26.2.5 · Result Flow QA Lock
 
 Status: current active result-flow QA lock / test candidate
