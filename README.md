@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2.12 - Mobile Result Hero Parity`  
-**Build marker:** `v26_2_12_mobile_result_hero_parity`  
+**Current build:** `v26.3.0 - Chart Viewport Unification`  
+**Build marker:** `v26_3_0_chart_viewport_unification`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / iOS result-screen hero parity
+**Status:** Active development / chart viewport consistency patch
 
 ---
 
@@ -267,11 +267,11 @@ Pattern → Memorisation
 Suggested next sequence:
 
 ```text
-v26.3 · Natural Candle Rhythm Pass
-v26.4 · Engulfing Doctrine Engine
+v26.4 · Natural Candle Rhythm Pass
+v26.5 · Engulfing Doctrine Engine
 ```
 
-The next larger quality issue is that background candle sequences can still feel too flat or low-volatility. That should be addressed separately from this v26.2 learning-review patch.
+The next larger quality issue is that background candle sequences can still feel too flat or low-volatility. That should be addressed separately from this v26.3 viewport consistency patch.
 
 ---
 

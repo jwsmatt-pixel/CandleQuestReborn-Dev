@@ -1,5 +1,35 @@
 # Candle Quest Reborn — Changelog
 
+## v26.3.0 - Chart Viewport Unification
+
+Status: current active chart viewport consistency patch / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_3_0_chart_viewport_unification`.
+- Updated build badge to `v26.3.0 - Chart Viewport Unification`.
+- Capped the active desktop gameplay chart viewport to a compact recent-candle slice instead of rendering the full retained desktop candle buffer.
+- Gave desktop the same compact stage-span philosophy used by the mobile chart so full-width desktop no longer stretches back into the older wide-chart feel.
+- Kept the chart anchored near the focus zone while preserving readable candle spacing and the current v26.1.1 candle render cleanup.
+
+### Preserved
+
+- mobile chart behaviour and answer dock layout
+- Quest Moment timing and replay behaviour
+- setup zone and Quest zone highlight behaviour
+- Range High, Channel Mean, and Range Low visibility
+- result screen and coach overlay behaviour
+- gameplay, scoring, XP, timer, generator, answer pool, Pattern Library, and missed-read tracking data
+
+### Testing required
+
+- Desktop full-width run: confirm the active chart no longer shows a much larger number of concurrent candles than mobile or desktop half-width.
+- Desktop half-width run: confirm the chart still feels compact, centered, and readable.
+- iPhone/mobile run: confirm the existing mobile chart framing, answer dock, Quest Moment, and summary flow are unchanged.
+- Confirm Range High, Channel Mean, Range Low, setup zone, Quest zone highlight, timer, run completion, result summary, and Review missed reads still work.
+
+---
+
 ## v26.2.12 - Mobile Result Hero Parity
 
 Status: current active iOS result-screen hero parity / test candidate

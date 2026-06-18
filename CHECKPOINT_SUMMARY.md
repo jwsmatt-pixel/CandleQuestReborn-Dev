@@ -1,20 +1,20 @@
-# Candle Quest Reborn - v26.2.12 Checkpoint Summary
+# Candle Quest Reborn - v26.3.0 Checkpoint Summary
 
 ## Current build
 
-**v26.2.12 - Mobile Result Hero Parity**
-Build marker: `v26_2_12_mobile_result_hero_parity`
+**v26.3.0 - Chart Viewport Unification**
+Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Base build
 
-**v26.2.11 - Mobile Result Hero Header**
-Build marker: `v26_2_11_mobile_result_hero_header`
+**v26.2.12 - Mobile Result Hero Parity**
+Build marker: `v26_2_12_mobile_result_hero_parity`
 
 ## Current status
 
 Active development checkpoint.
 
-v26.2.12 should be treated as the current mobile result hero-parity build. It preserves the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, the v26.2.6 vertical balance, the v26.2.5 result-flow QA lock on desktop, the v26.2.2 coach carousel content, desktop carousel arrows, and mobile swipe behaviour.
+v26.3.0 should be treated as the current chart viewport unification build. It preserves the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, the v26.2.6 vertical balance, the v26.2.5 result-flow QA lock on desktop, the v26.2.2 coach carousel content, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,17 +47,17 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.2.12
+## What changed in v26.3.0
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.2.12.
-- Tuned only the mobile score-summary hero rhythm to match the cleaner desktop half-width result view more closely.
-- Reduced RUN COMPLETE and CORRECT READS into intentional uppercase labels while keeping them readable.
-- Kept the X/10 score strong and central with tighter pairing to CORRECT READS.
-- Improved spacing around the run title, score, label, feedback sentence, fast-read bonus pill, and Review missed reads button.
-- Narrowed the mobile feedback sentence and adjusted line-height for cleaner wrapping.
-- Preserved the v26.2.11 score-header structure, centered alignment, result card placement, and score-summary flow.
+- Updated the build marker and build badge to v26.3.0.
+- Capped the active desktop gameplay chart viewport to a compact recent-candle slice.
+- Bypassed the old wide-desktop behaviour where the renderer used the full retained desktop candle buffer.
+- Gave desktop the same compact stage-span philosophy as mobile so full-width desktop stays close to the iOS and half-width chart read.
+- Kept desktop candles readable and anchored near the focus zone without changing the v26.1.1 candle renderer cleanup.
+- Preserved Range High, Channel Mean, Range Low, setup zone, Quest zone highlight, answer dock, Quest Moment timing, and replay behaviour.
+- Preserved the v26.2.12 score-header structure, centered alignment, result card placement, and score-summary flow.
 - Preserved the v26.2.7 missed-reads review bottom-sheet overlay layered over the score summary.
 - Kept desktop on the existing separate review step, with side arrows preserved.
 - Kept the existing coach carousel markup, cards, content, grouping, and swipe behaviour.
@@ -66,6 +66,7 @@ Does this feature move the player from recognising shapes toward reading market 
 ### Preserved
 
 - v26.2.11 mobile result header structure
+- v26.2.12 mobile result hero parity
 - v26.2.10 mobile result vertical layout
 - v26.2.7 mobile result coach overlay
 - v26.2.2 coach carousel content
@@ -122,7 +123,7 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 Use GitHub Pages with:
 
 ```text
-?fresh=26212
+?fresh=2630
 ```
 
 Then check:
@@ -130,33 +131,35 @@ Then check:
 1. Desktop app loads
 2. iPhone/mobile app loads
 3. Start Run works
-4. Complete a run with at least one missed read
-5. Mobile result lands on the score summary as the main screen
-6. RUN COMPLETE, run title, X/10, CORRECT READS, and feedback sentence remain centered and evenly spaced
-7. RUN COMPLETE and CORRECT READS read as clean uppercase labels, not oversized headline text
-8. X/10 score remains strong and clearly becomes the result focal point
-9. Feedback sentence is readable, comfortably wrapped, and not squeezed
-10. Score summary keeps the v26.2.10 alignment and vertical balance on iPhone
-11. Header spacing does not overlap or create awkward scrolling
-12. Review missed reads opens the coach carousel as a bottom-sheet overlay
-13. Coach overlay can be dismissed back to score summary
-14. Coach carousel still swipes on iPhone
-15. Play Again remains tappable
-16. Lesson Map remains tappable
-17. Review missed reads remains tappable
+4. Chart renders immediately after Start Run
+5. iPhone/mobile chart keeps the existing compact framing
+6. Desktop half-width chart remains compact, centered, and readable
+7. Desktop full-width chart no longer shows a much larger number of concurrent candles
+8. Desktop full-width uses the compact recent-candle viewport instead of the full retained desktop buffer
+9. Candle render quality remains clean, including tiny-body/doji handling
+10. Range High, Channel Mean, and Range Low remain visible
+11. Setup zone and Quest zone highlights still appear correctly
+12. Quest Moment timing and replay behaviour still work
+13. Answer dock remains below the chart and tappable
+14. Timer still works
+15. Run completes normally
+16. Result summary still works
+17. Review missed reads still works
 18. Desktop result flow remains readable
 19. Desktop carousel arrows still work
 20. No numbered pagination appears
 21. Homepage still shows Candle Quest title, XP, and Shop
 22. Result screen still hides homepage title, XP, and Shop
-23. Gameplay/scoring/timer/generator remain unchanged
+23. Gameplay/scoring/XP/timer/generator remain unchanged
 
 ## Known watch points
 
-- The mobile hero parity pass should be visually checked on a real iPhone because Safari text metrics can differ from desktop emulation.
+- Full-width desktop should be visually checked against desktop half-width and iPhone because the patch intentionally changes only the active rendered slice, not the retained candle history.
+- Desktop now renders fewer active candles than its retained buffer, so any future replay/debug feature that expects every retained candle to be visible should account for the viewport slice.
+- The mobile hero parity pass should still be visually checked on a real iPhone because Safari text metrics can differ from desktop emulation.
 - The bottom-sheet height may still need device-specific tuning after real iPhone testing.
 - Coach carousel slides remain generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v26.2.12.
+- Comparative coach cards are a future feature, not included in v26.3.0.
 - The larger market-rhythm issue remains separate: background candles can still feel too flat or low-volatility.
 
 ## Next intended work
@@ -164,9 +167,9 @@ Then check:
 Recommended sequence:
 
 ```text
-v26.3 - Natural Candle Rhythm Pass
-v26.4 - Comparative Coach Cards / Confusion Pair Tracking
-v26.5 - Engulfing Doctrine Engine
+v26.4 - Natural Candle Rhythm Pass
+v26.5 - Comparative Coach Cards / Confusion Pair Tracking
+v26.6 - Engulfing Doctrine Engine
 ```
 
 Do not combine market rhythm, comparative cards, and engulfing doctrine into one patch.

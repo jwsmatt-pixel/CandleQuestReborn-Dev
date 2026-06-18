@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_2_12_mobile_result_hero_parity";
+const CANDLE_QUEST_BUILD = "v26_3_0_chart_viewport_unification";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.2.12 - Mobile Result Hero Parity";
+    b.textContent = "v26.3.0 - Chart Viewport Unification";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1648,10 +1648,13 @@ function drawGame(frozen=false){
 
   const mobile = isMobile();
 
-  // v25.3: Mobile keeps the 14-candle read, but draws them in a tighter stage.
-  // This avoids the isolated/spread-out feel without changing the underlying game loop.
+  // v26.3.0: Keep the active read compact on every viewport.
+  // Desktop still retains its candle buffer, but the rendered slice now follows the
+  // same focused candle-count philosophy as mobile and desktop half-width.
   const mobileVisibleTarget = 14;
-  const visibleCount = mobile ? Math.min(run.candles.length, mobileVisibleTarget) : run.candles.length;
+  const desktopVisibleTarget = 16;
+  const visibleTarget = mobile ? mobileVisibleTarget : desktopVisibleTarget;
+  const visibleCount = Math.min(run.candles.length, visibleTarget);
   const visibleCandles = run.candles.slice(run.candles.length - visibleCount);
 
   const candleVals = visibleCandles.flat();
@@ -1668,14 +1671,18 @@ function drawGame(frozen=false){
   const left = mobile ? 70 : 42;
   const right = W - futurePad;
 
-  // v25.3: tighter mobile candle stage + wider bodies.
-  // Keep the latest candle close to the focus area, but stop 14 candles from spanning the whole canvas.
+  // v25.3/v26.3.0: tighter candle stage + wider bodies.
+  // Keep the latest candle close to the focus area without letting wide desktop
+  // stretch the read back into the old many-candle chart.
   const availableSpan = right - left;
-  const mobileSpan = mobile ? Math.min(availableSpan, Math.max(360, visibleCandles.length * 36)) : availableSpan;
-  const drawRight = mobile ? right - 18 : right;
-  const drawLeft = mobile ? Math.max(left, drawRight - mobileSpan) : left;
+  const compactSpan = mobile
+    ? Math.max(360, visibleCandles.length * 36)
+    : Math.max(520, visibleCandles.length * 42);
+  const stageSpan = Math.min(availableSpan, compactSpan);
+  const drawRight = mobile ? right - 18 : right - 10;
+  const drawLeft = Math.max(left, drawRight - stageSpan);
   const rawGap = (drawRight - drawLeft) / Math.max(1, visibleCandles.length - 1);
-  const gap = mobile ? Math.max(24, Math.min(39, rawGap)) : rawGap;
+  const gap = mobile ? Math.max(24, Math.min(39, rawGap)) : Math.max(30, Math.min(46, rawGap));
   const cwBase = mobile
     ? Math.max(13, Math.min(24, gap * 0.68))   // thicker on mobile
     : Math.max(5, Math.min(15, gap * 0.42));   // normal on desktop
@@ -1755,7 +1762,7 @@ function drawGame(frozen=false){
 
   // Draw candles
   visibleCandles.forEach((c,i)=>{
-    const x = (mobile ? drawLeft : left) + i * gap;
+    const x = drawLeft + i * gap;
     const [o,h,l,cl] = c;
     const green = cl >= o;
     const yO=mapY(o), yH=mapY(h), yL=mapY(l), yC=mapY(cl);
