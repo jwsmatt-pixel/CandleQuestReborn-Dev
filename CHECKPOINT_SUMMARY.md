@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v26.8 Checkpoint Summary
+# Candle Quest Reborn - v26.8.1 Checkpoint Summary
 
 ## Current build
 
-**v26.8 - World 1 QA / Ambiguity Sweep**
-Build marker: `v26_8_world1_qa_ambiguity_sweep`
+**v26.8.1 - Opaque Guide Removal**
+Build marker: `v26_8_1_opaque_guide_removal`
 
 ## Base build
 
@@ -14,7 +14,7 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 Active development checkpoint.
 
-v26.8 should be treated as the current World 1 QA / ambiguity sweep build. It preserves the v26.7 location logic build, the v26.6.1 chart overlay cleanup build, the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
+v26.8.1 should be treated as the current opaque guide removal build. It preserves the v26.8 World 1 QA / ambiguity sweep build, the v26.7 location logic build, the v26.6.1 chart overlay cleanup build, the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,17 +47,18 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.8
+## What changed in v26.8.1
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.8 World 1 QA / Ambiguity Sweep.
-- Added an explicit World 1 active pattern source for answer selection during Quest Moment.
-- Tightened Bullish Engulfing body-boundary validation so the second candle starts at or below the prior bearish body low.
-- Tightened Bearish Engulfing body-boundary validation so the second candle starts at or above the prior bullish body high.
+- Updated the build marker and build badge to v26.8.1 Opaque Guide Removal.
+- Removed the player-facing setup-zone guide rectangle drawn during the run/replay phase.
+- Removed the player-facing Quest-zone guide rectangle drawn during the frozen answer phase.
+- Kept setup-zone data available internally for generator/location flow while stopping the chart from drawing opaque guide boxes.
+- Preserved the v26.8 active pattern source and stricter Bullish/Bearish Engulfing body-boundary validation.
 - Left v26.7 location profiles and setup-story weighting unchanged.
 - Preserved the Range High, Channel Mean, and Range Low lines and labels.
-- Preserved v26.6.1 chart overlay cleanup.
+- Preserved v26.6.1 chart overlay cleanup and removed the remaining opaque guide boxes.
 - Preserved v26.6 World 1 candle rhythm, setup stories, and Bullish/Bearish Engulfing replay sequencing.
 - Preserved v26.5 Hammer, Shooting Star, Doji, and Engulfing final-candle validation.
 - Left Pattern Bible wording, gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library, and coach carousel behavior unchanged.
@@ -79,6 +80,7 @@ Does this feature move the player from recognising shapes toward reading market 
 - v26.3.0 chart viewport unification
 - v26.6 candle rhythm and engulfing replay sequencing
 - v26.6.1 chart overlay cleanup
+- v26.8 World 1 QA / ambiguity sweep
 - active World 1 answer pool
 - scoring
 - XP
@@ -212,7 +214,7 @@ Then check:
 19. Desktop full-width uses the v26.3.0 compact recent-candle viewport
 20. Candle render quality remains clean, including tiny-body/doji handling
 21. Range High, Channel Mean, and Range Low remain visible
-22. Setup zone remains subtle and the Quest Zone highlight is faint, unlabeled, and not debug-like
+22. No opaque setup-zone or Quest-zone guide box is visible during replay/run or answer phase
 23. Quest Moment timing and replay behaviour still work
 24. Bullish Engulfing prior bearish candle appears before Quest Moment
 25. Bullish Engulfing second green candle appears at Quest Moment

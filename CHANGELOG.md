@@ -1,5 +1,38 @@
 # Candle Quest Reborn — Changelog
 
+## v26.8.1 - Opaque Guide Removal
+
+Status: current active opaque guide removal test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_8_1_opaque_guide_removal`.
+- Updated build badge to `v26.8.1 - Opaque Guide Removal`.
+- Removed the player-facing setup-zone guide rectangle drawn during the run/replay phase.
+- Removed the player-facing Quest-zone guide rectangle drawn during the frozen answer phase.
+- Kept setup-zone data available internally for generator/location flow while stopping the chart from drawing opaque guide boxes.
+
+### Preserved
+
+- Range High, Channel Mean, Range Low, and the Quest Moment banner.
+- active World 1 answer pool: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers
+- Pattern Bible validation and wording.
+- v26.6 candle rhythm and Bullish/Bearish Engulfing replay sequencing.
+- v26.7 location realism and setup-story weighting.
+- gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library UI, shop, and coach carousel behavior.
+- mobile and desktop layout behavior.
+
+### Testing required
+
+- Desktop app load, Start Run, answer selection, timer, normal completion, result summary, and Review missed reads.
+- iPhone/mobile app load, Start Run, answer dock tap targets, timer, bottom-sheet review, and carousel swipe.
+- Confirm no opaque guide box is visible during replay/run or answer phase.
+- Confirm Range High, Channel Mean, Range Low, candles, and the Quest Moment banner remain visible.
+- Confirm yellow focus bands and debug-like Quest Zone boxes or labels are not visible on the player-facing chart.
+
+---
+
 ## v26.8 - World 1 QA / Ambiguity Sweep
 
 Status: current active World 1 QA / ambiguity sweep test candidate

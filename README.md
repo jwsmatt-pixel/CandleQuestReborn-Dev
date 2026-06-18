@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.8 - World 1 QA / Ambiguity Sweep`  
-**Build marker:** `v26_8_world1_qa_ambiguity_sweep`  
+**Current build:** `v26.8.1 - Opaque Guide Removal`  
+**Build marker:** `v26_8_1_opaque_guide_removal`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / World 1 QA and ambiguity sweep
+**Status:** Active development / opaque guide removal
 
 ---
 
@@ -135,6 +135,8 @@ v26.6.1 keeps the v26.6 rhythm and engulfing sequencing intact while cleaning pl
 v26.7 keeps the same active World 1 answer pool and final Pattern Bible validation while improving where those patterns appear. Hammer and Bullish Engulfing now prefer Range Low/support or controlled lower-channel pullback weakness, Shooting Star and Bearish Engulfing prefer Range High/resistance or controlled upper-channel rally rejection, and Doji prefers Channel Mean hesitation/compression with only occasional edge hesitation.
 
 v26.8 protects the v26.7 feel with a narrow World 1 QA sweep. It keeps the same active answer pool, rhythm, location logic, chart presentation, scoring, result flow, Pattern Library, and coach overlay while adding an explicit World 1 answer-pool guard and stricter Bullish/Bearish Engulfing body-boundary validation.
+
+v26.8.1 keeps the v26.8 generator, answer pool, candle rhythm, location logic, and gameplay flow intact while removing the remaining opaque setup/Quest guide boxes from the player-facing chart. Range High, Channel Mean, Range Low, candles, and the Quest Moment banner remain the visible reading structure.
 
 ---
 
@@ -371,10 +373,11 @@ v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing
 v26.6.1 - Chart Overlay Cleanup
 v26.7 - World 1 Location Logic Pass
 v26.8 - World 1 QA / Ambiguity Sweep
+v26.8.1 - Opaque Guide Removal
 v26.9 - Engulfing Doctrine Engine
 ```
 
-The current larger quality issue is visual sampling of the v26.8 World 1 QA sweep while confirming the v26.7 location logic, v26.6 candle rhythm, v26.6 engulfing replay sequencing, and v26.6.1 overlay cleanup remain intact.
+The current larger quality issue is visual sampling of the v26.8.1 opaque guide removal while confirming the v26.8 QA guardrails, v26.7 location logic, v26.6 candle rhythm, v26.6 engulfing replay sequencing, and v26.6.1 overlay cleanup remain intact.
 
 ---
 
