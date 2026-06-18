@@ -1,5 +1,41 @@
 # Candle Quest Reborn — Changelog
 
+## v26.8 - World 1 QA / Ambiguity Sweep
+
+Status: current active World 1 QA / ambiguity sweep test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_8_world1_qa_ambiguity_sweep`.
+- Updated build badge to `v26.8 - World 1 QA / Ambiguity Sweep`.
+- Added an explicit `W1_ACTIVE_PATTERNS` source for World 1 freeze/answer-option selection.
+- Tightened Bullish Engulfing validation so the second body must start at or below the prior bearish body low, not merely engulf by wick or close.
+- Tightened Bearish Engulfing validation so the second body must start at or above the prior bullish body high, not merely engulf by wick or close.
+
+### Preserved
+
+- active World 1 answer pool: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers
+- Pattern Bible wording and single-candle validation
+- v26.6 candle rhythm and Bullish/Bearish Engulfing replay sequencing
+- v26.7 location realism and setup-story weighting
+- v26.6.1 chart overlay cleanup
+- Range High, Channel Mean, Range Low, and the Quest Moment banner
+- gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library UI, shop, and coach carousel behavior
+- mobile and desktop layout behavior
+
+### Testing required
+
+- Desktop app load, Start Run, answer selection, timer, normal completion, result summary, and Review missed reads.
+- iPhone/mobile app load, Start Run, answer dock tap targets, timer, bottom-sheet review, and carousel swipe.
+- Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
+- Confirm Bullish/Bearish Engulfing still show the prior pressure candle before Quest Moment and only the engulfing control-shift candle at Quest Moment.
+- Confirm Hammer, Shooting Star, and Doji remain distinct and Pattern Bible fair.
+- Confirm v26.7 location weighting still feels realistic and not random.
+- Confirm yellow focus bands and heavy debug overlays are not visible on the player-facing chart.
+
+---
+
 ## v26.7 - World 1 Location Logic Pass
 
 Status: current active World 1 location logic patch / test candidate

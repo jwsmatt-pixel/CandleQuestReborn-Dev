@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_7_world1_location_logic_pass";
+const CANDLE_QUEST_BUILD = "v26_8_world1_qa_ambiguity_sweep";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.7 - World 1 Location Logic Pass";
+    b.textContent = "v26.8 - World 1 QA / Ambiguity Sweep";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1125,7 +1125,8 @@ function _validateW1Engulfing(patternName, first, second){
 
   if(patternName === "Bullish Engulfing"){
     if(first.close >= first.open || second.close <= second.open) return false;
-    if(second.open > first.close + 0.10) return false;
+    // Body engulf, not wick-only: the second body must start at or below the prior body low.
+    if(second.open > first.close + 0.03) return false;
     if(second.close < first.open + 0.18) return false;
     if(_looksLikeW1Hammer(second) || _looksLikeW1Doji(second)) return false;
     return true;
@@ -1133,7 +1134,8 @@ function _validateW1Engulfing(patternName, first, second){
 
   if(patternName === "Bearish Engulfing"){
     if(first.close <= first.open || second.close >= second.open) return false;
-    if(second.open < first.close - 0.10) return false;
+    // Body engulf, not wick-only: the second body must start at or above the prior body high.
+    if(second.open < first.close - 0.03) return false;
     if(second.close > first.open - 0.18) return false;
     if(_looksLikeW1ShootingStar(second) || _looksLikeW1Doji(second)) return false;
     return true;
@@ -1188,7 +1190,8 @@ function _getVisibleW1EngulfingContext(patternName){
 }
 
 // ── DEBUG LOGGER ──────────────────────────────────────────────────────────────
-const W1_ACTIVE_PATTERN_SET = new Set(["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"]);
+const W1_ACTIVE_PATTERNS = ["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"];
+const W1_ACTIVE_PATTERN_SET = new Set(W1_ACTIVE_PATTERNS);
 
 function _chooseW1LocationProfile(patternName){
   if(!run || !W1_ACTIVE_PATTERN_SET.has(patternName)) return null;
@@ -1889,7 +1892,9 @@ function finishQuestMoment(){
 
 // ─── FREEZE / QUEST MOMENT ────────────────────────────────────────────────────
 function freezeScenario(){
-  const pool = run.world.patterns;
+  const pool = run.world.id === 1
+    ? W1_ACTIVE_PATTERNS
+    : (run.world.patterns || []).filter(Boolean);
 
   if(!run.setupPattern){
     // v26.1: diversity engine prevents repeat streaks
