@@ -1,5 +1,37 @@
 # Candle Quest Reborn — Changelog
 
+## v26.5 - World 1 Generator Fairness Pass
+
+Status: current active World 1 generator fairness patch / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_5_world1_generator_fairness_pass`.
+- Updated build badge to `v26.5 - World 1 Generator Fairness Pass`.
+- Tightened World 1 Hammer, Shooting Star, and Doji recipe ranges and validation thresholds against Pattern Bible v1.0.
+- Added shared single-candle shape metrics and overlap checks so Doji-like rejection candles and rejection-like Dojis are rejected/regenerated.
+- Validates shifted final forced candles after they are aligned to the live previous close.
+- Added explicit two-candle context shaping and validation for Bullish Engulfing and Bearish Engulfing.
+
+### Preserved
+
+- active World 1 answer pool: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers
+- Pattern Bible wording from v26.4
+- chart viewport/render behavior from v26.3.0
+- gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library UI, and coach carousel behavior
+- mobile and desktop layout behavior
+
+### Testing required
+
+- Desktop app load, Start Run, normal completion, result summary, and Review missed reads.
+- iPhone/mobile app load, Start Run, answer dock tap targets, normal completion, bottom-sheet review, and carousel swipe.
+- Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
+- Confirm Bullish Candle and Bearish Candle do not appear as World 1 quiz answers.
+- Visually sample World 1 forced questions: Hammers should not read as Doji, Shooting Stars should not read as Doji, Dojis should not read as Hammer/Shooting Star, and Engulfing patterns should visibly use the prior candle body.
+
+---
+
 ## v26.4 - World 1 Pattern Bible Lock
 
 Status: current active World 1 wording/source-of-truth patch / test candidate

@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_4_world1_pattern_bible_lock";
+const CANDLE_QUEST_BUILD = "v26_5_world1_generator_fairness_pass";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.4 - World 1 Pattern Bible Lock";
+    b.textContent = "v26.5 - World 1 Generator Fairness Pass";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -849,80 +849,168 @@ function endRun(){
 const W1_RECIPES = {
   "Hammer": {
     // Small body near top. Long lower wick (>=2x body). Tiny/no upper wick.
-    totalRange:    [1.8, 3.2],
-    bodyFrac:      [0.06, 0.20],
-    bodyPosFrac:   [0.72, 0.96],
-    upperWickFrac: [0.00, 0.12],
-    lowerWickFrac: [0.60, 0.88],
+    totalRange:    [1.9, 3.1],
+    bodyFrac:      [0.09, 0.20],
+    bodyPosFrac:   [0.80, 0.93],
+    upperWickFrac: [0.00, 0.08],
+    lowerWickFrac: [0.66, 0.86],
     colourBias: 0.65,
     validate: {
-      lowerWickMinRatio: 2.0,   // lower wick >= 2x body
-      upperWickMaxFrac:  0.15,  // tiny upper wick
-      bodyMaxFrac:       0.25,
-      bodyMinPosFrac:    0.68,  // body in upper 32% of candle
+      lowerWickMinRatio: 2.2,   // lower wick must be clearly at least 2x body
+      upperWickMaxFrac:  0.10,  // tiny upper wick
+      bodyMinFrac:       0.07,
+      bodyMaxFrac:       0.22,
+      bodyMinPosFrac:    0.76,  // body in upper quarter of candle
+      closeToHighMaxFrac:0.16,
+      minDominantWickRatio: 3.0,
+      rejectDojiOverlap: true
     }
   },
   "Shooting Star": {
     // Small body near bottom. Long upper wick (>=2x body). Tiny/no lower wick.
-    totalRange:    [1.8, 3.2],
-    bodyFrac:      [0.06, 0.20],
-    bodyPosFrac:   [0.04, 0.28],
-    upperWickFrac: [0.60, 0.88],
-    lowerWickFrac: [0.00, 0.12],
+    totalRange:    [1.9, 3.1],
+    bodyFrac:      [0.09, 0.20],
+    bodyPosFrac:   [0.07, 0.20],
+    upperWickFrac: [0.66, 0.86],
+    lowerWickFrac: [0.00, 0.08],
     colourBias: 0.35,
     validate: {
-      upperWickMinRatio: 2.0,
-      lowerWickMaxFrac:  0.15,
-      bodyMaxFrac:       0.25,
-      bodyMaxPosFrac:    0.32,  // body in lower 32% of candle
+      upperWickMinRatio: 2.2,
+      lowerWickMaxFrac:  0.10,
+      bodyMinFrac:       0.07,
+      bodyMaxFrac:       0.22,
+      bodyMaxPosFrac:    0.24,  // body in lower quarter of candle
+      closeToLowMaxFrac: 0.16,
+      minDominantWickRatio: 3.0,
+      rejectDojiOverlap: true
     }
   },
   "Doji": {
     // Open ≈ close. Tiny body. Wicks balanced, can be short or long.
-    totalRange:    [0.8, 2.8],
-    bodyFrac:      [0.00, 0.06],
-    bodyPosFrac:   [0.25, 0.75],
-    upperWickFrac: [0.20, 0.75],
-    lowerWickFrac: [0.20, 0.75],
+    totalRange:    [1.2, 2.6],
+    bodyFrac:      [0.00, 0.045],
+    bodyPosFrac:   [0.42, 0.58],
+    upperWickFrac: [0.38, 0.58],
+    lowerWickFrac: [0.38, 0.58],
     colourBias: 0.5,
     validate: {
-      bodyMaxFrac:      0.08,
-      minUpperWickFrac: 0.12,
-      minLowerWickFrac: 0.12,
+      bodyMaxFrac:      0.055,
+      bodyMinPosFrac:   0.38,
+      bodyMaxPosFrac:   0.62,
+      minUpperWickFrac: 0.28,
+      minLowerWickFrac: 0.28,
+      maxWickImbalanceRatio: 1.45,
+      rejectRejectionOverlap: true
     }
   }
 };
 
 function _rand(min, max){ return min + Math.random() * (max - min); }
 
+function _w1CandleMetrics(candle){
+  const { open, high, low, close } = candle;
+  const totalRange = high - low;
+  if(totalRange <= 0) return null;
+  const bodySize = Math.abs(close - open);
+  const bodyBottom = Math.min(open, close);
+  const bodyTop = Math.max(open, close);
+  const bodyMid = (bodyBottom + bodyTop) / 2;
+  const upperWick = Math.max(0, high - bodyTop);
+  const lowerWick = Math.max(0, bodyBottom - low);
+  const bodyFrac = bodySize / totalRange;
+  const upperWickFrac = upperWick / totalRange;
+  const lowerWickFrac = lowerWick / totalRange;
+  const bodyPosFrac = (bodyMid - low) / totalRange;
+  return {
+    totalRange,
+    bodySize,
+    bodyBottom,
+    bodyTop,
+    bodyMid,
+    upperWick,
+    lowerWick,
+    bodyFrac,
+    upperWickFrac,
+    lowerWickFrac,
+    bodyPosFrac,
+    distanceBodyTopFromHighFrac: (high - bodyTop) / totalRange,
+    distanceBodyBottomFromLowFrac: (bodyBottom - low) / totalRange
+  };
+}
+
+function _looksLikeW1Hammer(candle){
+  const m = _w1CandleMetrics(candle);
+  if(!m || m.totalRange < 0.05 || m.bodySize <= 0.001) return false;
+  return m.bodyFrac >= 0.06 &&
+    m.bodyFrac <= 0.24 &&
+    m.bodyPosFrac >= 0.72 &&
+    m.lowerWick / m.bodySize >= 2.0 &&
+    m.upperWickFrac <= 0.14 &&
+    m.lowerWick >= m.upperWick * 2.5;
+}
+
+function _looksLikeW1ShootingStar(candle){
+  const m = _w1CandleMetrics(candle);
+  if(!m || m.totalRange < 0.05 || m.bodySize <= 0.001) return false;
+  return m.bodyFrac >= 0.06 &&
+    m.bodyFrac <= 0.24 &&
+    m.bodyPosFrac <= 0.28 &&
+    m.upperWick / m.bodySize >= 2.0 &&
+    m.lowerWickFrac <= 0.14 &&
+    m.upperWick >= m.lowerWick * 2.5;
+}
+
+function _looksLikeW1Doji(candle){
+  const m = _w1CandleMetrics(candle);
+  if(!m || m.totalRange < 0.05) return false;
+  const wickMin = Math.max(0.001, Math.min(m.upperWick, m.lowerWick));
+  const wickMax = Math.max(m.upperWick, m.lowerWick);
+  return m.bodyFrac <= 0.065 &&
+    m.bodyPosFrac >= 0.34 &&
+    m.bodyPosFrac <= 0.66 &&
+    m.upperWickFrac >= 0.20 &&
+    m.lowerWickFrac >= 0.20 &&
+    wickMax / wickMin <= 1.65;
+}
+
 // ── VALIDATOR ─────────────────────────────────────────────────────────────────
 function _validateW1Candle(patternName, candle){
   const recipe = W1_RECIPES[patternName];
   if(!recipe || !recipe.validate) return true;
   const v = recipe.validate;
-  const { open, high, low, close } = candle;
-  const totalRange = high - low;
-  if(totalRange < 0.05) return false;
-  const bodySize   = Math.abs(close - open);
-  const bodyBottom = Math.min(open, close);
-  const bodyTop    = Math.max(open, close);
-  const bodyMid    = (bodyBottom + bodyTop) / 2;
-  const upperWick  = high - bodyTop;
-  const lowerWick  = bodyBottom - low;
-  const bodyFrac      = bodySize / totalRange;
-  const upperWickFrac = upperWick / totalRange;
-  const lowerWickFrac = lowerWick / totalRange;
-  const bodyPosFrac   = (bodyMid - low) / totalRange;
+  const m = _w1CandleMetrics(candle);
+  if(!m || m.totalRange < 0.05) return false;
+  const {
+    bodySize,
+    upperWick,
+    lowerWick,
+    bodyFrac,
+    upperWickFrac,
+    lowerWickFrac,
+    bodyPosFrac,
+    distanceBodyTopFromHighFrac,
+    distanceBodyBottomFromLowFrac
+  } = m;
+  const wickMin = Math.max(0.001, Math.min(upperWick, lowerWick));
+  const wickMax = Math.max(upperWick, lowerWick);
 
   if(v.lowerWickMinRatio  !== undefined && bodySize > 0.001 && lowerWick / bodySize < v.lowerWickMinRatio) return false;
   if(v.upperWickMinRatio  !== undefined && bodySize > 0.001 && upperWick / bodySize < v.upperWickMinRatio) return false;
   if(v.upperWickMaxFrac   !== undefined && upperWickFrac > v.upperWickMaxFrac)  return false;
   if(v.lowerWickMaxFrac   !== undefined && lowerWickFrac > v.lowerWickMaxFrac)  return false;
+  if(v.bodyMinFrac        !== undefined && bodyFrac < v.bodyMinFrac)            return false;
   if(v.bodyMaxFrac        !== undefined && bodyFrac > v.bodyMaxFrac)            return false;
   if(v.bodyMinPosFrac     !== undefined && bodyPosFrac < v.bodyMinPosFrac)      return false;
   if(v.bodyMaxPosFrac     !== undefined && bodyPosFrac > v.bodyMaxPosFrac)      return false;
   if(v.minUpperWickFrac   !== undefined && upperWickFrac < v.minUpperWickFrac)  return false;
   if(v.minLowerWickFrac   !== undefined && lowerWickFrac < v.minLowerWickFrac)  return false;
+  if(v.closeToHighMaxFrac !== undefined && distanceBodyTopFromHighFrac > v.closeToHighMaxFrac) return false;
+  if(v.closeToLowMaxFrac  !== undefined && distanceBodyBottomFromLowFrac > v.closeToLowMaxFrac) return false;
+  if(v.maxWickImbalanceRatio !== undefined && wickMax / wickMin > v.maxWickImbalanceRatio) return false;
+  if(v.minDominantWickRatio !== undefined && patternName === "Hammer" && lowerWick < upperWick * v.minDominantWickRatio) return false;
+  if(v.minDominantWickRatio !== undefined && patternName === "Shooting Star" && upperWick < lowerWick * v.minDominantWickRatio) return false;
+  if(v.rejectDojiOverlap && _looksLikeW1Doji(candle)) return false;
+  if(v.rejectRejectionOverlap && (_looksLikeW1Hammer(candle) || _looksLikeW1ShootingStar(candle))) return false;
   return true;
 }
 
@@ -968,9 +1056,9 @@ function _generateW1Candle(patternName, anchorPrice, clampFn){
 function _fallbackW1Candle(patternName, anchor, clampFn){
   let o, h, l, c;
   if(patternName === "Hammer"){
-    o = anchor + 0.35; c = anchor + 0.45; h = anchor + 0.55; l = anchor - 1.55;
+    o = anchor + 0.35; c = anchor + 0.60; h = anchor + 0.66; l = anchor - 1.65;
   } else if(patternName === "Shooting Star"){
-    o = anchor - 0.35; c = anchor - 0.45; h = anchor + 1.55; l = anchor - 0.55;
+    o = anchor - 0.35; c = anchor - 0.60; h = anchor + 1.65; l = anchor - 0.66;
   } else { // Doji
     o = anchor; c = anchor + 0.04; h = anchor + 0.9; l = anchor - 0.9;
   }
@@ -978,6 +1066,106 @@ function _fallbackW1Candle(patternName, anchor, clampFn){
   candle.high = Math.max(candle.high, candle.open, candle.close);
   candle.low  = Math.min(candle.low,  candle.open, candle.close);
   return candle;
+}
+
+function _alignW1CandleToOpen(patternName, targetOpen, anchorPrice, clampFn){
+  for(let attempt = 0; attempt < 18; attempt++){
+    const gen = _generateW1Candle(patternName, anchorPrice, clampFn);
+    if(!gen) continue;
+    const shift = targetOpen - gen.open;
+    const candle = {
+      open: targetOpen,
+      high: clampFn(gen.high + shift),
+      low: clampFn(gen.low + shift),
+      close: clampFn(gen.close + shift)
+    };
+    candle.high = Math.max(candle.high, candle.open, candle.close);
+    candle.low  = Math.min(candle.low, candle.open, candle.close);
+    if(_validateW1Candle(patternName, candle)) return candle;
+  }
+  let fallback;
+  if(patternName === "Hammer"){
+    fallback = {
+      open: targetOpen,
+      close: clampFn(targetOpen + 0.24),
+      high: clampFn(targetOpen + 0.30),
+      low: clampFn(targetOpen - 1.80)
+    };
+  } else if(patternName === "Shooting Star"){
+    fallback = {
+      open: targetOpen,
+      close: clampFn(targetOpen - 0.24),
+      high: clampFn(targetOpen + 1.80),
+      low: clampFn(targetOpen - 0.30)
+    };
+  } else {
+    fallback = {
+      open: targetOpen,
+      close: clampFn(targetOpen + 0.03),
+      high: clampFn(targetOpen + 0.95),
+      low: clampFn(targetOpen - 0.95)
+    };
+  }
+  fallback.high = Math.max(fallback.high, fallback.open, fallback.close);
+  fallback.low = Math.min(fallback.low, fallback.open, fallback.close);
+  return _validateW1Candle(patternName, fallback) ? fallback : null;
+}
+
+function _validateW1Engulfing(patternName, first, second){
+  const firstBody = Math.abs(first.close - first.open);
+  const secondBody = Math.abs(second.close - second.open);
+  if(firstBody < 0.45 || secondBody < firstBody * 1.35) return false;
+
+  if(patternName === "Bullish Engulfing"){
+    if(first.close >= first.open || second.close <= second.open) return false;
+    if(second.open > first.close + 0.10) return false;
+    if(second.close < first.open + 0.18) return false;
+    if(_looksLikeW1Hammer(second) || _looksLikeW1Doji(second)) return false;
+    return true;
+  }
+
+  if(patternName === "Bearish Engulfing"){
+    if(first.close <= first.open || second.close >= second.open) return false;
+    if(second.open < first.close - 0.10) return false;
+    if(second.close > first.open - 0.18) return false;
+    if(_looksLikeW1ShootingStar(second) || _looksLikeW1Doji(second)) return false;
+    return true;
+  }
+
+  return false;
+}
+
+function _prepareW1EngulfingContext(patternName, clampFn){
+  if(!run || !run.candles.length) return null;
+  const lastIndex = run.candles.length - 1;
+  const prevClose = run.candles[lastIndex][3];
+  const firstBody = 0.72 + Math.random() * 0.24;
+  let first;
+
+  if(patternName === "Bullish Engulfing"){
+    const firstOpen = clampFn(prevClose + firstBody);
+    first = {
+      open: firstOpen,
+      close: prevClose,
+      high: clampFn(firstOpen + 0.16 + Math.random() * 0.08),
+      low: clampFn(prevClose - 0.16 - Math.random() * 0.08)
+    };
+  } else if(patternName === "Bearish Engulfing"){
+    const firstOpen = clampFn(prevClose - firstBody);
+    first = {
+      open: firstOpen,
+      close: prevClose,
+      high: clampFn(prevClose + 0.16 + Math.random() * 0.08),
+      low: clampFn(firstOpen - 0.16 - Math.random() * 0.08)
+    };
+  } else {
+    return null;
+  }
+
+  first.high = Math.max(first.high, first.open, first.close);
+  first.low = Math.min(first.low, first.open, first.close);
+  run.candles[lastIndex] = [first.open, first.high, first.low, first.close];
+  return first;
 }
 
 // ── DEBUG LOGGER ──────────────────────────────────────────────────────────────
@@ -1151,65 +1339,72 @@ function addCandle(forced=null){
     o = prev;
 
     if(p==="Bullish Engulfing"){
-      // Strong green body engulfing prior, near Range Low
-      // Open from prev, close strongly above
-      o = prev + (Math.random()-0.5)*0.15;
-      c = clampToWorld(Math.max(S + 1.4, prev + 1.5 + Math.random()*0.4));
-      h = c + 0.3 + Math.random()*0.2;
-      l = Math.min(o, S + 0.2) - 0.2;
+      const first = _prepareW1EngulfingContext("Bullish Engulfing", clampToWorld);
+      const firstBody = first ? Math.abs(first.close - first.open) : 0.85;
+      o = prev;
+      c = clampToWorld(Math.max(first ? first.open + 0.22 : S + 1.4, o + firstBody * (1.45 + Math.random()*0.25)));
+      h = c + 0.16 + Math.random()*0.10;
+      l = o - 0.14 - Math.random()*0.08;
+      const second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
+      if(first && !_validateW1Engulfing("Bullish Engulfing", first, second)){
+        c = clampToWorld(first.open + 0.32);
+        h = c + 0.18;
+        l = o - 0.16;
+      }
     }
     else if(p==="Bearish Engulfing"){
-      // Strong red body engulfing prior, near Range High
-      o = prev + (Math.random()-0.5)*0.15;
-      c = clampToWorld(Math.min(R - 1.4, prev - 1.5 - Math.random()*0.4));
-      h = Math.max(o, R - 0.2) + 0.2;
-      l = c - 0.3 - Math.random()*0.2;
+      const first = _prepareW1EngulfingContext("Bearish Engulfing", clampToWorld);
+      const firstBody = first ? Math.abs(first.close - first.open) : 0.85;
+      o = prev;
+      c = clampToWorld(Math.min(first ? first.open - 0.22 : R - 1.4, o - firstBody * (1.45 + Math.random()*0.25)));
+      h = o + 0.14 + Math.random()*0.08;
+      l = c - 0.16 - Math.random()*0.10;
+      const second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
+      if(first && !_validateW1Engulfing("Bearish Engulfing", first, second)){
+        c = clampToWorld(first.open - 0.32);
+        h = o + 0.16;
+        l = c - 0.18;
+      }
     }
     else if(p==="Hammer"){
       // v26.1: recipe-based generator. Anchor near Range Low.
       const anchor = Math.max(prev, S + 0.4);
-      const gen = _generateW1Candle("Hammer", anchor, clampToWorld);
+      const gen = _alignW1CandleToOpen("Hammer", prev, anchor, clampToWorld);
       if(gen){
-        const shift = prev - gen.open;
-        o = prev; c = clampToWorld(gen.close + shift);
-        h = clampToWorld(gen.high + shift); l = clampToWorld(gen.low + shift);
+        o = gen.open; c = gen.close; h = gen.high; l = gen.low;
       } else {
         // safe fallback
         o = prev;
-        const closeTarget = Math.max(S + 1.0, prev + 0.4 + Math.random()*0.5);
+        const closeTarget = Math.max(S + 1.0, prev + 0.24);
         c = clampToWorld(closeTarget);
-        h = c + 0.25 + Math.random()*0.2;
-        l = Math.min(o, c) - 1.4 - Math.random()*0.5;
+        h = Math.max(o, c) + 0.07;
+        l = Math.min(o, c) - 1.8;
       }
     }
     else if(p==="Shooting Star"){
       // v26.1: recipe-based generator. Anchor near Range High.
       const anchor = Math.min(prev, R - 0.4);
-      const gen = _generateW1Candle("Shooting Star", anchor, clampToWorld);
+      const gen = _alignW1CandleToOpen("Shooting Star", prev, anchor, clampToWorld);
       if(gen){
-        const shift = prev - gen.open;
-        o = prev; c = clampToWorld(gen.close + shift);
-        h = clampToWorld(gen.high + shift); l = clampToWorld(gen.low + shift);
+        o = gen.open; c = gen.close; h = gen.high; l = gen.low;
       } else {
         o = prev;
-        const closeTarget = Math.min(R - 1.0, prev - 0.4 - Math.random()*0.5);
+        const closeTarget = Math.min(R - 1.0, prev - 0.24);
         c = clampToWorld(closeTarget);
-        l = c - 0.25 - Math.random()*0.2;
-        h = Math.max(o, c) + 1.4 + Math.random()*0.5;
+        l = Math.min(o, c) - 0.07;
+        h = Math.max(o, c) + 1.8;
       }
     }
     else if(p==="Doji"){
       // v26.1: recipe-based generator. Anchor at prev (doji can appear anywhere).
-      const gen = _generateW1Candle("Doji", prev, clampToWorld);
+      const gen = _alignW1CandleToOpen("Doji", prev, prev, clampToWorld);
       if(gen){
-        const shift = prev - gen.open;
-        o = prev; c = clampToWorld(gen.close + shift);
-        h = clampToWorld(gen.high + shift); l = clampToWorld(gen.low + shift);
+        o = gen.open; c = gen.close; h = gen.high; l = gen.low;
       } else {
         o = prev;
-        c = o + (Math.random()-0.5)*0.18;
-        h = Math.max(o,c) + 0.9 + Math.random()*0.4;
-        l = Math.min(o,c) - 0.9 - Math.random()*0.4;
+        c = o + (Math.random()-0.5)*0.06;
+        h = Math.max(o,c) + 0.95;
+        l = Math.min(o,c) - 0.95;
       }
     }
     else if(p==="Support Reclaim"){

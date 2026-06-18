@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v26.4 Checkpoint Summary
+# Candle Quest Reborn - v26.5 Checkpoint Summary
 
 ## Current build
 
-**v26.4 - World 1 Pattern Bible Lock**
-Build marker: `v26_4_world1_pattern_bible_lock`
+**v26.5 - World 1 Generator Fairness Pass**
+Build marker: `v26_5_world1_generator_fairness_pass`
 
 ## Base build
 
@@ -14,7 +14,7 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 Active development checkpoint.
 
-v26.4 should be treated as the current World 1 Pattern Bible source-of-truth build. It preserves the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
+v26.5 should be treated as the current World 1 generator fairness build. It preserves the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,17 +47,17 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.4
+## What changed in v26.5
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.4.
-- Locked the five active World 1 Pattern Library entries to World 1 Pattern Bible v1.0 wording.
-- Added must-have and invalid-if Bible detail rows to the five active World 1 Pattern Library entries.
-- Updated missed-read coach card shapes/cues for the five active World 1 patterns to use the Bible player cues.
-- Documented World 1 Pattern Bible v1.0 in README and this checkpoint summary.
-- Clearly documented that Bullish Candle and Bearish Candle are not active World 1 quiz answers.
-- Left generator behavior, gameplay, scoring, XP, timer, chart rendering, result screen layout, and coach carousel behavior unchanged.
+- Updated the build marker and build badge to v26.5.
+- Tightened Hammer, Shooting Star, and Doji recipe ranges and validation thresholds against World 1 Pattern Bible v1.0.
+- Added shared World 1 candle-shape metrics for body size, wick balance, body position, and body proximity to high/low.
+- Added overlap rejection so Hammer/Shooting Star do not validate as Doji-like candles and Doji does not validate as a Hammer/Shooting Star style rejection candle.
+- Validates shifted final forced candles after they are aligned to the live previous close.
+- Added explicit prior-candle shaping and two-candle validation for Bullish Engulfing and Bearish Engulfing.
+- Left Pattern Bible wording, gameplay, scoring, XP, timer, chart rendering, result screen layout, and coach carousel behavior unchanged.
 
 ### Preserved
 
@@ -69,8 +69,8 @@ Does this feature move the player from recognising shapes toward reading market 
 - v26.2.5 desktop result-flow lock
 - v26.2 missed-read tracking
 - v26.1.1 tiny candle renderer cleanup
-- v26.1 generator recipes
-- v26.1 validation logic
+- v26.4 Pattern Bible wording
+- v26.1 generator structure and diversity flow
 - v26.1 diversity logic
 - v26.3.0 chart viewport unification
 - active World 1 answer pool
@@ -138,7 +138,7 @@ The Pattern Bible is the current source of truth for the five active World 1 ans
 - Player cue: Bullish candle first, then a stronger bearish body swallows it.
 - Common confusion: Shooting Star, Bearish rejection.
 
-### Generator fairness rules for next pass
+### Generator fairness rules
 
 - Hammer must not look like a Doji.
 - Shooting Star must not look like a Doji.
@@ -150,7 +150,7 @@ The Pattern Bible is the current source of truth for the five active World 1 ans
 - Distractor answers may be plausible, but the correct answer must be visually defensible.
 - If a candle could reasonably be two World 1 answers, the generator should reject it and regenerate.
 
-These fairness rules are documented only. v26.4 does not rewrite the generator.
+These fairness rules are now enforced more strictly by the v26.5 World 1 generator fairness pass.
 
 ## Current review philosophy
 
@@ -180,7 +180,7 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 Use GitHub Pages with:
 
 ```text
-?fresh=2640
+?fresh=2650
 ```
 
 Then check:
@@ -190,25 +190,31 @@ Then check:
 3. Start Run works
 4. Active World 1 answer pool remains Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji
 5. Bullish Candle and Bearish Candle do not appear as active World 1 quiz answers
-6. Pattern Library entries match World 1 Pattern Bible v1.0
-7. Missed-read coach card cues align with World 1 Pattern Bible v1.0
-8. Chart renders immediately after Start Run
-9. iPhone/mobile chart keeps the existing compact framing
-10. Desktop half-width chart remains compact, centered, and readable
-11. Desktop full-width uses the v26.3.0 compact recent-candle viewport
-12. Candle render quality remains clean, including tiny-body/doji handling
-13. Range High, Channel Mean, and Range Low remain visible
-14. Setup zone and Quest zone highlights still appear correctly
-15. Quest Moment timing and replay behaviour still work
-16. Answer dock remains below the chart and tappable
-17. Timer still works
-18. Run completes normally
-19. Result summary still works
-20. Review missed reads still works
-21. Desktop result flow remains readable
-22. Desktop carousel arrows still work
-23. No numbered pagination appears
-24. Gameplay/scoring/XP/timer/generator remain unchanged
+6. Hammer examples look clearly like Hammer, not Doji
+7. Shooting Star examples look clearly like Shooting Star, not Doji
+8. Doji examples look clearly like Doji, not Hammer or Shooting Star
+9. Bullish Engulfing examples clearly engulf the prior bearish body
+10. Bearish Engulfing examples clearly engulf the prior bullish body
+11. Distractors remain plausible but not unfair
+12. Pattern Library entries match World 1 Pattern Bible v1.0
+13. Missed-read coach card cues align with World 1 Pattern Bible v1.0
+14. Chart renders immediately after Start Run
+15. iPhone/mobile chart keeps the existing compact framing
+16. Desktop half-width chart remains compact, centered, and readable
+17. Desktop full-width uses the v26.3.0 compact recent-candle viewport
+18. Candle render quality remains clean, including tiny-body/doji handling
+19. Range High, Channel Mean, and Range Low remain visible
+20. Setup zone and Quest zone highlights still appear correctly
+21. Quest Moment timing and replay behaviour still work
+22. Answer dock remains below the chart and tappable
+23. Timer still works
+24. Run completes normally
+25. Result summary still works
+26. Review missed reads still works
+27. Desktop result flow remains readable
+28. Desktop carousel arrows still work
+29. No numbered pagination appears
+30. Gameplay/scoring/XP/timer remain unchanged
 
 ## Known watch points
 
@@ -217,21 +223,20 @@ Then check:
 - The mobile hero parity pass should still be visually checked on a real iPhone because Safari text metrics can differ from desktop emulation.
 - The bottom-sheet height may still need device-specific tuning after real iPhone testing.
 - Coach carousel slides remain generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v26.4.
-- The generator fairness pass remains separate from this wording/source-of-truth patch.
+- Comparative coach cards are a future feature, not included in v26.5.
+- Generator fairness is improved through validation and retry rules, but still needs human visual sampling across many runs.
 
 ## Next intended work
 
 Recommended sequence:
 
 ```text
-v26.5 - World 1 Generator Fairness Pass
 v26.6 - Natural Candle Rhythm Pass
 v26.7 - Comparative Coach Cards / Confusion Pair Tracking
 v26.8 - Engulfing Doctrine Engine
 ```
 
-Do not combine generator fairness, market rhythm, comparative cards, and engulfing doctrine into one patch.
+Do not combine market rhythm, comparative cards, and deeper engulfing doctrine into one patch.
 
 ## Current development philosophy
 
