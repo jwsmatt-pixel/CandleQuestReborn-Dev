@@ -1,7 +1,7 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2.9 - Mobile Result Header Scale`  
-**Build marker:** `v26_2_9_mobile_result_header_scale`  
+**Current build:** `v26.2.10 - Mobile Result Header Scale Bump`  
+**Build marker:** `v26_2_10_mobile_result_header_scale_bump`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
 **Status:** Active development / iOS result-screen header scale
 

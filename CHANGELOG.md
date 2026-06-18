@@ -1,5 +1,42 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.10 - Mobile Result Header Scale Bump
+
+Status: current active iOS result-screen header scale bump / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_10_mobile_result_header_scale_bump`.
+- Updated build badge to `v26.2.10 - Mobile Result Header Scale Bump`.
+- Increased only the mobile score-summary header typography inside the existing score-header contract.
+- Bumped the mobile run title and `X/10` score sizes so the result moment feels stronger on iPhone.
+- Increased the mobile feedback sentence size with a more comfortable explicit line-height.
+- Slightly increased the mobile `RUN COMPLETE` and `CORRECT READS` labels while keeping them secondary.
+
+### Preserved
+
+- v26.2.9 mobile result screen alignment, spacing structure, and result card placement
+- stat cards
+- Play Again, Lesson Map, and Review missed reads positioning
+- coach overlay and carousel content
+- gameplay, scoring, XP, timer, generator, answer pool, Pattern Library, and missed-read tracking data
+- removed numbered carousel pagination
+- hidden homepage title/XP/shop header on the result screen
+
+### Testing required
+
+- iPhone full run to the score summary.
+- Confirm `RUN COMPLETE`, run title, `X/10`, `CORRECT READS`, and the feedback sentence stay centered and balanced.
+- Confirm the run title, `X/10`, and feedback sentence are noticeably larger without moving the result card.
+- Confirm larger text does not overlap or create awkward scrolling.
+- Confirm Review missed reads opens the bottom-sheet coach overlay and Back to score dismisses it.
+- Confirm coach cards still swipe horizontally on iPhone.
+- Confirm Play Again, Lesson Map, and Review missed reads remain visible and tappable.
+- Desktop full run with missed reads to confirm the result screen and carousel arrows remain acceptable.
+- Homepage check to confirm Candle Quest title, XP, and Shop remain visible outside the result screen.
+
+---
+
 ## v26.2.9 - Mobile Result Header Scale
 
 Status: current active iOS result-screen header scale / test candidate

@@ -1,20 +1,20 @@
-# Candle Quest Reborn - v26.2.9 Checkpoint Summary
+# Candle Quest Reborn - v26.2.10 Checkpoint Summary
 
 ## Current build
 
-**v26.2.9 - Mobile Result Header Scale**
-Build marker: `v26_2_9_mobile_result_header_scale`
+**v26.2.10 - Mobile Result Header Scale Bump**
+Build marker: `v26_2_10_mobile_result_header_scale_bump`
 
 ## Base build
 
-**v26.2.8 - Mobile Result Header Lock**
-Build marker: `v26_2_8_mobile_result_header_lock`
+**v26.2.9 - Mobile Result Header Scale**
+Build marker: `v26_2_9_mobile_result_header_scale`
 
 ## Current status
 
 Active development checkpoint.
 
-v26.2.9 should be treated as the current mobile result header-scale build. It preserves the v26.2.8 mobile result header alignment and spacing lock, the v26.2.7 mobile result coach overlay, the v26.2.6 vertical balance, the v26.2.5 result-flow QA lock on desktop, the v26.2.2 coach carousel content, desktop carousel arrows, and mobile swipe behaviour.
+v26.2.10 should be treated as the current mobile result header-scale bump build. It preserves the v26.2.9 mobile result header alignment and spacing, the v26.2.8 score-header structure, the v26.2.7 mobile result coach overlay, the v26.2.6 vertical balance, the v26.2.5 result-flow QA lock on desktop, the v26.2.2 coach carousel content, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,16 +47,16 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.2.9
+## What changed in v26.2.10
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.2.9.
-- Increased only the mobile score-header typography scale inside the existing v26.2.8 score-header contract.
-- Slightly enlarged the run title and X/10 score so the result moment feels stronger on iPhone.
-- Increased the feedback sentence size and line-height for a more confident mobile read.
-- Nudged RUN COMPLETE and CORRECT READS label scale/letter-spacing while keeping them secondary.
-- Preserved the v26.2.8 centered alignment, margins, result card placement, and score-summary structure.
+- Updated the build marker and build badge to v26.2.10.
+- Increased only the mobile score-header typography scale inside the existing score-header contract.
+- Enlarged the run title and X/10 score so the result moment feels stronger on iPhone.
+- Increased the feedback sentence size and line-height for a stronger, readable mobile result read.
+- Slightly increased RUN COMPLETE and CORRECT READS label scale while keeping them secondary.
+- Preserved the v26.2.9 centered alignment, margins, result card placement, and score-summary structure.
 - Preserved the v26.2.7 missed-reads review bottom-sheet overlay layered over the score summary.
 - Kept desktop on the existing separate review step, with side arrows preserved.
 - Kept the existing coach carousel markup, cards, content, grouping, and swipe behaviour.
@@ -64,6 +64,7 @@ Does this feature move the player from recognising shapes toward reading market 
 
 ### Preserved
 
+- v26.2.9 mobile result header alignment and spacing
 - v26.2.7 mobile result coach overlay
 - v26.2.2 coach carousel content
 - v26.2.5 desktop result-flow lock
@@ -119,7 +120,7 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 Use GitHub Pages with:
 
 ```text
-?fresh=2629
+?fresh=26210
 ```
 
 Then check:
@@ -131,27 +132,28 @@ Then check:
 5. Mobile result lands on the score summary as the main screen
 6. RUN COMPLETE, run title, X/10, CORRECT READS, and feedback sentence remain centered and evenly spaced
 7. Run title and X/10 score feel stronger without moving the result card
-8. Feedback sentence has readable line-height and does not feel squeezed
-9. Score summary keeps the v26.2.8 alignment and v26.2.7 vertical balance on iPhone
-10. Review missed reads opens the coach carousel as a bottom-sheet overlay
-11. Coach overlay can be dismissed back to score summary
-12. Coach carousel still swipes on iPhone
-13. Play Again remains tappable
-14. Lesson Map remains tappable
-15. Review missed reads remains tappable
-16. Desktop result flow remains readable
-17. Desktop carousel arrows still work
-18. No numbered pagination appears
-19. Homepage still shows Candle Quest title, XP, and Shop
-20. Result screen still hides homepage title, XP, and Shop
-21. Gameplay/scoring/timer/generator remain unchanged
+8. Feedback sentence is larger, readable, and not squeezed
+9. Score summary keeps the v26.2.9 alignment and vertical balance on iPhone
+10. Larger header text does not overlap or create awkward scrolling
+11. Review missed reads opens the coach carousel as a bottom-sheet overlay
+12. Coach overlay can be dismissed back to score summary
+13. Coach carousel still swipes on iPhone
+14. Play Again remains tappable
+15. Lesson Map remains tappable
+16. Review missed reads remains tappable
+17. Desktop result flow remains readable
+18. Desktop carousel arrows still work
+19. No numbered pagination appears
+20. Homepage still shows Candle Quest title, XP, and Shop
+21. Result screen still hides homepage title, XP, and Shop
+22. Gameplay/scoring/timer/generator remain unchanged
 
 ## Known watch points
 
+- The larger mobile header scale should be visually checked on a real iPhone because Safari text metrics can differ from desktop emulation.
 - The bottom-sheet height may still need device-specific tuning after real iPhone testing.
-- The new header scale should be visually checked on real iOS because Safari text metrics can still differ from desktop emulation.
 - Coach carousel slides remain generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v26.2.9.
+- Comparative coach cards are a future feature, not included in v26.2.10.
 - The larger market-rhythm issue remains separate: background candles can still feel too flat or low-volatility.
 
 ## Next intended work
