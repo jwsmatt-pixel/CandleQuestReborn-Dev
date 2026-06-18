@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v26.8.1 Checkpoint Summary
+# Candle Quest Reborn - v26.9 Checkpoint Summary
 
 ## Current build
 
-**v26.8.1 - Opaque Guide Removal**
-Build marker: `v26_8_1_opaque_guide_removal`
+**v26.9 - World 1 Lockdown Candidate**
+Build marker: `v26_9_world1_lockdown_candidate`
 
 ## Base build
 
@@ -12,9 +12,9 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-Active development checkpoint.
+Active development checkpoint / World 1 lockdown candidate.
 
-v26.8.1 should be treated as the current opaque guide removal build. It preserves the v26.8 World 1 QA / ambiguity sweep build, the v26.7 location logic build, the v26.6.1 chart overlay cleanup build, the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
+v26.9 should be treated as the current World 1 lockdown-candidate pass. It preserves the v26.8.1 opaque guide removal build, the v26.8 World 1 QA / ambiguity sweep build, the v26.7 location logic build, the v26.6.1 chart overlay cleanup build, the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,14 +47,15 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.8.1
+## What changed in v26.9
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.8.1 Opaque Guide Removal.
-- Removed the player-facing setup-zone guide rectangle drawn during the run/replay phase.
-- Removed the player-facing Quest-zone guide rectangle drawn during the frozen answer phase.
-- Kept setup-zone data available internally for generator/location flow while stopping the chart from drawing opaque guide boxes.
+- Updated the build marker and build badge to v26.9 World 1 Lockdown Candidate.
+- Froze the active World 1 answer-pool array so the five-answer pool cannot be mutated at runtime.
+- Disabled generator debug logging for release-candidate console cleanliness.
+- Removed an accidental implicit global assignment from the generator debug logger in case debug logging is re-enabled later.
+- Preserved the v26.8.1 removal of player-facing setup-zone and Quest-zone guide rectangles.
 - Preserved the v26.8 active pattern source and stricter Bullish/Bearish Engulfing body-boundary validation.
 - Left v26.7 location profiles and setup-story weighting unchanged.
 - Preserved the Range High, Channel Mean, and Range Low lines and labels.
@@ -81,6 +82,7 @@ Does this feature move the player from recognising shapes toward reading market 
 - v26.6 candle rhythm and engulfing replay sequencing
 - v26.6.1 chart overlay cleanup
 - v26.8 World 1 QA / ambiguity sweep
+- v26.8.1 opaque guide removal
 - active World 1 answer pool
 - scoring
 - XP
@@ -188,7 +190,7 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 Use GitHub Pages with:
 
 ```text
-?fresh=267
+?fresh=269
 ```
 
 Then check:
@@ -238,7 +240,7 @@ Then check:
 - The mobile hero parity pass should still be visually checked on a real iPhone because Safari text metrics can differ from desktop emulation.
 - The bottom-sheet height may still need device-specific tuning after real iPhone testing.
 - Coach carousel slides remain generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v26.8.
+- Comparative coach cards are a future feature, not included in v26.9.
 - Generator fairness is preserved through validation and retry rules, but location weighting still needs human visual sampling across many runs.
 
 ## Next intended work
@@ -246,11 +248,11 @@ Then check:
 Recommended sequence:
 
 ```text
-v26.9 - Comparative Coach Cards / Confusion Pair Tracking
-v27.0 - Engulfing Doctrine Engine
+v27.0 - World 1 Lockdown
+v27.1+ - Future World 1 teaching expansions after lockdown
 ```
 
-Do not combine market rhythm, comparative cards, and deeper engulfing doctrine into one patch.
+Do not combine lockdown, market rhythm changes, comparative cards, and deeper engulfing doctrine into one patch.
 
 ## Current development philosophy
 

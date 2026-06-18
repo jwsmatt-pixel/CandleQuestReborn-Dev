@@ -1,8 +1,44 @@
 # Candle Quest Reborn — Changelog
 
+## v26.9 - World 1 Lockdown Candidate
+
+Status: current active World 1 lockdown-candidate pass
+
+### Changed
+
+- Updated `game.js` build marker to `v26_9_world1_lockdown_candidate`.
+- Updated build badge to `v26.9 - World 1 Lockdown Candidate`.
+- Froze the active World 1 answer-pool array so the five-answer pool cannot be mutated at runtime.
+- Disabled generator debug logging for release-candidate console cleanliness.
+- Removed an accidental implicit global assignment from the generator debug logger in case debug logging is re-enabled later.
+
+### Preserved
+
+- active World 1 answer pool: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers
+- Pattern Bible wording and validation.
+- v26.6 candle rhythm and Bullish/Bearish Engulfing replay sequencing.
+- v26.7 location realism and setup-story weighting.
+- v26.8 ambiguity safeguards and stricter Engulfing body-boundary validation.
+- v26.8.1 clean chart with no opaque setup-zone or Quest-zone guide boxes.
+- Range High, Channel Mean, Range Low, and the Quest Moment banner.
+- gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library UI, shop, and coach carousel behavior.
+- mobile and desktop layout behavior.
+
+### Testing required
+
+- Desktop app load, Start Run, answer selection, timer, normal completion, result summary, and Review missed reads.
+- iPhone/mobile app load, Start Run, answer dock tap targets, timer, bottom-sheet review, and carousel swipe.
+- Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
+- Confirm Bullish Candle and Bearish Candle do not appear as World 1 quiz answers.
+- Confirm no opaque guide box, yellow focus band, or debug-like Quest Zone label is visible during replay/run or answer phase.
+- Confirm Range High, Channel Mean, Range Low, candles, and the Quest Moment banner remain visible.
+
+---
+
 ## v26.8.1 - Opaque Guide Removal
 
-Status: current active opaque guide removal test candidate
+Status: previous opaque guide removal test candidate
 
 ### Changed
 

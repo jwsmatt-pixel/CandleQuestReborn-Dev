@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_8_1_opaque_guide_removal";
+const CANDLE_QUEST_BUILD = "v26_9_world1_lockdown_candidate";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.8.1 - Opaque Guide Removal";
+    b.textContent = "v26.9 - World 1 Lockdown Candidate";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1190,7 +1190,7 @@ function _getVisibleW1EngulfingContext(patternName){
 }
 
 // ── DEBUG LOGGER ──────────────────────────────────────────────────────────────
-const W1_ACTIVE_PATTERNS = ["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"];
+const W1_ACTIVE_PATTERNS = Object.freeze(["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"]);
 const W1_ACTIVE_PATTERN_SET = new Set(W1_ACTIVE_PATTERNS);
 
 function _chooseW1LocationProfile(patternName){
@@ -1389,7 +1389,7 @@ function _buildW1SetupTransition(prev, clampFn){
   return _shapeW1SetupCandle(prev, close, high, low, story);
 }
 
-const CQ_DEBUG = true; // set false to silence
+const CQ_DEBUG = false; // Keep release-candidate console output quiet.
 
 function _debugLog(patternName, candle, attempts, passed){
   if(!CQ_DEBUG) return;
@@ -1398,6 +1398,7 @@ function _debugLog(patternName, candle, attempts, passed){
   const bodySize   = Math.abs(close - open);
   const upperWick  = high - Math.max(open, close);
   const lowerWick  = Math.min(open, close) - low;
+  const bodyFrac = totalRange > 0 ? bodySize / totalRange : 0;
   console.groupCollapsed(
     `%cCQ Gen%c ${patternName} — ${passed ? '✅ valid' : '⚠️ fallback'} (attempt ${attempts})`,
     'background:#1a2e22;color:#31c977;padding:2px 5px;border-radius:3px;font-weight:800',
@@ -1405,7 +1406,7 @@ function _debugLog(patternName, candle, attempts, passed){
   );
   console.log('OHLC:', `O=${open.toFixed(3)} H=${high.toFixed(3)} L=${low.toFixed(3)} C=${close.toFixed(3)}`);
   console.log('Range:', totalRange.toFixed(3), '| Body:', bodySize.toFixed(3),
-    `(${(bodyFrac=bodySize/totalRange,bodyFrac*100).toFixed(1)}%)`,
+    `(${(bodyFrac*100).toFixed(1)}%)`,
     '| UW:', upperWick.toFixed(3), '| LW:', lowerWick.toFixed(3));
   console.log('Dir:', close >= open ? '🟢 Bull' : '🔴 Bear');
   console.groupEnd();

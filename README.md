@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.8.1 - Opaque Guide Removal`  
-**Build marker:** `v26_8_1_opaque_guide_removal`  
+**Current build:** `v26.9 - World 1 Lockdown Candidate`  
+**Build marker:** `v26_9_world1_lockdown_candidate`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / opaque guide removal
+**Status:** Active development / World 1 lockdown candidate
 
 ---
 
@@ -73,7 +73,7 @@ Players learn by:
 - solid Range High line
 - dashed Channel Mean line
 - solid Range Low line
-- transparent setup-zone guidance
+- no opaque setup-zone or Quest-zone guide boxes
 - Quest Moment banner: `QUEST MOMENT · READ THE CHANNEL`
 - cleaned tiny-body/doji candle rendering from v26.1.1
 
@@ -137,6 +137,8 @@ v26.7 keeps the same active World 1 answer pool and final Pattern Bible validati
 v26.8 protects the v26.7 feel with a narrow World 1 QA sweep. It keeps the same active answer pool, rhythm, location logic, chart presentation, scoring, result flow, Pattern Library, and coach overlay while adding an explicit World 1 answer-pool guard and stricter Bullish/Bearish Engulfing body-boundary validation.
 
 v26.8.1 keeps the v26.8 generator, answer pool, candle rhythm, location logic, and gameplay flow intact while removing the remaining opaque setup/Quest guide boxes from the player-facing chart. Range High, Channel Mean, Range Low, candles, and the Quest Moment banner remain the visible reading structure.
+
+v26.9 is a World 1 lockdown-candidate pass. It keeps the current good gameplay feel intact, preserves the five-answer World 1 pool, Pattern Bible fairness, v26.6 replay rhythm/Engulfing sequencing, v26.7 location realism, v26.8 ambiguity safeguards, and v26.8.1 clean chart presentation while tightening release hygiene with an immutable active answer pool, quiet generator debug logging, and updated build documentation.
 
 ---
 
@@ -374,10 +376,11 @@ v26.6.1 - Chart Overlay Cleanup
 v26.7 - World 1 Location Logic Pass
 v26.8 - World 1 QA / Ambiguity Sweep
 v26.8.1 - Opaque Guide Removal
-v26.9 - Engulfing Doctrine Engine
+v26.9 - World 1 Lockdown Candidate
+v27.0 - World 1 Lockdown
 ```
 
-The current larger quality issue is visual sampling of the v26.8.1 opaque guide removal while confirming the v26.8 QA guardrails, v26.7 location logic, v26.6 candle rhythm, v26.6 engulfing replay sequencing, and v26.6.1 overlay cleanup remain intact.
+The current larger quality issue is final visual sampling of the v26.9 lockdown candidate while confirming the v26.8.1 opaque guide removal, v26.8 QA guardrails, v26.7 location logic, v26.6 candle rhythm, v26.6 engulfing replay sequencing, and v26.6.1 overlay cleanup remain intact.
 
 ---
 
