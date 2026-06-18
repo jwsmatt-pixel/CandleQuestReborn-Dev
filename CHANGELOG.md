@@ -1,8 +1,41 @@
 # Candle Quest Reborn — Changelog
 
+## v26.6.1 - Chart Overlay Cleanup
+
+Status: current active chart overlay cleanup patch / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_6_1_chart_overlay_cleanup`.
+- Updated build badge to `v26.6.1 - Chart Overlay Cleanup`.
+- Removed the player-facing right-side focus panel and `focus` label from the gameplay canvas.
+- Removed the yellow vertical Quest Moment signal focus bands behind candles.
+- Simplified the frozen Quest Zone overlay into a faint, unlabeled guide band so it no longer competes with candles and range lines.
+- Preserved the Range High, Channel Mean, and Range Low lines and labels.
+
+### Preserved
+
+- v26.6 World 1 candle rhythm improvements
+- v26.6 Bullish/Bearish Engulfing replay sequencing
+- active World 1 answer pool: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji
+- Pattern Bible wording and v26.5 generator fairness rules
+- v26.3.0 compact chart viewport and candle count
+- gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library UI, and coach carousel behavior
+- mobile and desktop layout behavior
+
+### Testing required
+
+- Desktop app load, Start Run, answer selection, timer, normal completion, result summary, and Review missed reads.
+- iPhone/mobile app load, Start Run, answer dock tap targets, timer, bottom-sheet review, and carousel swipe.
+- Confirm yellow vertical focus bands and `focus` labels are not visible on the player-facing chart.
+- Confirm the Quest Zone visual is subtle and unlabeled while Range High, Channel Mean, Range Low, and the Quest Moment banner remain visible.
+- Confirm Bullish/Bearish Engulfing still show the prior pressure candle before Quest Moment and only the engulfing control-shift candle at Quest Moment.
+
+---
+
 ## v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing
 
-Status: current active World 1 replay rhythm and engulfing sequencing patch / test candidate
+Status: previous active World 1 replay rhythm and engulfing sequencing patch / test candidate
 
 ### Changed
 

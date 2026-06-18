@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v26.6 Checkpoint Summary
+# Candle Quest Reborn - v26.6.1 Checkpoint Summary
 
 ## Current build
 
-**v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing**
-Build marker: `v26_6_world1_candle_rhythm_engulfing_replay_sequencing`
+**v26.6.1 - Chart Overlay Cleanup**
+Build marker: `v26_6_1_chart_overlay_cleanup`
 
 ## Base build
 
@@ -14,7 +14,7 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 Active development checkpoint.
 
-v26.6 should be treated as the current World 1 candle rhythm and engulfing replay sequencing build. It preserves the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
+v26.6.1 should be treated as the current chart overlay cleanup build. It preserves the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,21 +47,18 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.6
+## What changed in v26.6.1
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.6 World 1 Candle Rhythm + Engulfing Replay Sequencing.
-- Added a small World 1 setup-story layer for the five active answers.
-- Added controlled push/pause, impulse/pullback, and compression/expansion replay paths before the final Quest Moment candle.
-- Strengthened bounded pushes toward Range Low for Hammer/Bullish Engulfing and toward Range High for Shooting Star/Bearish Engulfing.
-- Added Doji hesitation/compression context before the final balanced Doji candle.
-- Increased pre-signal body-size and wick-length variation while screening setup candles that accidentally read like Hammer, Shooting Star, or Doji.
-- Moved Bullish/Bearish Engulfing prior-candle pressure into the final visible setup candle before Quest Moment.
-- Changed Bullish/Bearish Engulfing Quest Moment replay so only the second engulfing candle prints when the answer timer starts.
-- Preserved the existing final two-candle validator for body-engulfing correctness.
+- Updated the build marker and build badge to v26.6.1 Chart Overlay Cleanup.
+- Removed the player-facing right-side focus panel and `focus` label from the gameplay canvas.
+- Removed the yellow vertical Quest Moment signal focus bands behind candles.
+- Simplified the frozen Quest Zone overlay into a faint, unlabeled guide band.
+- Preserved the Range High, Channel Mean, and Range Low lines and labels.
+- Preserved v26.6 World 1 candle rhythm, setup stories, and Bullish/Bearish Engulfing replay sequencing.
 - Preserved v26.5 Hammer, Shooting Star, Doji, and Engulfing final-candle validation.
-- Left Pattern Bible wording, gameplay, scoring, XP, timer, chart rendering, result screen layout, and coach carousel behavior unchanged.
+- Left Pattern Bible wording, gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library, and coach carousel behavior unchanged.
 
 ### Preserved
 
@@ -78,6 +75,7 @@ Does this feature move the player from recognising shapes toward reading market 
 - v26.1 generator structure and diversity flow
 - v26.1 diversity logic
 - v26.3.0 chart viewport unification
+- v26.6 candle rhythm and engulfing replay sequencing
 - active World 1 answer pool
 - scoring
 - XP
@@ -185,7 +183,7 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 Use GitHub Pages with:
 
 ```text
-?fresh=2660
+?fresh=2661
 ```
 
 Then check:
@@ -209,7 +207,7 @@ Then check:
 17. Desktop full-width uses the v26.3.0 compact recent-candle viewport
 18. Candle render quality remains clean, including tiny-body/doji handling
 19. Range High, Channel Mean, and Range Low remain visible
-20. Setup zone and Quest zone highlights still appear correctly
+20. Setup zone remains subtle and the Quest Zone highlight is faint, unlabeled, and not debug-like
 21. Quest Moment timing and replay behaviour still work
 22. Bullish Engulfing prior bearish candle appears before Quest Moment
 23. Bullish Engulfing second green candle appears at Quest Moment

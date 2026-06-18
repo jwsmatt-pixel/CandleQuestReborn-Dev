@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing`  
-**Build marker:** `v26_6_world1_candle_rhythm_engulfing_replay_sequencing`  
+**Current build:** `v26.6.1 - Chart Overlay Cleanup`  
+**Build marker:** `v26_6_1_chart_overlay_cleanup`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / World 1 candle rhythm and engulfing replay sequencing pass
+**Status:** Active development / chart overlay cleanup pass
 
 ---
 
@@ -129,6 +129,8 @@ v26.2.1 tightened that layer into compact visual missed-read coach cards. v26.2.
 v26.5 tightens the World 1 generator against Pattern Bible v1.0. Hammer, Shooting Star, and Doji now use stricter recipe validation and overlap rejection, while Bullish/Bearish Engulfing now shape and validate the prior candle so the signal reads as a clear two-candle pattern.
 
 v26.6 keeps those final answer rules intact and improves the replay rhythm before Quest Moment. World 1 setup candles now use small controlled market stories: pushes toward range edges, occasional pullbacks, hesitation/compression before Doji, and more varied body/wick sizes without changing the active answer pool. Bullish/Bearish Engulfing now show the prior pressure candle as the final setup beat before Quest Moment, then print only the engulfing control-shift candle when the answer timer starts.
+
+v26.6.1 keeps the v26.6 rhythm and engulfing sequencing intact while cleaning player-facing chart overlays. Yellow focus bands and the `focus` label are removed, and the Quest Zone highlight is reduced to a subtle unlabeled guide so candles, Range High, Channel Mean, Range Low, and the Quest Moment banner remain the main read.
 
 ---
 
@@ -362,10 +364,11 @@ Suggested next sequence:
 
 ```text
 v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing
+v26.6.1 - Chart Overlay Cleanup
 v26.7 - Engulfing Doctrine Engine
 ```
 
-The current larger quality issue is ongoing human visual sampling of the v26.6 candle rhythm and engulfing replay sequencing pass after the generator fairness lock.
+The current larger quality issue is visual sampling of the v26.6.1 chart overlay cleanup while confirming the v26.6 candle rhythm and engulfing replay sequencing remain intact.
 
 ---
 

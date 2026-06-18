@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_6_world1_candle_rhythm_engulfing_replay_sequencing";
+const CANDLE_QUEST_BUILD = "v26_6_1_chart_overlay_cleanup";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing";
+    b.textContent = "v26.6.1 - Chart Overlay Cleanup";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -2116,31 +2116,16 @@ function drawGame(frozen=false){
     ctx.setLineDash([]);
   }
 
-  // Quest zone highlight (frozen)
+  // Quest zone highlight (frozen): keep this as a quiet guide, not a label-heavy overlay.
   if(frozen && run.setupZone){
     const zTop = mapY(run.setupZone.high);
     const zBottom = mapY(run.setupZone.low);
-    ctx.fillStyle = "rgba(255,255,255,.10)";
-    ctx.strokeStyle = "rgba(255,255,255,.55)";
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([6,5]);
+    ctx.fillStyle = "rgba(255,255,255,.045)";
+    ctx.strokeStyle = "rgba(255,255,255,.14)";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([]);
     ctx.fillRect(32, Math.min(zTop,zBottom), W-64, Math.max(8, Math.abs(zBottom-zTop)));
     ctx.strokeRect(32, Math.min(zTop,zBottom), W-64, Math.max(8, Math.abs(zBottom-zTop)));
-    ctx.setLineDash([]);
-    ctx.fillStyle = "rgba(12,20,15,.82)";
-    ctx.fillRect(42, Math.min(zTop,zBottom)+6, 128, 20);
-    ctx.fillStyle = "#fff";
-    ctx.font = "800 11px system-ui";
-    ctx.fillText(run.setupZone.label.replace("setup zone", "Quest Zone"), 50, Math.min(zTop,zBottom)+20);
-  }
-
-  // Future space / focus zone
-  ctx.fillStyle = frozen ? "rgba(255,255,255,.06)" : "rgba(255,255,255,.018)";
-  round(ctx, right+12, 40, W-right-42, H-104, 16, true);
-  if(frozen){
-    ctx.fillStyle="rgba(255,255,255,.78)";
-    ctx.font="800 12px system-ui";
-    ctx.fillText("focus", right+28, 62);
   }
 
   // Draw candles
@@ -2150,11 +2135,6 @@ function drawGame(frozen=false){
     const green = cl >= o;
     const yO=mapY(o), yH=mapY(h), yL=mapY(l), yC=mapY(cl);
     const isSignal = frozen && i >= visibleCandles.length - 3;
-    // Highlight signal candles during Quest Moment
-    if(isSignal){
-      ctx.fillStyle = "rgba(250,204,21,.12)";
-      round(ctx, x-gap*.45, 32, gap*.9, H-88, 12, true);
-    }
     drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal);
   });
 }
