@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.3.0 - Chart Viewport Unification`  
-**Build marker:** `v26_3_0_chart_viewport_unification`  
+**Current build:** `v26.4 - World 1 Pattern Bible Lock`  
+**Build marker:** `v26_4_world1_pattern_bible_lock`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / chart viewport consistency patch
+**Status:** Active development / World 1 pattern wording lock
 
 ---
 
@@ -132,7 +132,7 @@ v26.2.1 tightened that layer into compact visual missed-read coach cards. v26.2.
 
 ### World 1 — Candle Basics
 
-Current active gameplay patterns:
+Current active World 1 answer pool:
 
 - Bullish Engulfing
 - Bearish Engulfing
@@ -140,7 +140,9 @@ Current active gameplay patterns:
 - Shooting Star
 - Doji
 
-Current doctrine/reference concepts being developed:
+`Bullish Candle` and `Bearish Candle` are not active World 1 quiz answers.
+
+Reference concepts being developed for future doctrine work:
 
 - Hammer
 - Shooting Star
@@ -233,7 +235,95 @@ The current priority is:
 
 ---
 
-## Pattern Bible direction
+## World 1 Pattern Bible v1.0
+
+The Pattern Bible defines the law for Candle Quest. In v26.4, the Pattern Library and missed-read coach cues for the five active World 1 answers are aligned to this source of truth.
+
+Active World 1 answer pool:
+
+- Bullish Engulfing
+- Bearish Engulfing
+- Hammer
+- Shooting Star
+- Doji
+
+### Hammer
+
+Core definition: A bullish rejection-style candle with a small body near the top of its range and a long lower wick.
+
+Must-have: Small-to-medium body, body near the top of the full range, clearly long lower wick at least 2x the body size, very small or absent upper wick, and open/close near the candle high.
+
+Invalid if: Lower wick is not clearly longer than the body, body is centered, upper wick is large, it looks more like a Doji, or open/close are too far from the high.
+
+Player cue: Small body near the top, long wick rejecting lower prices.
+
+Common confusion: Doji, Bullish Engulfing.
+
+### Shooting Star
+
+Core definition: A bearish rejection-style candle with a small body near the bottom of its range and a long upper wick.
+
+Must-have: Small-to-medium body, body near the bottom of the full range, clearly long upper wick at least 2x the body size, very small or absent lower wick, and open/close near the candle low.
+
+Invalid if: Upper wick is not clearly longer than the body, body is centered, lower wick is large, it looks more like a Doji, or open/close are too far from the low.
+
+Player cue: Small body near the bottom, long wick rejecting higher prices.
+
+Common confusion: Doji, Bearish Engulfing.
+
+### Doji
+
+Core definition: A neutral indecision candle where open and close are nearly the same.
+
+Must-have: Very small body, open and close nearly the same, body roughly centered within the full range, balanced upper/lower wicks, and neither wick dominating.
+
+Invalid if: Body is too large, one wick is much longer than the other, it clearly rejects one side like a Hammer or Shooting Star, body is strongly near the top or bottom, or it clearly communicates bullish/bearish rejection.
+
+Player cue: Tiny body, balanced wicks, indecision.
+
+Common confusion: Hammer, Shooting Star.
+
+### Bullish Engulfing
+
+Core definition: A two-candle bullish reversal pattern where a bullish candle fully engulfs the previous bearish candle's body.
+
+Must-have: Two candles, first bearish, second bullish, second body completely engulfs the first body, second opens below or near the first close, second closes above the first open, and the second body is clearly larger.
+
+Invalid if: First candle is not bearish, second candle is not bullish, only the wick is engulfed, second candle does not close above the first open, bodies are too similar in size, or the second candle looks like a normal bullish candle.
+
+Player cue: Bearish candle first, then a stronger bullish body swallows it.
+
+Common confusion: Hammer, Bullish rejection.
+
+### Bearish Engulfing
+
+Core definition: A two-candle bearish reversal pattern where a bearish candle fully engulfs the previous bullish candle's body.
+
+Must-have: Two candles, first bullish, second bearish, second body completely engulfs the first body, second opens above or near the first close, second closes below the first open, and the second body is clearly larger.
+
+Invalid if: First candle is not bullish, second candle is not bearish, only the wick is engulfed, second candle does not close below the first open, bodies are too similar in size, or the second candle looks like a normal bearish candle.
+
+Player cue: Bullish candle first, then a stronger bearish body swallows it.
+
+Common confusion: Shooting Star, Bearish rejection.
+
+### Generator fairness rules
+
+- Hammer must not look like a Doji.
+- Shooting Star must not look like a Doji.
+- Doji must not look like a Hammer or Shooting Star.
+- Bullish Engulfing must clearly engulf the prior bearish body.
+- Bearish Engulfing must clearly engulf the prior bullish body.
+- Engulfing patterns should be visibly two-candle patterns, not single-candle rejection patterns.
+- Rejection candles should be visibly single-candle patterns, not engulfing patterns.
+- Distractor answers may be plausible, but the correct answer must be visually defensible.
+- If a candle could reasonably be two World 1 answers, the generator should reject it and regenerate.
+
+These fairness rules are documented for the next pass. v26.4 does not rewrite the generator.
+
+---
+
+## Future Pattern Bible extensions
 
 The Pattern Bible defines the law for Candle Quest.
 
@@ -267,11 +357,12 @@ Pattern → Memorisation
 Suggested next sequence:
 
 ```text
-v26.4 · Natural Candle Rhythm Pass
-v26.5 · Engulfing Doctrine Engine
+v26.5 - World 1 Generator Fairness Pass
+v26.6 - Natural Candle Rhythm Pass
+v26.7 - Engulfing Doctrine Engine
 ```
 
-The next larger quality issue is that background candle sequences can still feel too flat or low-volatility. That should be addressed separately from this v26.3 viewport consistency patch.
+The next larger quality issue is generator fairness against the Pattern Bible. That should be addressed separately from this v26.4 wording/source-of-truth patch.
 
 ---
 

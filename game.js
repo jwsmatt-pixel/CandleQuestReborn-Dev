@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_3_0_chart_viewport_unification";
+const CANDLE_QUEST_BUILD = "v26_4_world1_pattern_bible_lock";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.3.0 - Chart Viewport Unification";
+    b.textContent = "v26.4 - World 1 Pattern Bible Lock";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -84,38 +84,48 @@ const patternDefinitions = {
   "Candle Basics": [
     {
       name:"Bullish Engulfing",
-      type:"Reversal / strength shift",
-      read:"A strong green candle fully takes control after a weaker red candle.",
-      location:"Most useful near Range Low, support, or after a sell-side flush.",
-      cue:"Sellers pushed first, buyers absorbed it, then closed strong."
+      type:"World 1 Pattern Bible v1.0",
+      read:"A two-candle bullish reversal pattern where a bullish candle fully engulfs the previous bearish candle's body.",
+      location:"First candle is bearish. Second candle is bullish, opens below or near the first candle's close, and closes above the first candle's open.",
+      must:"Second candle body completely engulfs the first candle body and is clearly larger.",
+      invalid:"Invalid if the first candle is not bearish, the second is not bullish, only the wick is engulfed, the close does not clear the first open, or the second candle reads like a normal bullish candle.",
+      cue:"Bearish candle first, then a stronger bullish body swallows it."
     },
     {
       name:"Bearish Engulfing",
-      type:"Reversal / weakness shift",
-      read:"A strong red candle fully takes control after a weaker green candle.",
-      location:"Most useful near Range High, resistance, or after a buy-side push.",
-      cue:"Buyers pushed first, sellers absorbed it, then closed weak."
+      type:"World 1 Pattern Bible v1.0",
+      read:"A two-candle bearish reversal pattern where a bearish candle fully engulfs the previous bullish candle's body.",
+      location:"First candle is bullish. Second candle is bearish, opens above or near the first candle's close, and closes below the first candle's open.",
+      must:"Second candle body completely engulfs the first candle body and is clearly larger.",
+      invalid:"Invalid if the first candle is not bullish, the second is not bearish, only the wick is engulfed, the close does not clear the first open, or the second candle reads like a normal bearish candle.",
+      cue:"Bullish candle first, then a stronger bearish body swallows it."
     },
     {
       name:"Hammer",
-      type:"Rejection candle",
-      read:"A candle with a long lower wick and stronger close, showing rejection below.",
-      location:"Best near Range Low or support.",
-      cue:"Price probed lower, failed to hold, then buyers reclaimed."
+      type:"World 1 Pattern Bible v1.0",
+      read:"A bullish rejection-style candle with a small body near the top of its range and a long lower wick.",
+      location:"Open and close both occur near the candle high, with the body positioned near the top of the full range.",
+      must:"Small-to-medium body, clearly long lower wick at least 2x the body size, and very small or absent upper wick.",
+      invalid:"Invalid if the lower wick is not clearly longer than the body, the body is centered, the upper wick is large, it looks more like a Doji, or open/close are too far from the high.",
+      cue:"Small body near the top, long wick rejecting lower prices."
     },
     {
       name:"Shooting Star",
-      type:"Rejection candle",
-      read:"A candle with a long upper wick and weaker close, showing rejection above.",
-      location:"Best near Range High or resistance.",
-      cue:"Price probed higher, failed to hold, then sellers pushed back."
+      type:"World 1 Pattern Bible v1.0",
+      read:"A bearish rejection-style candle with a small body near the bottom of its range and a long upper wick.",
+      location:"Open and close both occur near the candle low, with the body positioned near the bottom of the full range.",
+      must:"Small-to-medium body, clearly long upper wick at least 2x the body size, and very small or absent lower wick.",
+      invalid:"Invalid if the upper wick is not clearly longer than the body, the body is centered, the lower wick is large, it looks more like a Doji, or open/close are too far from the low.",
+      cue:"Small body near the bottom, long wick rejecting higher prices."
     },
     {
       name:"Doji",
-      type:"Indecision",
-      read:"Open and close are very close together, showing hesitation.",
-      location:"More meaningful at key zones than in the middle of nowhere.",
-      cue:"Neither side achieved a clear close. Wait for confirmation."
+      type:"World 1 Pattern Bible v1.0",
+      read:"A neutral indecision candle where open and close are nearly the same.",
+      location:"Body is roughly centered within the candle's full range, with reasonably balanced upper and lower wicks.",
+      must:"Very small body, open and close nearly the same, and neither wick dominates the candle.",
+      invalid:"Invalid if the body is too large, one wick is much longer than the other, the body is strongly near the top or bottom, or the candle clearly rejects one side like a Hammer or Shooting Star.",
+      cue:"Tiny body, balanced wicks, indecision."
     }
   ],
   "Levels": [
@@ -284,7 +294,9 @@ function renderLibrary(category="Candle Basics"){
       </div>
       <h3>${d.name}</h3>
       <p><b>Read:</b> ${d.read}</p>
-      <p><b>Best location:</b> ${d.location}</p>
+      <p><b>${d.must ? "Bible condition" : "Best location"}:</b> ${d.location}</p>
+      ${d.must ? `<p><b>Must-have:</b> ${d.must}</p>` : ""}
+      ${d.invalid ? `<p><b>Invalid if:</b> ${d.invalid}</p>` : ""}
       <p class="definition-cue"><b>Quest cue:</b> ${d.cue}</p>
     </article>
   `).join("");
@@ -422,37 +434,37 @@ function pickRunComment(correct){
 const missedReadCoach = {
   "Bullish Engulfing": {
     visual:"bullish-engulfing",
-    shape:"Two-candle control shift",
+    shape:"Two-candle bullish reversal",
     level:"Range Low / support",
-    cue:"Green body took control after prior red weakness.",
-    tag:"Body takeover"
+    cue:"Bearish candle first, then a stronger bullish body swallows it.",
+    tag:"Body engulf"
   },
   "Bearish Engulfing": {
     visual:"bearish-engulfing",
-    shape:"Two-candle control shift",
+    shape:"Two-candle bearish reversal",
     level:"Range High / resistance",
-    cue:"Red body took control after prior green strength.",
-    tag:"Body takeover"
+    cue:"Bullish candle first, then a stronger bearish body swallows it.",
+    tag:"Body engulf"
   },
   "Hammer": {
     visual:"hammer",
-    shape:"Long lower wick",
+    shape:"Small body near the top",
     level:"Range Low / support",
-    cue:"Lower wick rejected the sell push and closed near the top.",
+    cue:"Small body near the top, long wick rejecting lower prices.",
     tag:"Lower rejection"
   },
   "Shooting Star": {
     visual:"shooting-star",
-    shape:"Long upper wick",
+    shape:"Small body near the bottom",
     level:"Range High / resistance",
-    cue:"Upper wick rejected the buy push and closed near the lows.",
+    cue:"Small body near the bottom, long wick rejecting higher prices.",
     tag:"Upper rejection"
   },
   "Doji": {
     visual:"doji",
-    shape:"Tiny body",
+    shape:"Tiny centered body",
     level:"Channel Mean / key zone",
-    cue:"Open and close stayed almost equal — neither side took control.",
+    cue:"Tiny body, balanced wicks, indecision.",
     tag:"Indecision"
   }
 };

@@ -1,5 +1,36 @@
 # Candle Quest Reborn — Changelog
 
+## v26.4 - World 1 Pattern Bible Lock
+
+Status: current active World 1 wording/source-of-truth patch / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_4_world1_pattern_bible_lock`.
+- Updated build badge to `v26.4 - World 1 Pattern Bible Lock`.
+- Updated the Pattern Library wording for Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji to align with World 1 Pattern Bible v1.0.
+- Added optional Pattern Library Bible detail rows for must-have and invalid-if wording on the five active World 1 entries.
+- Updated missed-read coach card shapes/cues for the five active World 1 patterns to use the Bible player cues.
+- Updated README and checkpoint docs to state the active World 1 answer pool and document World 1 Pattern Bible v1.0.
+
+### Preserved
+
+- active World 1 answer pool: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers
+- generator behavior and fairness logic
+- gameplay, scoring, XP, timer, chart rendering, result screen layout, and coach carousel behavior
+- mobile and desktop layout behavior from v26.3.0
+
+### Testing required
+
+- Desktop app load, Start Run, normal completion, result summary, and Review missed reads.
+- iPhone/mobile app load, Start Run, answer dock tap targets, normal completion, bottom-sheet review, and carousel swipe.
+- Confirm Pattern Library entries show the v1.0 definitions, must-have lines, invalid-if lines, and player cues.
+- Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
+- Confirm Bullish Candle and Bearish Candle do not appear as World 1 quiz answers.
+
+---
+
 ## v26.3.0 - Chart Viewport Unification
 
 Status: current active chart viewport consistency patch / test candidate
