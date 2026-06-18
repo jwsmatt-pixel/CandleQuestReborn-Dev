@@ -1,8 +1,46 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.11 - Mobile Result Hero Header
+
+Status: current active iOS result-screen hero header / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_11_mobile_result_hero_header`.
+- Updated build badge to `v26.2.11 - Mobile Result Hero Header`.
+- Increased only the mobile score-summary hero header typography inside the existing score-header contract.
+- Enlarged `RUN COMPLETE` and `CORRECT READS` from secondary micro-labels into clear hero labels on iPhone.
+- Increased the mobile `X/10` score so it is the dominant result focal point.
+- Slightly strengthened the mobile run title while preserving the current v26.2.10 vertical structure.
+
+### Preserved
+
+- v26.2.10 mobile result screen vertical layout and score-summary structure
+- stat cards
+- Play Again, Lesson Map, and Review missed reads positioning
+- coach overlay and carousel content
+- gameplay, scoring, XP, timer, generator, answer pool, Pattern Library, and missed-read tracking data
+- removed numbered carousel pagination
+- hidden homepage title/XP/shop header on the result screen
+
+### Testing required
+
+- iPhone full run to the score summary.
+- Confirm `RUN COMPLETE`, run title, `X/10`, `CORRECT READS`, and the feedback sentence stay centered and balanced.
+- Confirm `RUN COMPLETE` and `CORRECT READS` are much larger and more readable.
+- Confirm the `X/10` score is larger and clearly the main focal point.
+- Confirm larger text does not overlap or create awkward scrolling.
+- Confirm Review missed reads opens the bottom-sheet coach overlay and Back to score dismisses it.
+- Confirm coach cards still swipe horizontally on iPhone.
+- Confirm Play Again, Lesson Map, and Review missed reads remain visible and tappable.
+- Desktop full run with missed reads to confirm the result screen and carousel arrows remain acceptable.
+- Homepage check to confirm Candle Quest title, XP, and Shop remain visible outside the result screen.
+
+---
+
 ## v26.2.10 - Mobile Result Header Scale Bump
 
-Status: current active iOS result-screen header scale bump / test candidate
+Status: previous iOS result-screen header scale bump / test candidate
 
 ### Changed
 
