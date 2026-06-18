@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_6_1_chart_overlay_cleanup";
+const CANDLE_QUEST_BUILD = "v26_7_world1_location_logic_pass";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.6.1 - Chart Overlay Cleanup";
+    b.textContent = "v26.7 - World 1 Location Logic Pass";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1190,39 +1190,103 @@ function _getVisibleW1EngulfingContext(patternName){
 // ── DEBUG LOGGER ──────────────────────────────────────────────────────────────
 const W1_ACTIVE_PATTERN_SET = new Set(["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"]);
 
-function _createW1SetupStory(patternName){
+function _chooseW1LocationProfile(patternName){
   if(!run || !W1_ACTIVE_PATTERN_SET.has(patternName)) return null;
   const R = run.resistance;
   const S = run.support;
   const M = run.midpoint;
-  const lowerPattern = patternName === "Hammer" || patternName === "Bullish Engulfing";
-  const upperPattern = patternName === "Shooting Star" || patternName === "Bearish Engulfing";
+  const roll = Math.random();
+
+  if(patternName === "Hammer" || patternName === "Bullish Engulfing"){
+    if(roll < 0.78){
+      const target = S + 0.46 + Math.random() * 0.42;
+      return {
+        id:"range-low-support",
+        target,
+        direction:-1,
+        zone:{low:S - 1.3, high:S + 1.3, label:"setup zone: range low"},
+        edgeIntent:true
+      };
+    }
+    const target = M - 0.55 - Math.random() * 1.10;
+    return {
+      id:"mean-pullback-weakness",
+      target,
+      direction:-1,
+      zone:{low:target - 1.15, high:target + 1.15, label:"setup zone: lower channel pullback"},
+      edgeIntent:false,
+      style:"impulse-pullback"
+    };
+  }
+
+  if(patternName === "Shooting Star" || patternName === "Bearish Engulfing"){
+    if(roll < 0.78){
+      const target = R - 0.46 - Math.random() * 0.42;
+      return {
+        id:"range-high-resistance",
+        target,
+        direction:1,
+        zone:{low:R - 1.3, high:R + 1.3, label:"setup zone: range high"},
+        edgeIntent:true
+      };
+    }
+    const target = M + 0.55 + Math.random() * 1.10;
+    return {
+      id:"mean-rally-rejection",
+      target,
+      direction:1,
+      zone:{low:target - 1.15, high:target + 1.15, label:"setup zone: upper channel rally"},
+      edgeIntent:false,
+      style:"impulse-pullback"
+    };
+  }
+
+  if(patternName === "Doji"){
+    if(roll < 0.74){
+      const target = M + (Math.random() < 0.5 ? -1 : 1) * (0.12 + Math.random() * 0.42);
+      return {
+        id:"channel-mean-hesitation",
+        target,
+        direction:Math.random() < 0.5 ? -1 : 1,
+        zone:{low:M - 1.1, high:M + 1.1, label:"setup zone: channel mean"},
+        edgeIntent:false,
+        style:"compression-expansion"
+      };
+    }
+    const highHesitation = Math.random() < 0.5;
+    const target = highHesitation ? R - 0.72 - Math.random() * 0.30 : S + 0.72 + Math.random() * 0.30;
+    return {
+      id:highHesitation ? "range-high-hesitation" : "range-low-hesitation",
+      target,
+      direction:highHesitation ? 1 : -1,
+      zone:{low:target - 1.05, high:target + 1.05, label:highHesitation ? "setup zone: range high hesitation" : "setup zone: range low hesitation"},
+      edgeIntent:false,
+      style:"compression-expansion"
+    };
+  }
+
+  return null;
+}
+
+function _createW1SetupStory(patternName){
+  if(!run || !W1_ACTIVE_PATTERN_SET.has(patternName)) return null;
   const total = 4 + Math.floor(Math.random() * 3);
   const styleRoll = Math.random();
-  const style = styleRoll < 0.34 ? "push-pause" : styleRoll < 0.68 ? "impulse-pullback" : "compression-expansion";
-  let direction = Math.random() < 0.5 ? -1 : 1;
-  let target = M + direction * (1.0 + Math.random() * 1.2);
-
-  if(lowerPattern){
-    direction = -1;
-    target = S + 0.58 + Math.random() * 0.38;
-  } else if(upperPattern){
-    direction = 1;
-    target = R - 0.58 - Math.random() * 0.38;
-  } else if(patternName === "Doji"){
-    direction = Math.random() < 0.5 ? -1 : 1;
-    target = M + direction * (0.35 + Math.random() * 1.35);
-  }
+  const location = _chooseW1LocationProfile(patternName);
+  const style = location?.style || (styleRoll < 0.34 ? "push-pause" : styleRoll < 0.68 ? "impulse-pullback" : "compression-expansion");
+  const direction = location?.direction || (Math.random() < 0.5 ? -1 : 1);
+  const target = location?.target || run.midpoint;
 
   return {
     patternName,
+    location,
     direction,
     target,
     total,
     step: 0,
     style,
     pullbackAt: total > 4 ? 2 + Math.floor(Math.random() * Math.max(1, total - 3)) : 2,
-    edgeIntent: lowerPattern || upperPattern,
+    edgeIntent: !!location?.edgeIntent,
     wickEnergy: 0.75 + Math.random() * 0.55
   };
 }
@@ -1270,7 +1334,8 @@ function _buildW1SetupTransition(prev, clampFn){
 
   if(story.patternName === "Doji"){
     const compressing = progress > 0.45 || story.style === "compression-expansion";
-    const drift = compressing ? (M - prev) * 0.10 : direction * (0.38 + Math.random() * 0.42);
+    const driftTarget = story.target || M;
+    const drift = compressing ? (driftTarget - prev) * 0.10 : direction * (0.38 + Math.random() * 0.42);
     const alternate = stepIndex % 2 === 0 ? 1 : -1;
     let body = drift + alternate * (compressing ? 0.10 : 0.18) + (Math.random() - 0.5) * (compressing ? 0.16 : 0.26);
     const maxBody = compressing ? 0.46 : 0.78;
@@ -1869,6 +1934,9 @@ function freezeScenario(){
 function getSetupTarget(pattern){
   if(!run) return 100;
   const R = run.resistance, S = run.support, M = run.midpoint;
+  if(W1_ACTIVE_PATTERN_SET.has(pattern) && run.setupStory?.patternName === pattern && Number.isFinite(run.setupStory.target)){
+    return run.setupStory.target;
+  }
   const upper = ["Bearish Engulfing","Shooting Star","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
   const lower = ["Bullish Engulfing","Hammer","Support Reclaim","Range Bounce","Breakdown"];
   const trendUp = ["Uptrend Continuation","Pullback Hold"];
@@ -1883,6 +1951,9 @@ function getSetupTarget(pattern){
 function getSetupZone(pattern){
   if(!run) return null;
   const R = run.resistance, S = run.support, M = run.midpoint;
+  if(W1_ACTIVE_PATTERN_SET.has(pattern) && run.setupStory?.patternName === pattern && run.setupStory.location?.zone){
+    return run.setupStory.location.zone;
+  }
   const upper = ["Bearish Engulfing","Shooting Star","Resistance Reject","Failed Breakout","Level Break","Clean Breakout","Range Expansion","Retest Hold","Clean Plan"];
   const lower = ["Bullish Engulfing","Hammer","Support Reclaim","Range Bounce","Breakdown"];
   if(upper.includes(pattern)) return {low:R-1.3, high:R+1.3, label:"setup zone: range high"};

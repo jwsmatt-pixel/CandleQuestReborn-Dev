@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.6.1 - Chart Overlay Cleanup`  
-**Build marker:** `v26_6_1_chart_overlay_cleanup`  
+**Current build:** `v26.7 - World 1 Location Logic Pass`  
+**Build marker:** `v26_7_world1_location_logic_pass`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / chart overlay cleanup pass
+**Status:** Active development / World 1 location logic pass
 
 ---
 
@@ -131,6 +131,8 @@ v26.5 tightens the World 1 generator against Pattern Bible v1.0. Hammer, Shootin
 v26.6 keeps those final answer rules intact and improves the replay rhythm before Quest Moment. World 1 setup candles now use small controlled market stories: pushes toward range edges, occasional pullbacks, hesitation/compression before Doji, and more varied body/wick sizes without changing the active answer pool. Bullish/Bearish Engulfing now show the prior pressure candle as the final setup beat before Quest Moment, then print only the engulfing control-shift candle when the answer timer starts.
 
 v26.6.1 keeps the v26.6 rhythm and engulfing sequencing intact while cleaning player-facing chart overlays. Yellow focus bands and the `focus` label are removed, and the Quest Zone highlight is reduced to a subtle unlabeled guide so candles, Range High, Channel Mean, Range Low, and the Quest Moment banner remain the main read.
+
+v26.7 keeps the same active World 1 answer pool and final Pattern Bible validation while improving where those patterns appear. Hammer and Bullish Engulfing now prefer Range Low/support or controlled lower-channel pullback weakness, Shooting Star and Bearish Engulfing prefer Range High/resistance or controlled upper-channel rally rejection, and Doji prefers Channel Mean hesitation/compression with only occasional edge hesitation.
 
 ---
 
@@ -365,10 +367,11 @@ Suggested next sequence:
 ```text
 v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing
 v26.6.1 - Chart Overlay Cleanup
-v26.7 - Engulfing Doctrine Engine
+v26.7 - World 1 Location Logic Pass
+v26.8 - Engulfing Doctrine Engine
 ```
 
-The current larger quality issue is visual sampling of the v26.6.1 chart overlay cleanup while confirming the v26.6 candle rhythm and engulfing replay sequencing remain intact.
+The current larger quality issue is visual sampling of the v26.7 World 1 location logic while confirming the v26.6 candle rhythm, v26.6 engulfing replay sequencing, and v26.6.1 overlay cleanup remain intact.
 
 ---
 

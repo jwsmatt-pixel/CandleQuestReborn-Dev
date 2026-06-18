@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v26.6.1 Checkpoint Summary
+# Candle Quest Reborn - v26.7 Checkpoint Summary
 
 ## Current build
 
-**v26.6.1 - Chart Overlay Cleanup**
-Build marker: `v26_6_1_chart_overlay_cleanup`
+**v26.7 - World 1 Location Logic Pass**
+Build marker: `v26_7_world1_location_logic_pass`
 
 ## Base build
 
@@ -14,7 +14,7 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 Active development checkpoint.
 
-v26.6.1 should be treated as the current chart overlay cleanup build. It preserves the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
+v26.7 should be treated as the current World 1 location logic build. It preserves the v26.6.1 chart overlay cleanup build, the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,15 +47,18 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.6.1
+## What changed in v26.7
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.6.1 Chart Overlay Cleanup.
-- Removed the player-facing right-side focus panel and `focus` label from the gameplay canvas.
-- Removed the yellow vertical Quest Moment signal focus bands behind candles.
-- Simplified the frozen Quest Zone overlay into a faint, unlabeled guide band.
+- Updated the build marker and build badge to v26.7 World 1 Location Logic Pass.
+- Added lightweight World 1 location profiles inside the existing setup-story generator.
+- Weighted Hammer and Bullish Engulfing toward Range Low/support, with occasional lower-channel pullback/weakness setups.
+- Weighted Shooting Star and Bearish Engulfing toward Range High/resistance, with occasional upper-channel rally/rejection setups.
+- Weighted Doji toward Channel Mean hesitation/compression, with occasional Range High/Range Low hesitation setups.
+- Reused the existing setup target and setup zone plumbing instead of rewriting the generator.
 - Preserved the Range High, Channel Mean, and Range Low lines and labels.
+- Preserved v26.6.1 chart overlay cleanup.
 - Preserved v26.6 World 1 candle rhythm, setup stories, and Bullish/Bearish Engulfing replay sequencing.
 - Preserved v26.5 Hammer, Shooting Star, Doji, and Engulfing final-candle validation.
 - Left Pattern Bible wording, gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library, and coach carousel behavior unchanged.
@@ -76,6 +79,7 @@ Does this feature move the player from recognising shapes toward reading market 
 - v26.1 diversity logic
 - v26.3.0 chart viewport unification
 - v26.6 candle rhythm and engulfing replay sequencing
+- v26.6.1 chart overlay cleanup
 - active World 1 answer pool
 - scoring
 - XP
@@ -183,7 +187,7 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 Use GitHub Pages with:
 
 ```text
-?fresh=2661
+?fresh=267
 ```
 
 Then check:
@@ -193,36 +197,38 @@ Then check:
 3. Start Run works
 4. Active World 1 answer pool remains Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji
 5. Bullish Candle and Bearish Candle do not appear as active World 1 quiz answers
-6. Hammer examples look clearly like Hammer, not Doji
-7. Shooting Star examples look clearly like Shooting Star, not Doji
-8. Doji examples look clearly like Doji, not Hammer or Shooting Star
-9. Bullish Engulfing examples clearly engulf the prior bearish body
-10. Bearish Engulfing examples clearly engulf the prior bullish body
-11. Distractors remain plausible but not unfair
-12. Pattern Library entries match World 1 Pattern Bible v1.0
-13. Missed-read coach card cues align with World 1 Pattern Bible v1.0
-14. Chart renders immediately after Start Run
-15. iPhone/mobile chart keeps the existing compact framing
-16. Desktop half-width chart remains compact, centered, and readable
-17. Desktop full-width uses the v26.3.0 compact recent-candle viewport
-18. Candle render quality remains clean, including tiny-body/doji handling
-19. Range High, Channel Mean, and Range Low remain visible
-20. Setup zone remains subtle and the Quest Zone highlight is faint, unlabeled, and not debug-like
-21. Quest Moment timing and replay behaviour still work
-22. Bullish Engulfing prior bearish candle appears before Quest Moment
-23. Bullish Engulfing second green candle appears at Quest Moment
-24. Bearish Engulfing prior bullish candle appears before Quest Moment
-25. Bearish Engulfing second red candle appears at Quest Moment
-26. Engulfing examples feel like a control shift instead of simultaneous pattern spawning
-27. Answer dock remains below the chart and tappable
-28. Timer still works
-29. Run completes normally
-30. Result summary still works
-31. Review missed reads still works
-32. Desktop result flow remains readable
-33. Desktop carousel arrows still work
-34. No numbered pagination appears
-35. Gameplay/scoring/XP/timer remain unchanged
+6. Hammer examples look clearly like Hammer, not Doji, and mostly appear near Range Low/support or after lower-channel pullback weakness
+7. Shooting Star examples look clearly like Shooting Star, not Doji, and mostly appear near Range High/resistance or after upper-channel rally strength
+8. Doji examples look clearly like Doji, not Hammer or Shooting Star, and mostly appear around Channel Mean hesitation/compression
+9. Bullish Engulfing examples clearly engulf the prior bearish body and mostly appear near Range Low/support or after bearish pressure
+10. Bearish Engulfing examples clearly engulf the prior bullish body and mostly appear near Range High/resistance or after bullish pressure
+11. No World 1 pattern feels randomly placed
+12. Controlled secondary-location variation remains visible without teaching advanced rare contexts
+13. Distractors remain plausible but not unfair
+14. Pattern Library entries match World 1 Pattern Bible v1.0
+15. Missed-read coach card cues align with World 1 Pattern Bible v1.0
+16. Chart renders immediately after Start Run
+17. iPhone/mobile chart keeps the existing compact framing
+18. Desktop half-width chart remains compact, centered, and readable
+19. Desktop full-width uses the v26.3.0 compact recent-candle viewport
+20. Candle render quality remains clean, including tiny-body/doji handling
+21. Range High, Channel Mean, and Range Low remain visible
+22. Setup zone remains subtle and the Quest Zone highlight is faint, unlabeled, and not debug-like
+23. Quest Moment timing and replay behaviour still work
+24. Bullish Engulfing prior bearish candle appears before Quest Moment
+25. Bullish Engulfing second green candle appears at Quest Moment
+26. Bearish Engulfing prior bullish candle appears before Quest Moment
+27. Bearish Engulfing second red candle appears at Quest Moment
+28. Engulfing examples feel like a control shift instead of simultaneous pattern spawning
+29. Answer dock remains below the chart and tappable
+30. Timer still works
+31. Run completes normally
+32. Result summary still works
+33. Review missed reads still works
+34. Desktop result flow remains readable
+35. Desktop carousel arrows still work
+36. No numbered pagination appears
+37. Gameplay/scoring/XP/timer remain unchanged
 
 ## Known watch points
 
@@ -231,16 +237,16 @@ Then check:
 - The mobile hero parity pass should still be visually checked on a real iPhone because Safari text metrics can differ from desktop emulation.
 - The bottom-sheet height may still need device-specific tuning after real iPhone testing.
 - Coach carousel slides remain generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v26.6.
-- Generator fairness is improved through validation and retry rules, but still needs human visual sampling across many runs.
+- Comparative coach cards are a future feature, not included in v26.7.
+- Generator fairness is preserved through validation and retry rules, but location weighting still needs human visual sampling across many runs.
 
 ## Next intended work
 
 Recommended sequence:
 
 ```text
-v26.7 - Comparative Coach Cards / Confusion Pair Tracking
-v26.8 - Engulfing Doctrine Engine
+v26.8 - Comparative Coach Cards / Confusion Pair Tracking
+v26.9 - Engulfing Doctrine Engine
 ```
 
 Do not combine market rhythm, comparative cards, and deeper engulfing doctrine into one patch.

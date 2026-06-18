@@ -1,8 +1,46 @@
 # Candle Quest Reborn — Changelog
 
+## v26.7 - World 1 Location Logic Pass
+
+Status: current active World 1 location logic patch / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_7_world1_location_logic_pass`.
+- Updated build badge to `v26.7 - World 1 Location Logic Pass`.
+- Added lightweight World 1 location profiles inside the existing setup-story generator.
+- Weighted Hammer and Bullish Engulfing toward Range Low/support, with occasional lower-channel pullback/weakness setups.
+- Weighted Shooting Star and Bearish Engulfing toward Range High/resistance, with occasional upper-channel rally/rejection setups.
+- Weighted Doji toward Channel Mean hesitation/compression, with occasional Range High/Range Low hesitation setups.
+- Reused existing setup target and setup zone plumbing so location changes remain small and explainable.
+
+### Preserved
+
+- active World 1 answer pool: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers
+- Pattern Bible wording and v26.5 final-candle validation
+- v26.6 candle rhythm and Bullish/Bearish Engulfing replay sequencing
+- v26.6.1 chart overlay cleanup
+- v26.3.0 compact chart viewport and candle count
+- gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library UI, and coach carousel behavior
+- mobile and desktop layout behavior
+
+### Testing required
+
+- Desktop app load, Start Run, answer selection, timer, normal completion, result summary, and Review missed reads.
+- iPhone/mobile app load, Start Run, answer dock tap targets, timer, bottom-sheet review, and carousel swipe.
+- Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
+- Confirm Hammer/Bullish Engulfing mostly form after bearish pressure near Range Low/support, with occasional lower-channel pullback setups.
+- Confirm Shooting Star/Bearish Engulfing mostly form after bullish pressure near Range High/resistance, with occasional upper-channel rally setups.
+- Confirm Doji mostly forms around Channel Mean compression/hesitation, with edge hesitation only as controlled variation.
+- Confirm Bullish/Bearish Engulfing still show the prior pressure candle before Quest Moment and only the engulfing control-shift candle at Quest Moment.
+- Confirm yellow focus bands and heavy debug overlays are not visible on the player-facing chart.
+
+---
+
 ## v26.6.1 - Chart Overlay Cleanup
 
-Status: current active chart overlay cleanup patch / test candidate
+Status: previous chart overlay cleanup patch / test candidate
 
 ### Changed
 
