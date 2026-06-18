@@ -2,8 +2,8 @@
 
 ## Current build
 
-**v26.6 - World 1 Candle Rhythm Pass**
-Build marker: `v26_6_world1_candle_rhythm_pass`
+**v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing**
+Build marker: `v26_6_world1_candle_rhythm_engulfing_replay_sequencing`
 
 ## Base build
 
@@ -14,7 +14,7 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 Active development checkpoint.
 
-v26.6 should be treated as the current World 1 candle rhythm build. It preserves the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
+v26.6 should be treated as the current World 1 candle rhythm and engulfing replay sequencing build. It preserves the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -51,13 +51,15 @@ Does this feature move the player from recognising shapes toward reading market 
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.6.
+- Updated the build marker and build badge to v26.6 World 1 Candle Rhythm + Engulfing Replay Sequencing.
 - Added a small World 1 setup-story layer for the five active answers.
 - Added controlled push/pause, impulse/pullback, and compression/expansion replay paths before the final Quest Moment candle.
 - Strengthened bounded pushes toward Range Low for Hammer/Bullish Engulfing and toward Range High for Shooting Star/Bearish Engulfing.
 - Added Doji hesitation/compression context before the final balanced Doji candle.
 - Increased pre-signal body-size and wick-length variation while screening setup candles that accidentally read like Hammer, Shooting Star, or Doji.
-- Strengthened Bullish/Bearish Engulfing prior-candle pressure while preserving the existing final two-candle validator.
+- Moved Bullish/Bearish Engulfing prior-candle pressure into the final visible setup candle before Quest Moment.
+- Changed Bullish/Bearish Engulfing Quest Moment replay so only the second engulfing candle prints when the answer timer starts.
+- Preserved the existing final two-candle validator for body-engulfing correctness.
 - Preserved v26.5 Hammer, Shooting Star, Doji, and Engulfing final-candle validation.
 - Left Pattern Bible wording, gameplay, scoring, XP, timer, chart rendering, result screen layout, and coach carousel behavior unchanged.
 
@@ -153,7 +155,7 @@ The Pattern Bible is the current source of truth for the five active World 1 ans
 - Distractor answers may be plausible, but the correct answer must be visually defensible.
 - If a candle could reasonably be two World 1 answers, the generator should reject it and regenerate.
 
-These fairness rules are enforced by the v26.5 World 1 generator fairness pass and preserved by the v26.6 candle rhythm pass.
+These fairness rules are enforced by the v26.5 World 1 generator fairness pass and preserved by the v26.6 candle rhythm and engulfing replay sequencing pass.
 
 ## Current review philosophy
 
@@ -183,7 +185,7 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 Use GitHub Pages with:
 
 ```text
-?fresh=2650
+?fresh=2660
 ```
 
 Then check:
@@ -209,15 +211,20 @@ Then check:
 19. Range High, Channel Mean, and Range Low remain visible
 20. Setup zone and Quest zone highlights still appear correctly
 21. Quest Moment timing and replay behaviour still work
-22. Answer dock remains below the chart and tappable
-23. Timer still works
-24. Run completes normally
-25. Result summary still works
-26. Review missed reads still works
-27. Desktop result flow remains readable
-28. Desktop carousel arrows still work
-29. No numbered pagination appears
-30. Gameplay/scoring/XP/timer remain unchanged
+22. Bullish Engulfing prior bearish candle appears before Quest Moment
+23. Bullish Engulfing second green candle appears at Quest Moment
+24. Bearish Engulfing prior bullish candle appears before Quest Moment
+25. Bearish Engulfing second red candle appears at Quest Moment
+26. Engulfing examples feel like a control shift instead of simultaneous pattern spawning
+27. Answer dock remains below the chart and tappable
+28. Timer still works
+29. Run completes normally
+30. Result summary still works
+31. Review missed reads still works
+32. Desktop result flow remains readable
+33. Desktop carousel arrows still work
+34. No numbered pagination appears
+35. Gameplay/scoring/XP/timer remain unchanged
 
 ## Known watch points
 

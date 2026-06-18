@@ -1,18 +1,20 @@
 # Candle Quest Reborn — Changelog
 
-## v26.6 - World 1 Candle Rhythm Pass
+## v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing
 
-Status: current active World 1 replay rhythm patch / test candidate
+Status: current active World 1 replay rhythm and engulfing sequencing patch / test candidate
 
 ### Changed
 
-- Updated `game.js` build marker to `v26_6_world1_candle_rhythm_pass`.
-- Updated build badge to `v26.6 - World 1 Candle Rhythm Pass`.
+- Updated `game.js` build marker to `v26_6_world1_candle_rhythm_engulfing_replay_sequencing`.
+- Updated build badge to `v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing`.
 - Added a small World 1 setup-story layer for the five active answers so replay candles form controlled push/pause, impulse/pullback, and compression/expansion paths before Quest Moment.
 - Added stronger but bounded pre-signal movement toward Range Low for Hammer/Bullish Engulfing and toward Range High for Shooting Star/Bearish Engulfing.
 - Added Doji-specific hesitation context so the final Doji appears after movement or compression instead of flat mean drift.
 - Increased body and wick variation in World 1 setup candles while screening out setup candles that accidentally read like Hammer, Shooting Star, or Doji.
-- Strengthened the prior candle in Bullish/Bearish Engulfing setups and kept the final two-candle engulfing validator in place.
+- Moved Bullish/Bearish Engulfing prior-candle shaping into the final visible setup beat so the bearish/bullish pressure candle appears before Quest Moment.
+- Changed Bullish/Bearish Engulfing Quest Moment generation to print only the second engulfing candle, then start the answer timer.
+- Kept the final two-candle engulfing validator in place for body-engulfing correctness.
 
 ### Preserved
 
@@ -31,6 +33,7 @@ Status: current active World 1 replay rhythm patch / test candidate
 - Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
 - Confirm Bullish Candle and Bearish Candle do not appear as World 1 quiz answers.
 - Visually sample World 1 replays: setup candles should show more believable pushes, pullbacks, body variation, and wick variation without making final Quest Moment candles ambiguous.
+- Confirm Bullish/Bearish Engulfing show the prior pressure candle before Quest Moment and only the engulfing control-shift candle at Quest Moment.
 
 ---
 

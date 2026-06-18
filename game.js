@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_6_world1_candle_rhythm_pass";
+const CANDLE_QUEST_BUILD = "v26_6_world1_candle_rhythm_engulfing_replay_sequencing";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.6 - World 1 Candle Rhythm Pass";
+    b.textContent = "v26.6 - World 1 Candle Rhythm + Engulfing Replay Sequencing";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -767,9 +767,15 @@ function startRun(worldId=activeWorld){
   run.timer = null;
   run.tick = setInterval(()=>{
     if(!run || run.paused) return;
+    if(run.setupPattern && run.setupSteps <= 0 && run.nextFreeze <= 0){
+      freezeScenario();
+      drawGame(true);
+      return;
+    }
+    const wasFinishingSetup = !!run.setupPattern && run.setupSteps > 0;
     addCandle();
     run.nextFreeze--;
-    if(run.nextFreeze<=0) freezeScenario();
+    if(run.nextFreeze<=0 && !(wasFinishingSetup && run.setupSteps <= 0)) freezeScenario();
     drawGame();
   },520);
 }
@@ -1136,37 +1142,49 @@ function _validateW1Engulfing(patternName, first, second){
   return false;
 }
 
-function _prepareW1EngulfingContext(patternName, clampFn){
-  if(!run || !run.candles.length) return null;
-  const lastIndex = run.candles.length - 1;
-  const prevClose = run.candles[lastIndex][3];
-  const firstBody = 0.86 + Math.random() * 0.44;
-  let first;
+function _isW1EngulfingPattern(patternName){
+  return patternName === "Bullish Engulfing" || patternName === "Bearish Engulfing";
+}
+
+function _buildW1EngulfingPriorCandle(patternName, prev, clampFn, story=null){
+  const edgeBoost = story && story.edgeIntent ? 0.16 : 0;
+  const body = 0.90 + edgeBoost + Math.random() * 0.46;
+  let candle;
 
   if(patternName === "Bullish Engulfing"){
-    const firstOpen = clampFn(prevClose + firstBody);
-    first = {
-      open: firstOpen,
-      close: prevClose,
-      high: clampFn(firstOpen + 0.18 + Math.random() * 0.18),
-      low: clampFn(prevClose - 0.22 - Math.random() * 0.22)
+    const close = clampFn(prev - body);
+    candle = {
+      open: prev,
+      close,
+      high: clampFn(prev + 0.16 + Math.random() * 0.22),
+      low: clampFn(close - 0.24 - Math.random() * 0.28)
     };
   } else if(patternName === "Bearish Engulfing"){
-    const firstOpen = clampFn(prevClose - firstBody);
-    first = {
-      open: firstOpen,
-      close: prevClose,
-      high: clampFn(prevClose + 0.22 + Math.random() * 0.22),
-      low: clampFn(firstOpen - 0.18 - Math.random() * 0.18)
+    const close = clampFn(prev + body);
+    candle = {
+      open: prev,
+      close,
+      high: clampFn(close + 0.24 + Math.random() * 0.28),
+      low: clampFn(prev - 0.16 - Math.random() * 0.22)
     };
   } else {
     return null;
   }
 
-  first.high = Math.max(first.high, first.open, first.close);
-  first.low = Math.min(first.low, first.open, first.close);
-  run.candles[lastIndex] = [first.open, first.high, first.low, first.close];
-  return first;
+  candle.high = Math.max(candle.high, candle.open, candle.close);
+  candle.low = Math.min(candle.low, candle.open, candle.close);
+  return candle;
+}
+
+function _getVisibleW1EngulfingContext(patternName){
+  if(!run || !run.candles.length) return null;
+  const [open, high, low, close] = run.candles[run.candles.length - 1];
+  const first = {open, high, low, close};
+  const body = Math.abs(close - open);
+  if(body < 0.45) return null;
+  if(patternName === "Bullish Engulfing" && close < open) return first;
+  if(patternName === "Bearish Engulfing" && close > open) return first;
+  return null;
 }
 
 // ── DEBUG LOGGER ──────────────────────────────────────────────────────────────
@@ -1244,6 +1262,11 @@ function _buildW1SetupTransition(prev, clampFn){
   let direction = story.direction;
   const target = story.target;
   let distance = target - prev;
+
+  if(_isW1EngulfingPattern(story.patternName) && stepIndex >= story.total - 1){
+    story.step++;
+    return _buildW1EngulfingPriorCandle(story.patternName, prev, clampFn, story);
+  }
 
   if(story.patternName === "Doji"){
     const compressing = progress > 0.45 || story.style === "compression-expansion";
@@ -1352,7 +1375,7 @@ function _pickDiversePattern(pool, history){
 function addCandle(forced=null){
   if(!run) return;
 
-  const prev = run.candles.length ? run.candles[run.candles.length-1][3] : run.price;
+  let prev = run.candles.length ? run.candles[run.candles.length-1][3] : run.price;
   let o = prev, c, h, l;
 
   function clampToWorld(v){
@@ -1481,31 +1504,39 @@ function addCandle(forced=null){
     o = prev;
 
     if(p==="Bullish Engulfing"){
-      const first = _prepareW1EngulfingContext("Bullish Engulfing", clampToWorld);
-      const firstBody = first ? Math.abs(first.close - first.open) : 0.85;
-      o = prev;
-      c = clampToWorld(Math.max(first ? first.open + 0.22 : S + 1.4, o + firstBody * (1.45 + Math.random()*0.25)));
-      h = c + 0.16 + Math.random()*0.10;
-      l = o - 0.14 - Math.random()*0.08;
-      const second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
+      let first = _getVisibleW1EngulfingContext("Bullish Engulfing");
+      if(!first){
+        first = _buildW1EngulfingPriorCandle("Bullish Engulfing", prev + 0.95, clampToWorld);
+      }
+      const firstBody = first ? Math.abs(first.close - first.open) : 0.90;
+      o = first ? first.close : prev;
+      c = clampToWorld(o + firstBody * (1.46 + Math.random()*0.24));
+      h = c + 0.16 + Math.random()*0.12;
+      l = o - 0.12 - Math.random()*0.10;
+      let second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
       if(first && !_validateW1Engulfing("Bullish Engulfing", first, second)){
-        c = clampToWorld(first.close + firstBody * 1.48);
+        c = clampToWorld(first.open + 0.30 + Math.random()*0.16);
         h = c + 0.18;
-        l = o - 0.16;
+        l = o - 0.14;
+        second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
       }
     }
     else if(p==="Bearish Engulfing"){
-      const first = _prepareW1EngulfingContext("Bearish Engulfing", clampToWorld);
-      const firstBody = first ? Math.abs(first.close - first.open) : 0.85;
-      o = prev;
-      c = clampToWorld(Math.min(first ? first.open - 0.22 : R - 1.4, o - firstBody * (1.45 + Math.random()*0.25)));
-      h = o + 0.14 + Math.random()*0.08;
-      l = c - 0.16 - Math.random()*0.10;
-      const second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
+      let first = _getVisibleW1EngulfingContext("Bearish Engulfing");
+      if(!first){
+        first = _buildW1EngulfingPriorCandle("Bearish Engulfing", prev - 0.95, clampToWorld);
+      }
+      const firstBody = first ? Math.abs(first.close - first.open) : 0.90;
+      o = first ? first.close : prev;
+      c = clampToWorld(o - firstBody * (1.46 + Math.random()*0.24));
+      h = o + 0.12 + Math.random()*0.10;
+      l = c - 0.16 - Math.random()*0.12;
+      let second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
       if(first && !_validateW1Engulfing("Bearish Engulfing", first, second)){
-        c = clampToWorld(first.close - firstBody * 1.48);
-        h = o + 0.16;
+        c = clampToWorld(first.open - 0.30 - Math.random()*0.16);
+        h = o + 0.14;
         l = c - 0.18;
+        second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
       }
     }
     else if(p==="Hammer"){
@@ -1809,7 +1840,7 @@ function freezeScenario(){
     run.setupSteps = run.setupStory ? run.setupStory.total : 4 + Math.floor(Math.random()*2);
     run.setupPhase = "forming";
     run.setupPulse = 1;
-    run.nextFreeze = run.setupSteps + 1;
+    run.nextFreeze = run.setupSteps;
     $("timeText").textContent = "—";
     $("runHint").textContent = "Setup forming — watch how price behaves around the channel.";
     renderAnswerDock("waiting");
