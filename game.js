@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_9_world1_lockdown_candidate";
+const CANDLE_QUEST_BUILD = "v27_0_world1_lockdown";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.9 - World 1 Lockdown Candidate";
+    b.textContent = "v27.0 - World 1 Lockdown";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
