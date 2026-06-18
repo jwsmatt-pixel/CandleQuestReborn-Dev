@@ -1,8 +1,42 @@
 # Candle Quest Reborn — Changelog
 
+## v26.6 - World 1 Candle Rhythm Pass
+
+Status: current active World 1 replay rhythm patch / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_6_world1_candle_rhythm_pass`.
+- Updated build badge to `v26.6 - World 1 Candle Rhythm Pass`.
+- Added a small World 1 setup-story layer for the five active answers so replay candles form controlled push/pause, impulse/pullback, and compression/expansion paths before Quest Moment.
+- Added stronger but bounded pre-signal movement toward Range Low for Hammer/Bullish Engulfing and toward Range High for Shooting Star/Bearish Engulfing.
+- Added Doji-specific hesitation context so the final Doji appears after movement or compression instead of flat mean drift.
+- Increased body and wick variation in World 1 setup candles while screening out setup candles that accidentally read like Hammer, Shooting Star, or Doji.
+- Strengthened the prior candle in Bullish/Bearish Engulfing setups and kept the final two-candle engulfing validator in place.
+
+### Preserved
+
+- active World 1 answer pool: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers
+- Pattern Bible wording from v26.4
+- v26.5 final-candle validation and overlap rejection
+- chart viewport/render behavior from v26.3.0
+- gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library UI, and coach carousel behavior
+- mobile and desktop layout behavior
+
+### Testing required
+
+- Desktop app load, Start Run, normal completion, result summary, and Review missed reads.
+- iPhone/mobile app load, Start Run, answer dock tap targets, normal completion, bottom-sheet review, and carousel swipe.
+- Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
+- Confirm Bullish Candle and Bearish Candle do not appear as World 1 quiz answers.
+- Visually sample World 1 replays: setup candles should show more believable pushes, pullbacks, body variation, and wick variation without making final Quest Moment candles ambiguous.
+
+---
+
 ## v26.5 - World 1 Generator Fairness Pass
 
-Status: current active World 1 generator fairness patch / test candidate
+Status: previous World 1 generator fairness patch / test candidate
 
 ### Changed
 

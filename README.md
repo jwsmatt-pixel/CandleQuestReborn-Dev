@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.5 - World 1 Generator Fairness Pass`  
-**Build marker:** `v26_5_world1_generator_fairness_pass`  
+**Current build:** `v26.6 - World 1 Candle Rhythm Pass`  
+**Build marker:** `v26_6_world1_candle_rhythm_pass`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / World 1 generator fairness pass
+**Status:** Active development / World 1 candle rhythm pass
 
 ---
 
@@ -127,6 +127,8 @@ v26.2 added the first learning-review layer: wrong answers and timeouts are stor
 v26.2.1 tightened that layer into compact visual missed-read coach cards. v26.2.2 then expands the review into a swipeable **Missed Reads Coach Carousel**, with larger chart-style visual slides that teach each missed pattern through Shape + Location cues.
 
 v26.5 tightens the World 1 generator against Pattern Bible v1.0. Hammer, Shooting Star, and Doji now use stricter recipe validation and overlap rejection, while Bullish/Bearish Engulfing now shape and validate the prior candle so the signal reads as a clear two-candle pattern.
+
+v26.6 keeps those final answer rules intact and improves the replay rhythm before Quest Moment. World 1 setup candles now use small controlled market stories: pushes toward range edges, occasional pullbacks, hesitation/compression before Doji, and more varied body/wick sizes without changing the active answer pool.
 
 ---
 
@@ -321,7 +323,7 @@ Common confusion: Shooting Star, Bearish rejection.
 - Distractor answers may be plausible, but the correct answer must be visually defensible.
 - If a candle could reasonably be two World 1 answers, the generator should reject it and regenerate.
 
-These fairness rules are now enforced more strictly by the v26.5 World 1 generator fairness pass.
+These fairness rules are enforced by the v26.5 World 1 generator fairness pass and preserved by the v26.6 candle rhythm pass.
 
 ---
 
@@ -359,11 +361,11 @@ Pattern → Memorisation
 Suggested next sequence:
 
 ```text
-v26.6 - Natural Candle Rhythm Pass
+v26.6 - World 1 Candle Rhythm Pass
 v26.7 - Engulfing Doctrine Engine
 ```
 
-The next larger quality issue is natural candle rhythm after the generator fairness pass. That should be addressed separately from this v26.5 Pattern Bible enforcement patch.
+The current larger quality issue is ongoing human visual sampling of the v26.6 candle rhythm pass after the generator fairness lock.
 
 ---
 

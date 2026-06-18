@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v26.5 Checkpoint Summary
+# Candle Quest Reborn - v26.6 Checkpoint Summary
 
 ## Current build
 
-**v26.5 - World 1 Generator Fairness Pass**
-Build marker: `v26_5_world1_generator_fairness_pass`
+**v26.6 - World 1 Candle Rhythm Pass**
+Build marker: `v26_6_world1_candle_rhythm_pass`
 
 ## Base build
 
@@ -14,7 +14,7 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 Active development checkpoint.
 
-v26.5 should be treated as the current World 1 generator fairness build. It preserves the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
+v26.6 should be treated as the current World 1 candle rhythm build. It preserves the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,16 +47,18 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v26.5
+## What changed in v26.6
 
 ### Code / game state
 
-- Updated the build marker and build badge to v26.5.
-- Tightened Hammer, Shooting Star, and Doji recipe ranges and validation thresholds against World 1 Pattern Bible v1.0.
-- Added shared World 1 candle-shape metrics for body size, wick balance, body position, and body proximity to high/low.
-- Added overlap rejection so Hammer/Shooting Star do not validate as Doji-like candles and Doji does not validate as a Hammer/Shooting Star style rejection candle.
-- Validates shifted final forced candles after they are aligned to the live previous close.
-- Added explicit prior-candle shaping and two-candle validation for Bullish Engulfing and Bearish Engulfing.
+- Updated the build marker and build badge to v26.6.
+- Added a small World 1 setup-story layer for the five active answers.
+- Added controlled push/pause, impulse/pullback, and compression/expansion replay paths before the final Quest Moment candle.
+- Strengthened bounded pushes toward Range Low for Hammer/Bullish Engulfing and toward Range High for Shooting Star/Bearish Engulfing.
+- Added Doji hesitation/compression context before the final balanced Doji candle.
+- Increased pre-signal body-size and wick-length variation while screening setup candles that accidentally read like Hammer, Shooting Star, or Doji.
+- Strengthened Bullish/Bearish Engulfing prior-candle pressure while preserving the existing final two-candle validator.
+- Preserved v26.5 Hammer, Shooting Star, Doji, and Engulfing final-candle validation.
 - Left Pattern Bible wording, gameplay, scoring, XP, timer, chart rendering, result screen layout, and coach carousel behavior unchanged.
 
 ### Preserved
@@ -70,6 +72,7 @@ Does this feature move the player from recognising shapes toward reading market 
 - v26.2 missed-read tracking
 - v26.1.1 tiny candle renderer cleanup
 - v26.4 Pattern Bible wording
+- v26.5 generator fairness validation
 - v26.1 generator structure and diversity flow
 - v26.1 diversity logic
 - v26.3.0 chart viewport unification
@@ -150,7 +153,7 @@ The Pattern Bible is the current source of truth for the five active World 1 ans
 - Distractor answers may be plausible, but the correct answer must be visually defensible.
 - If a candle could reasonably be two World 1 answers, the generator should reject it and regenerate.
 
-These fairness rules are now enforced more strictly by the v26.5 World 1 generator fairness pass.
+These fairness rules are enforced by the v26.5 World 1 generator fairness pass and preserved by the v26.6 candle rhythm pass.
 
 ## Current review philosophy
 
@@ -223,7 +226,7 @@ Then check:
 - The mobile hero parity pass should still be visually checked on a real iPhone because Safari text metrics can differ from desktop emulation.
 - The bottom-sheet height may still need device-specific tuning after real iPhone testing.
 - Coach carousel slides remain generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v26.5.
+- Comparative coach cards are a future feature, not included in v26.6.
 - Generator fairness is improved through validation and retry rules, but still needs human visual sampling across many runs.
 
 ## Next intended work
@@ -231,7 +234,6 @@ Then check:
 Recommended sequence:
 
 ```text
-v26.6 - Natural Candle Rhythm Pass
 v26.7 - Comparative Coach Cards / Confusion Pair Tracking
 v26.8 - Engulfing Doctrine Engine
 ```

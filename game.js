@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v26_5_world1_generator_fairness_pass";
+const CANDLE_QUEST_BUILD = "v26_6_world1_candle_rhythm_pass";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v26.5 - World 1 Generator Fairness Pass";
+    b.textContent = "v26.6 - World 1 Candle Rhythm Pass";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -732,6 +732,7 @@ function startRun(worldId=activeWorld){
     setupPattern:null,
     setupSteps:0,
     setupZone:null,
+    setupStory:null,
 
     momentum:0,
     volPulse:0,
@@ -1139,7 +1140,7 @@ function _prepareW1EngulfingContext(patternName, clampFn){
   if(!run || !run.candles.length) return null;
   const lastIndex = run.candles.length - 1;
   const prevClose = run.candles[lastIndex][3];
-  const firstBody = 0.72 + Math.random() * 0.24;
+  const firstBody = 0.86 + Math.random() * 0.44;
   let first;
 
   if(patternName === "Bullish Engulfing"){
@@ -1147,16 +1148,16 @@ function _prepareW1EngulfingContext(patternName, clampFn){
     first = {
       open: firstOpen,
       close: prevClose,
-      high: clampFn(firstOpen + 0.16 + Math.random() * 0.08),
-      low: clampFn(prevClose - 0.16 - Math.random() * 0.08)
+      high: clampFn(firstOpen + 0.18 + Math.random() * 0.18),
+      low: clampFn(prevClose - 0.22 - Math.random() * 0.22)
     };
   } else if(patternName === "Bearish Engulfing"){
     const firstOpen = clampFn(prevClose - firstBody);
     first = {
       open: firstOpen,
       close: prevClose,
-      high: clampFn(prevClose + 0.16 + Math.random() * 0.08),
-      low: clampFn(firstOpen - 0.16 - Math.random() * 0.08)
+      high: clampFn(prevClose + 0.22 + Math.random() * 0.22),
+      low: clampFn(firstOpen - 0.18 - Math.random() * 0.18)
     };
   } else {
     return null;
@@ -1169,6 +1170,134 @@ function _prepareW1EngulfingContext(patternName, clampFn){
 }
 
 // ── DEBUG LOGGER ──────────────────────────────────────────────────────────────
+const W1_ACTIVE_PATTERN_SET = new Set(["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"]);
+
+function _createW1SetupStory(patternName){
+  if(!run || !W1_ACTIVE_PATTERN_SET.has(patternName)) return null;
+  const R = run.resistance;
+  const S = run.support;
+  const M = run.midpoint;
+  const lowerPattern = patternName === "Hammer" || patternName === "Bullish Engulfing";
+  const upperPattern = patternName === "Shooting Star" || patternName === "Bearish Engulfing";
+  const total = 4 + Math.floor(Math.random() * 3);
+  const styleRoll = Math.random();
+  const style = styleRoll < 0.34 ? "push-pause" : styleRoll < 0.68 ? "impulse-pullback" : "compression-expansion";
+  let direction = Math.random() < 0.5 ? -1 : 1;
+  let target = M + direction * (1.0 + Math.random() * 1.2);
+
+  if(lowerPattern){
+    direction = -1;
+    target = S + 0.58 + Math.random() * 0.38;
+  } else if(upperPattern){
+    direction = 1;
+    target = R - 0.58 - Math.random() * 0.38;
+  } else if(patternName === "Doji"){
+    direction = Math.random() < 0.5 ? -1 : 1;
+    target = M + direction * (0.35 + Math.random() * 1.35);
+  }
+
+  return {
+    patternName,
+    direction,
+    target,
+    total,
+    step: 0,
+    style,
+    pullbackAt: total > 4 ? 2 + Math.floor(Math.random() * Math.max(1, total - 3)) : 2,
+    edgeIntent: lowerPattern || upperPattern,
+    wickEnergy: 0.75 + Math.random() * 0.55
+  };
+}
+
+function _shapeW1SetupCandle(o, c, h, l, story){
+  const candle = { open:o, high:h, low:l, close:c };
+  const body = Math.abs(candle.close - candle.open);
+  if(body < 0.16){
+    const dir = story.direction || (Math.random() < 0.5 ? -1 : 1);
+    candle.close = candle.open + dir * 0.18;
+  }
+
+  candle.high = Math.max(candle.high, candle.open, candle.close);
+  candle.low = Math.min(candle.low, candle.open, candle.close);
+
+  if(_looksLikeW1Hammer(candle) || _looksLikeW1ShootingStar(candle) || _looksLikeW1Doji(candle)){
+    const bodyTop = Math.max(candle.open, candle.close);
+    const bodyBottom = Math.min(candle.open, candle.close);
+    const pad = 0.28 + Math.random() * 0.20;
+    candle.high = bodyTop + pad;
+    candle.low = bodyBottom - pad;
+  }
+
+  return candle;
+}
+
+function _buildW1SetupTransition(prev, clampFn){
+  const story = run.setupStory;
+  if(!story) return null;
+
+  const R = run.resistance;
+  const S = run.support;
+  const M = run.midpoint;
+  const stepIndex = story.step;
+  const lastStep = Math.max(1, story.total - 1);
+  const progress = Math.min(1, stepIndex / lastStep);
+  let direction = story.direction;
+  const target = story.target;
+  let distance = target - prev;
+
+  if(story.patternName === "Doji"){
+    const compressing = progress > 0.45 || story.style === "compression-expansion";
+    const drift = compressing ? (M - prev) * 0.10 : direction * (0.38 + Math.random() * 0.42);
+    const alternate = stepIndex % 2 === 0 ? 1 : -1;
+    let body = drift + alternate * (compressing ? 0.10 : 0.18) + (Math.random() - 0.5) * (compressing ? 0.16 : 0.26);
+    const maxBody = compressing ? 0.46 : 0.78;
+    body = Math.max(-maxBody, Math.min(maxBody, body));
+    const close = clampFn(prev + body);
+    const wickBase = compressing ? 0.36 + Math.random() * 0.34 : 0.48 + Math.random() * 0.48;
+    const upper = wickBase * (0.82 + Math.random() * 0.38);
+    const lower = wickBase * (0.82 + Math.random() * 0.38);
+    story.step++;
+    return _shapeW1SetupCandle(prev, close, Math.max(prev, close) + upper, Math.min(prev, close) - lower, story);
+  }
+
+  if(story.style === "impulse-pullback" && stepIndex === story.pullbackAt){
+    direction *= -1;
+    distance = direction * (0.58 + Math.random() * 0.62);
+  }
+
+  const edgeNear = story.edgeIntent && progress > 0.45;
+  const baseStep = edgeNear ? 0.70 + Math.random() * 0.64 : 0.42 + Math.random() * 0.62;
+  const impulse = story.style === "compression-expansion" && stepIndex >= story.total - 2 ? 0.28 + Math.random() * 0.44 : 0;
+  const step = Math.min(Math.max(0.20, Math.abs(distance)), baseStep + impulse);
+  let body = Math.sign(distance || direction) * step;
+  body += (Math.random() - 0.5) * (edgeNear ? 0.22 : 0.34);
+
+  const maxBody = edgeNear ? 1.55 : 1.10;
+  body = Math.max(-maxBody, Math.min(maxBody, body));
+  const close = clampFn(prev + body);
+
+  let upper = 0.24 + Math.random() * 0.48 * story.wickEnergy;
+  let lower = 0.24 + Math.random() * 0.48 * story.wickEnergy;
+  if(story.patternName === "Hammer" || story.patternName === "Bullish Engulfing"){
+    lower += (edgeNear ? 0.34 : 0.12) + Math.random() * 0.38;
+    if(stepIndex === story.pullbackAt) upper += 0.12 + Math.random() * 0.22;
+  }
+  if(story.patternName === "Shooting Star" || story.patternName === "Bearish Engulfing"){
+    upper += (edgeNear ? 0.34 : 0.12) + Math.random() * 0.38;
+    if(stepIndex === story.pullbackAt) lower += 0.12 + Math.random() * 0.22;
+  }
+
+  let high = Math.max(prev, close) + upper;
+  let low = Math.min(prev, close) - lower;
+  if(run.regime === "range"){
+    high = Math.min(high, R + 1.18);
+    low = Math.max(low, S - 1.18);
+  }
+
+  story.step++;
+  return _shapeW1SetupCandle(prev, close, high, low, story);
+}
+
 const CQ_DEBUG = true; // set false to silence
 
 function _debugLog(patternName, candle, attempts, passed){
@@ -1237,6 +1366,19 @@ function addCandle(forced=null){
   }
 
   function transitionCandle(){
+    if(run.setupStory && W1_ACTIVE_PATTERN_SET.has(run.setupStory.patternName)){
+      const storyCandle = _buildW1SetupTransition(prev, clampToWorld);
+      if(storyCandle){
+        o = storyCandle.open;
+        c = storyCandle.close;
+        h = storyCandle.high;
+        l = storyCandle.low;
+        run.momentum = (c-o) * 0.26;
+        run.setupPulse = Math.min(1, (run.setupPulse || 0) + 0.18);
+        return;
+      }
+    }
+
     const target = run.setupTarget;
     const distance = target - prev;
     const direction = distance === 0 ? 0 : Math.sign(distance);
@@ -1347,7 +1489,7 @@ function addCandle(forced=null){
       l = o - 0.14 - Math.random()*0.08;
       const second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
       if(first && !_validateW1Engulfing("Bullish Engulfing", first, second)){
-        c = clampToWorld(first.open + 0.32);
+        c = clampToWorld(first.close + firstBody * 1.48);
         h = c + 0.18;
         l = o - 0.16;
       }
@@ -1361,7 +1503,7 @@ function addCandle(forced=null){
       l = c - 0.16 - Math.random()*0.10;
       const second = {open:o, high:Math.max(h,o,c), low:Math.min(l,o,c), close:c};
       if(first && !_validateW1Engulfing("Bearish Engulfing", first, second)){
-        c = clampToWorld(first.open - 0.32);
+        c = clampToWorld(first.close - firstBody * 1.48);
         h = o + 0.16;
         l = c - 0.18;
       }
@@ -1640,6 +1782,7 @@ function finishQuestMoment(){
   run.setupZone = null;
   run.setupPhase = null;
   run.setupPulse = 0;
+  run.setupStory = null;
   run.nextFreeze = 5 + Math.floor(Math.random()*5);
   $("freezeBanner").classList.add("hidden");
   renderAnswerDock("waiting");
@@ -1660,9 +1803,10 @@ function freezeScenario(){
     if(run.patternHistory.length > 8) run.patternHistory.shift();
 
     run.setupPattern = chosen;
+    run.setupStory = _createW1SetupStory(chosen);
     run.setupTarget = getSetupTarget(run.setupPattern);
     run.setupZone = getSetupZone(run.setupPattern);
-    run.setupSteps = 4 + Math.floor(Math.random()*2);
+    run.setupSteps = run.setupStory ? run.setupStory.total : 4 + Math.floor(Math.random()*2);
     run.setupPhase = "forming";
     run.setupPulse = 1;
     run.nextFreeze = run.setupSteps + 1;
@@ -1680,6 +1824,7 @@ function freezeScenario(){
   run.setupPattern = null;
   run.setupTarget = null;
   run.setupSteps = 0;
+  run.setupStory = null;
   run.setupPhase = "quest";
 
   $("freezeBanner").classList.remove("hidden");
