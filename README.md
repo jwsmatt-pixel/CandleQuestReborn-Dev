@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.9 - World 1 Lockdown Candidate`  
-**Build marker:** `v26_9_world1_lockdown_candidate`  
+**Current build:** `v27.0 - World 1 Lockdown`  
+**Build marker:** `v27_0_world1_lockdown`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / World 1 lockdown candidate
+**Status:** World 1 locked/stable baseline
 
 ---
 
@@ -139,6 +139,8 @@ v26.8 protects the v26.7 feel with a narrow World 1 QA sweep. It keeps the same 
 v26.8.1 keeps the v26.8 generator, answer pool, candle rhythm, location logic, and gameplay flow intact while removing the remaining opaque setup/Quest guide boxes from the player-facing chart. Range High, Channel Mean, Range Low, candles, and the Quest Moment banner remain the visible reading structure.
 
 v26.9 is a World 1 lockdown-candidate pass. It keeps the current good gameplay feel intact, preserves the five-answer World 1 pool, Pattern Bible fairness, v26.6 replay rhythm/Engulfing sequencing, v26.7 location realism, v26.8 ambiguity safeguards, and v26.8.1 clean chart presentation while tightening release hygiene with an immutable active answer pool, quiet generator debug logging, and updated build documentation.
+
+v27.0 formally locks World 1 as the current stable baseline after the accepted v26.9 test pass. It changes only the release marker, build badge, and checkpoint documentation. Gameplay behaviour, scoring, answer pool, candle generation, chart overlays, result flow, Pattern Library wording, Pattern Bible fairness, replay sequencing, and location realism remain unchanged.
 
 ---
 
@@ -380,7 +382,7 @@ v26.9 - World 1 Lockdown Candidate
 v27.0 - World 1 Lockdown
 ```
 
-The current larger quality issue is final visual sampling of the v26.9 lockdown candidate while confirming the v26.8.1 opaque guide removal, v26.8 QA guardrails, v26.7 location logic, v26.6 candle rhythm, v26.6 engulfing replay sequencing, and v26.6.1 overlay cleanup remain intact.
+World 1 is now locked as the current stable baseline. Future work should preserve the v27.0 baseline unless a new checkpoint explicitly changes behaviour.
 
 ---
 
@@ -419,5 +421,5 @@ icons/
 Use a cache-busting URL after uploading a new build, for example:
 
 ```text
-?fresh=262
+?fresh=270
 ```

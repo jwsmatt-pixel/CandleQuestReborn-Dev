@@ -1,8 +1,48 @@
 # Candle Quest Reborn — Changelog
 
+## v27.0 - World 1 Lockdown
+
+Status: current locked/stable World 1 baseline
+
+### Changed
+
+- Updated `game.js` build marker to `v27_0_world1_lockdown`.
+- Updated build badge to `v27.0 - World 1 Lockdown`.
+- Promoted the accepted v26.9 World 1 Lockdown Candidate to the formal v27.0 World 1 Lockdown checkpoint.
+- Updated checkpoint documentation to mark World 1 as locked/stable.
+
+### Locked / accepted
+
+- W1 answer pool locked: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji.
+- Pattern Bible v1.0 locked.
+- Generator fairness accepted.
+- Candle rhythm accepted.
+- Bullish/Bearish Engulfing replay sequencing accepted.
+- Location logic accepted.
+- Chart overlays cleaned.
+- Opaque guide boxes removed.
+- Desktop/mobile tests passed for the v26.9 lockdown candidate.
+- Result summary and missed-read coach flow accepted.
+
+### Preserved
+
+- No gameplay, scoring, XP, timer, answer dock, result screen, Pattern Library wording, answer pool, candle generation, chart overlay, or generator logic changes were made for v27.0.
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers.
+- Range High, Channel Mean, Range Low, and the Quest Moment banner remain part of the active chart read.
+
+### Testing required
+
+- Desktop app load, Start Run, answer selection, timer, ten-question completion, result summary, and Review missed reads.
+- iPhone/mobile app load, Start Run, answer dock tap targets, timer, bottom-sheet review, and carousel swipe.
+- Confirm build badge shows `v27.0 - World 1 Lockdown`.
+- Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
+- Confirm Bullish Candle and Bearish Candle do not appear as World 1 quiz answers.
+
+---
+
 ## v26.9 - World 1 Lockdown Candidate
 
-Status: current active World 1 lockdown-candidate pass
+Status: accepted World 1 lockdown-candidate pass promoted to v27.0
 
 ### Changed
 
