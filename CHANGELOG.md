@@ -1,5 +1,39 @@
 # Candle Quest Reborn — Changelog
 
+## v26.2.12 - Mobile Result Hero Parity
+
+Status: current active iOS result-screen hero parity / test candidate
+
+### Changed
+
+- Updated `game.js` build marker to `v26_2_12_mobile_result_hero_parity`.
+- Updated build badge to `v26.2.12 - Mobile Result Hero Parity`.
+- Tuned only the mobile score-summary hero spacing so it tracks closer to the cleaner desktop half-width result view.
+- Reduced `RUN COMPLETE` and `CORRECT READS` back into deliberate uppercase labels instead of oversized hero text.
+- Kept the `X/10` score strong and central while improving the spacing around the run title, score label, feedback sentence, bonus pill, and Review missed reads button.
+- Narrowed and softened the mobile feedback sentence width/line-height so it wraps more comfortably on iPhone.
+
+### Preserved
+
+- desktop result screen styling and behaviour
+- stat cards
+- Play Again, Lesson Map, and Review missed reads positioning
+- coach overlay and carousel content/navigation
+- gameplay, scoring, XP, timer, generator, answer pool, Pattern Library, and missed-read tracking data
+- build badge
+
+### Testing required
+
+- iPhone full run to the score summary.
+- Confirm `RUN COMPLETE`, run title, `X/10`, `CORRECT READS`, feedback, fast reads pill, and Review missed reads feel balanced and less awkwardly stacked.
+- Confirm the `X/10` score remains the main focal point.
+- Confirm the feedback sentence wraps cleanly without forcing awkward vertical scrolling.
+- Confirm Review missed reads opens the bottom-sheet coach overlay and Back to score dismisses it.
+- Confirm coach cards still swipe horizontally on iPhone.
+- Desktop full run with missed reads to confirm the existing result view remains acceptable.
+
+---
+
 ## v26.2.11 - Mobile Result Hero Header
 
 Status: current active iOS result-screen hero header / test candidate

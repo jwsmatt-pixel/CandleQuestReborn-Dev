@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v26.2.11 - Mobile Result Hero Header`  
-**Build marker:** `v26_2_11_mobile_result_hero_header`  
+**Current build:** `v26.2.12 - Mobile Result Hero Parity`  
+**Build marker:** `v26_2_12_mobile_result_hero_parity`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** Active development / iOS result-screen header scale
+**Status:** Active development / iOS result-screen hero parity
 
 ---
 
