@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.1 Checkpoint Summary
+# Candle Quest Reborn - v27.2 Checkpoint Summary
 
 ## Current build
 
-**v27.1 - First Player Onboarding Polish**
-Build marker: `v27_1_first_player_onboarding_polish`
+**v27.2 - Pattern Library Polish**
+Build marker: `v27_2_pattern_library_polish`
 
 ## Base build
 
@@ -12,9 +12,9 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable gameplay baseline with first-player onboarding polish.
+World 1 locked/stable gameplay baseline with Pattern Library polish.
 
-v27.1 keeps v27.0 as the locked World 1 gameplay baseline and adds only first-player onboarding polish. It preserves the v26.8.1 opaque guide removal build, the v26.8 World 1 QA / ambiguity sweep build, the v26.7 location logic build, the v26.6.1 chart overlay cleanup build, the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
+v27.2 keeps v27.0 as the locked World 1 gameplay baseline, preserves the v27.1 first-player onboarding polish, and improves only Pattern Library learning clarity for the five active World 1 answers. It preserves the v26.8.1 opaque guide removal build, the v26.8 World 1 QA / ambiguity sweep build, the v26.7 location logic build, the v26.6.1 chart overlay cleanup build, the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,18 +47,18 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v27.1
+## What changed in v27.2
 
 ### Code / game state
 
-- Updated the build marker and build badge to v27.1 First Player Onboarding Polish.
-- Reworded the home screen to explain the first-player loop: watch candles move through the channel, wait for Quest Moment, read the final setup, choose the matching pattern, build streaks, and earn XP.
-- Added a small dismissible first-run Candle Basics helper.
-- Explained Quest Moment in player-facing copy.
-- Explained Range High, Channel Mean, and Range Low in beginner language.
-- Improved Pattern Library discoverability before and after runs.
-- Made onboarding-related localStorage handling fail-soft.
-- Made no gameplay, generator, scoring, answer pool, chart overlay, result flow, Pattern Library definition, timer, answer dock, XP, streak, coach overlay, replay sequencing, or location logic changes.
+- Updated the build marker and build badge to v27.2 Pattern Library Polish.
+- Reworded the Pattern Library intro to teach shape first, then Range High, Channel Mean, and Range Low context.
+- Added a compact Pattern Library location key: Range High = upper/resistance, Channel Mean = middle/balance, Range Low = lower/support.
+- Added quick-scan Meaning, Look for, Usual location, and Common confusion rows to the five World 1 Pattern Library entries.
+- Preserved Pattern Bible v1.0 must-have and invalid-if rows inside the Pattern Library cards.
+- Tightened Pattern Library card spacing and mobile type scale for easier scanning on iPhone.
+- Made no gameplay, generator, scoring, answer pool, chart overlay, result flow, timer, answer dock, XP, streak, coach overlay, replay sequencing, or location logic changes.
+- Preserved v27.1 home copy, first-run onboarding helper, Quest Moment copy, and Pattern Library discoverability.
 - Preserved the v26.8.1 removal of player-facing setup-zone and Quest-zone guide rectangles.
 - Preserved the v26.8 active pattern source and stricter Bullish/Bearish Engulfing body-boundary validation.
 - Left v26.7 location profiles and setup-story weighting unchanged.
@@ -66,7 +66,7 @@ Does this feature move the player from recognising shapes toward reading market 
 - Preserved v26.6.1 chart overlay cleanup and removed the remaining opaque guide boxes.
 - Preserved v26.6 World 1 candle rhythm, setup stories, and Bullish/Bearish Engulfing replay sequencing.
 - Preserved v26.5 Hammer, Shooting Star, Doji, and Engulfing final-candle validation.
-- Left Pattern Bible wording, gameplay, scoring, XP, timer, result screen layout, answer dock, Pattern Library, and coach carousel behavior unchanged.
+- Left Pattern Bible validation, gameplay, scoring, XP, timer, result screen layout, answer dock, and coach carousel behavior unchanged.
 
 ### Preserved
 
@@ -98,7 +98,7 @@ Does this feature move the player from recognising shapes toward reading market 
 - desktop gameplay layout
 - progression
 
-## v27.1 onboarding status
+## v27.2 Pattern Library status
 
 - W1 answer pool locked.
 - Pattern Bible v1.0 locked.
@@ -110,7 +110,8 @@ Does this feature move the player from recognising shapes toward reading market 
 - Opaque guide boxes removed.
 - Desktop/mobile tests passed for the v26.9 lockdown candidate.
 - Result summary and missed-read coach flow accepted.
-- First-player onboarding helper added without changing locked gameplay.
+- First-player onboarding helper preserved without changing locked gameplay.
+- Pattern Library now uses beginner quick-scan rows while preserving Pattern Bible truth lines.
 
 ## Current World 1 active answer pool
 
@@ -258,7 +259,7 @@ Then check:
 - The mobile hero parity pass should still be visually checked on a real iPhone because Safari text metrics can differ from desktop emulation.
 - The bottom-sheet height may still need device-specific tuning after real iPhone testing.
 - Coach carousel slides remain generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v27.1.
+- Comparative coach cards are a future feature, not included in v27.2.
 - Generator fairness is preserved through validation and retry rules, but location weighting still needs human visual sampling across many runs.
 
 ## Next intended work
@@ -268,7 +269,8 @@ Recommended sequence:
 ```text
 v27.0 - World 1 Lockdown
 v27.1 - First Player Onboarding Polish
-v27.2+ - Future World 1 teaching expansions after lockdown
+v27.2 - Pattern Library Polish
+v27.3+ - Future World 1 teaching expansions after lockdown
 ```
 
 Do not combine lockdown, market rhythm changes, comparative cards, and deeper engulfing doctrine into one patch.

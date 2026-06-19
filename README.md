@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v27.1 - First Player Onboarding Polish`  
-**Build marker:** `v27_1_first_player_onboarding_polish`  
+**Current build:** `v27.2 - Pattern Library Polish`  
+**Build marker:** `v27_2_pattern_library_polish`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** World 1 locked/stable gameplay baseline with first-player onboarding polish
+**Status:** World 1 locked/stable gameplay baseline with Pattern Library polish
 
 ---
 
@@ -143,6 +143,8 @@ v26.9 is a World 1 lockdown-candidate pass. It keeps the current good gameplay f
 v27.0 formally locks World 1 as the current stable baseline after the accepted v26.9 test pass. It changes only the release marker, build badge, and checkpoint documentation. Gameplay behaviour, scoring, answer pool, candle generation, chart overlays, result flow, Pattern Library wording, Pattern Bible fairness, replay sequencing, and location realism remain unchanged.
 
 v27.1 keeps the v27.0 World 1 gameplay baseline locked while improving first-player onboarding. The home screen now explains the watch/wait/read/choose loop, a small dismissible Candle Basics helper appears on first run, Quest Moment is defined in player-facing copy, range lines are explained in beginner language, and Pattern Library access is more visible before and after runs. Generator logic, answer pool, Pattern Bible fairness, replay sequencing, location realism, scoring, timer, chart layout, result screen, and missed-read coach behavior remain unchanged.
+
+v27.2 keeps the v27.0 World 1 gameplay baseline locked and preserves v27.1 onboarding while improving the Pattern Library as a beginner study reference. The World 1 cards now present meaning, what to look for, usual location, and common confusion in quick-scan rows, with Range High, Channel Mean, and Range Low explained in simple location language. Generator logic, answer pool, Pattern Bible validation, replay sequencing, location realism, scoring, timer, chart layout, result screen, and missed-read coach behavior remain unchanged.
 
 ---
 
@@ -383,6 +385,7 @@ v26.8.1 - Opaque Guide Removal
 v26.9 - World 1 Lockdown Candidate
 v27.0 - World 1 Lockdown
 v27.1 - First Player Onboarding Polish
+v27.2 - Pattern Library Polish
 ```
 
 World 1 gameplay is locked at the v27.0 stable baseline. Future work should preserve that gameplay baseline unless a new checkpoint explicitly changes behaviour.

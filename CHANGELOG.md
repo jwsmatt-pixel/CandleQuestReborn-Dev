@@ -1,5 +1,38 @@
 # Candle Quest Reborn — Changelog
 
+## v27.2 - Pattern Library Polish
+
+Status: current Pattern Library clarity build on the locked v27.0 World 1 gameplay baseline
+
+### Changed
+
+- Updated `game.js` build marker to `v27_2_pattern_library_polish`.
+- Updated build badge to `v27.2 - Pattern Library Polish`.
+- Reworded the Pattern Library intro so beginners look at candle shape first, then use Range High, Channel Mean, and Range Low as context.
+- Added a compact Pattern Library location key: Range High as upper/resistance, Channel Mean as middle/balance, and Range Low as lower/support.
+- Improved the five World 1 Pattern Library entries with short Meaning, Look for, Usual location, and Common confusion rows.
+- Kept Pattern Bible v1.0 must-have and invalid-if rows visible for Hammer, Shooting Star, Doji, Bullish Engulfing, and Bearish Engulfing.
+- Tightened Pattern Library card spacing and mobile type scale so the entries are easier to scan on iPhone.
+
+### Preserved
+
+- v27.0 gameplay behaviour remains locked.
+- v27.1 first-player onboarding remains in place.
+- Active World 1 answer pool remains exactly: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji.
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers.
+- Generator logic, candle generation, Pattern Bible validation, answer selection, timer duration, scoring, XP, streaks, answer dock, chart layout, result screen, missed-read coach overlay, shop scaffold, replay sequencing, candle rhythm, and location logic were not changed.
+- Range High / Channel Mean / Range Low gameplay lines, Quest Moment banner, clean chart view, and removed opaque guide boxes remain intact.
+
+### Testing required
+
+- Desktop app load, Pattern Library open/close, mobile-sized Pattern Library scan, Start Run, answer selection, timer, ten-question completion, result summary, and Review missed reads.
+- iPhone/mobile app load, first-run helper, Pattern Library open/close, card readability, Start Run, answer dock tap targets, result flow, bottom-sheet review, and carousel swipe.
+- Confirm build badge shows `v27.2 - Pattern Library Polish`.
+- Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
+- Confirm generator fairness, Engulfing replay sequencing, location realism, candle rhythm, clean chart presentation, Range lines, Quest Moment banner, answer dock, XP, scoring, streaks, result flow, and coach overlay still work.
+
+---
+
 ## v27.1 - First Player Onboarding Polish
 
 Status: current onboarding polish build on the locked v27.0 World 1 gameplay baseline

@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v27_1_first_player_onboarding_polish";
+const CANDLE_QUEST_BUILD = "v27_2_pattern_library_polish";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.1 - First Player Onboarding Polish";
+    b.textContent = "v27.2 - Pattern Library Polish";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -88,7 +88,11 @@ const patternDefinitions = {
       name:"Bullish Engulfing",
       type:"World 1 Pattern Bible v1.0",
       read:"A two-candle bullish reversal pattern where a bullish candle fully engulfs the previous bearish candle's body.",
-      location:"First candle is bearish. Second candle is bullish, opens below or near the first candle's close, and closes above the first candle's open.",
+      meaning:"Buyers take control after bearish pressure.",
+      lookFor:"Bearish candle first, then a stronger bullish body that clearly swallows the first body.",
+      location:"Usually near Range Low/support or after bearish pressure/reclaim.",
+      usualLocation:"Range Low = lower area / support zone.",
+      confusion:"Hammer or bullish rejection. Engulfing needs two bodies, not one long lower wick.",
       must:"Second candle body completely engulfs the first candle body and is clearly larger.",
       invalid:"Invalid if the first candle is not bearish, the second is not bullish, only the wick is engulfed, the close does not clear the first open, or the second candle reads like a normal bullish candle.",
       cue:"Bearish candle first, then a stronger bullish body swallows it."
@@ -97,7 +101,11 @@ const patternDefinitions = {
       name:"Bearish Engulfing",
       type:"World 1 Pattern Bible v1.0",
       read:"A two-candle bearish reversal pattern where a bearish candle fully engulfs the previous bullish candle's body.",
-      location:"First candle is bullish. Second candle is bearish, opens above or near the first candle's close, and closes below the first candle's open.",
+      meaning:"Sellers take control after bullish pressure.",
+      lookFor:"Bullish candle first, then a stronger bearish body that clearly swallows the first body.",
+      location:"Usually near Range High/resistance or after bullish pressure/rejection.",
+      usualLocation:"Range High = upper area / resistance zone.",
+      confusion:"Shooting Star or bearish rejection. Engulfing needs two bodies, not one long upper wick.",
       must:"Second candle body completely engulfs the first candle body and is clearly larger.",
       invalid:"Invalid if the first candle is not bullish, the second is not bearish, only the wick is engulfed, the close does not clear the first open, or the second candle reads like a normal bearish candle.",
       cue:"Bullish candle first, then a stronger bearish body swallows it."
@@ -106,7 +114,11 @@ const patternDefinitions = {
       name:"Hammer",
       type:"World 1 Pattern Bible v1.0",
       read:"A bullish rejection-style candle with a small body near the top of its range and a long lower wick.",
-      location:"Open and close both occur near the candle high, with the body positioned near the top of the full range.",
+      meaning:"Lower prices were rejected.",
+      lookFor:"Small body near the top, long lower wick at least 2x the body, and tiny or no upper wick.",
+      location:"Usually near Range Low/support or after a selloff/pullback.",
+      usualLocation:"Range Low = lower area / support zone.",
+      confusion:"Doji or Bullish Engulfing. Hammer is one candle with a lower wick; Engulfing is two candles.",
       must:"Small-to-medium body, clearly long lower wick at least 2x the body size, and very small or absent upper wick.",
       invalid:"Invalid if the lower wick is not clearly longer than the body, the body is centered, the upper wick is large, it looks more like a Doji, or open/close are too far from the high.",
       cue:"Small body near the top, long wick rejecting lower prices."
@@ -115,7 +127,11 @@ const patternDefinitions = {
       name:"Shooting Star",
       type:"World 1 Pattern Bible v1.0",
       read:"A bearish rejection-style candle with a small body near the bottom of its range and a long upper wick.",
-      location:"Open and close both occur near the candle low, with the body positioned near the bottom of the full range.",
+      meaning:"Higher prices were rejected.",
+      lookFor:"Small body near the bottom, long upper wick at least 2x the body, and tiny or no lower wick.",
+      location:"Usually near Range High/resistance or after a rally.",
+      usualLocation:"Range High = upper area / resistance zone.",
+      confusion:"Doji or Bearish Engulfing. Shooting Star is one candle with an upper wick; Engulfing is two candles.",
       must:"Small-to-medium body, clearly long upper wick at least 2x the body size, and very small or absent lower wick.",
       invalid:"Invalid if the upper wick is not clearly longer than the body, the body is centered, the lower wick is large, it looks more like a Doji, or open/close are too far from the low.",
       cue:"Small body near the bottom, long wick rejecting higher prices."
@@ -124,7 +140,11 @@ const patternDefinitions = {
       name:"Doji",
       type:"World 1 Pattern Bible v1.0",
       read:"A neutral indecision candle where open and close are nearly the same.",
-      location:"Body is roughly centered within the candle's full range, with reasonably balanced upper and lower wicks.",
+      meaning:"Buyers and sellers are balanced.",
+      lookFor:"Very small body, open and close nearly equal, with balanced upper and lower wicks.",
+      location:"Usually near Channel Mean, hesitation, or compression.",
+      usualLocation:"Channel Mean = middle / balance zone.",
+      confusion:"Hammer or Shooting Star. Doji has balanced wicks, not one clear rejection wick.",
       must:"Very small body, open and close nearly the same, and neither wick dominates the candle.",
       invalid:"Invalid if the body is too large, one wick is much longer than the other, the body is strongly near the top or bottom, or the candle clearly rejects one side like a Hammer or Shooting Star.",
       cue:"Tiny body, balanced wicks, indecision."
@@ -295,8 +315,11 @@ function renderLibrary(category="Candle Basics"){
         <span class="definition-type">${d.type}</span>
       </div>
       <h3>${d.name}</h3>
-      <p><b>Read:</b> ${d.read}</p>
-      <p><b>${d.must ? "Bible condition" : "Best location"}:</b> ${d.location}</p>
+      ${d.meaning ? `<p><b>Meaning:</b> ${d.meaning}</p>` : `<p><b>Read:</b> ${d.read}</p>`}
+      ${d.lookFor ? `<p><b>Look for:</b> ${d.lookFor}</p>` : ""}
+      <p><b>${d.must ? "Usual location" : "Best location"}:</b> ${d.location}</p>
+      ${d.usualLocation ? `<p class="definition-location"><b>Channel hint:</b> ${d.usualLocation}</p>` : ""}
+      ${d.confusion ? `<p><b>Common confusion:</b> ${d.confusion}</p>` : ""}
       ${d.must ? `<p><b>Must-have:</b> ${d.must}</p>` : ""}
       ${d.invalid ? `<p><b>Invalid if:</b> ${d.invalid}</p>` : ""}
       <p class="definition-cue"><b>Quest cue:</b> ${d.cue}</p>
