@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v27.0 - World 1 Lockdown`  
-**Build marker:** `v27_0_world1_lockdown`  
+**Current build:** `v27.1 - First Player Onboarding Polish`  
+**Build marker:** `v27_1_first_player_onboarding_polish`  
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** World 1 locked/stable baseline
+**Status:** World 1 locked/stable gameplay baseline with first-player onboarding polish
 
 ---
 
@@ -141,6 +141,8 @@ v26.8.1 keeps the v26.8 generator, answer pool, candle rhythm, location logic, a
 v26.9 is a World 1 lockdown-candidate pass. It keeps the current good gameplay feel intact, preserves the five-answer World 1 pool, Pattern Bible fairness, v26.6 replay rhythm/Engulfing sequencing, v26.7 location realism, v26.8 ambiguity safeguards, and v26.8.1 clean chart presentation while tightening release hygiene with an immutable active answer pool, quiet generator debug logging, and updated build documentation.
 
 v27.0 formally locks World 1 as the current stable baseline after the accepted v26.9 test pass. It changes only the release marker, build badge, and checkpoint documentation. Gameplay behaviour, scoring, answer pool, candle generation, chart overlays, result flow, Pattern Library wording, Pattern Bible fairness, replay sequencing, and location realism remain unchanged.
+
+v27.1 keeps the v27.0 World 1 gameplay baseline locked while improving first-player onboarding. The home screen now explains the watch/wait/read/choose loop, a small dismissible Candle Basics helper appears on first run, Quest Moment is defined in player-facing copy, range lines are explained in beginner language, and Pattern Library access is more visible before and after runs. Generator logic, answer pool, Pattern Bible fairness, replay sequencing, location realism, scoring, timer, chart layout, result screen, and missed-read coach behavior remain unchanged.
 
 ---
 
@@ -380,9 +382,10 @@ v26.8 - World 1 QA / Ambiguity Sweep
 v26.8.1 - Opaque Guide Removal
 v26.9 - World 1 Lockdown Candidate
 v27.0 - World 1 Lockdown
+v27.1 - First Player Onboarding Polish
 ```
 
-World 1 is now locked as the current stable baseline. Future work should preserve the v27.0 baseline unless a new checkpoint explicitly changes behaviour.
+World 1 gameplay is locked at the v27.0 stable baseline. Future work should preserve that gameplay baseline unless a new checkpoint explicitly changes behaviour.
 
 ---
 

@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v27_0_world1_lockdown";
+const CANDLE_QUEST_BUILD = "v27_1_first_player_onboarding_polish";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.0 - World 1 Lockdown";
+    b.textContent = "v27.1 - First Player Onboarding Polish";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -33,6 +33,8 @@ const state = loadState();
 let activeWorld = 1;
 let run = null;
 let miniTimer = null;
+let onboardingHelperShownThisSession = false;
+const ONBOARDING_HELPER_KEY = "candleQuestOnboardingHelperDismissedV27_1";
 
 const worlds = [
   {
@@ -310,11 +312,40 @@ function loadState(){
   return {xp:0,best:0,skin:"classic",owned:["classic"]};
 }
 function saveState(){
-  localStorage.setItem("candleQuestRebornV1", JSON.stringify(state));
+  try{
+    localStorage.setItem("candleQuestRebornV1", JSON.stringify(state));
+  }catch(e){}
   $("xpText").textContent = `${state.xp} XP`;
   const gameXp = $("gameXpText");
   if(gameXp) gameXp.textContent = `${state.xp} XP`;
   document.body.dataset.skin = state.skin === "classic" ? "" : state.skin;
+}
+
+function isOnboardingHelperDismissed(){
+  try{
+    return localStorage.getItem(ONBOARDING_HELPER_KEY) === "1";
+  }catch(e){
+    return false;
+  }
+}
+
+function dismissOnboardingHelper(){
+  try{
+    localStorage.setItem(ONBOARDING_HELPER_KEY, "1");
+  }catch(e){}
+  onboardingHelperShownThisSession = true;
+  const helper = $("onboardingHelper");
+  if(helper) helper.classList.add("hidden");
+  if(run) run.paused = false;
+}
+
+function showFirstRunOnboardingHelper(){
+  if(onboardingHelperShownThisSession || isOnboardingHelperDismissed()) return;
+  const helper = $("onboardingHelper");
+  if(!helper) return;
+  onboardingHelperShownThisSession = true;
+  if(run) run.paused = true;
+  helper.classList.remove("hidden");
 }
 
 function pulseXPWallet(){
@@ -756,7 +787,7 @@ function startRun(worldId=activeWorld){
   const initCandles = isMobile() ? 18 : 26;
   for(let i=0;i<initCandles;i++) addCandle();
   $("runMode").textContent = world.title;
-  $("runHint").textContent = "Watch the replay. Timer starts at Quest Moment.";
+  $("runHint").textContent = "Watch the candles move. Timer starts at Quest Moment.";
   $("scoreText").textContent = "0";
   $("timeText").textContent = "—";
   renderAnswerDock("waiting");
@@ -764,6 +795,7 @@ function startRun(worldId=activeWorld){
   openScreen("game");
   drawGame();
   updateStreakHud();
+  showFirstRunOnboardingHelper();
   run.timer = null;
   run.tick = setInterval(()=>{
     if(!run || run.paused) return;
@@ -2223,13 +2255,18 @@ drawMini();
 
 // iOS/PWA helpers
 function dismissInstallTip(){
-  localStorage.setItem("candleQuestInstallTipDismissed","1");
+  try{
+    localStorage.setItem("candleQuestInstallTipDismissed","1");
+  }catch(e){}
   const tip = document.getElementById("installTip");
   if(tip) tip.classList.add("hidden");
 }
 (function setupIOS(){
   const tip = document.getElementById("installTip");
-  const dismissed = localStorage.getItem("candleQuestInstallTipDismissed")==="1";
+  let dismissed = false;
+  try{
+    dismissed = localStorage.getItem("candleQuestInstallTipDismissed")==="1";
+  }catch(e){}
   const standalone = window.navigator.standalone || window.matchMedia("(display-mode: standalone)").matches;
   if(tip && (dismissed || standalone)) tip.classList.add("hidden");
 

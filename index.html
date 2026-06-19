@@ -19,6 +19,20 @@
     <button onclick="dismissInstallTip()">Got it</button>
   </div>
 
+  <div id="onboardingHelper" class="onboarding-helper hidden" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+    <div class="onboarding-card">
+      <p class="eyebrow">Candle Basics</p>
+      <h2 id="onboardingTitle">How to play</h2>
+      <div class="onboarding-copy">
+        <p>Watch the candles form.</p>
+        <p>When Quest Moment appears, read the final setup and choose the pattern.</p>
+        <p>Range High is the upper area, Channel Mean is the middle, and Range Low is the lower area of the channel.</p>
+      </div>
+      <p class="onboarding-library">Need the rules? Open the Pattern Library to study each candle setup.</p>
+      <button class="primary" onclick="dismissOnboardingHelper()">Continue</button>
+    </div>
+  </div>
+
   <div id="app">
     <header class="topbar">
       <div>
@@ -36,7 +50,8 @@
         <div>
           <p class="eyebrow">Reborn Edition</p>
           <h2>Read candles by playing.</h2>
-          <p class="hero-copy">Short runs. Fast feedback. No bloated menus. Learn support, resistance, breakouts, fakeouts, trend and risk through arcade-style drills.</p>
+          <p class="hero-copy">Watch the candles move through the channel. When Quest Moment appears, choose the pattern you see. Build streaks, earn XP, and learn to read market structure faster.</p>
+          <p class="hero-note">Quest Moment = the setup you need to read. Need the rules? Open the Pattern Library before or after a run.</p>
           <div class="hero-actions">
             <button class="primary" onclick="startRun()">Start Run</button>
             <button class="secondary" onclick="openScreen('map')">Lesson Map</button>
@@ -61,7 +76,7 @@
       <section class="game-shell">
         <div class="game-hud">
           <button class="ghost desktop-exit" onclick="quitRun()">← Exit</button>
-          <div class="run-copy"><b id="runMode">Pattern Run</b><span id="runHint">Watch the channel. Timer starts at Quest Moment.</span></div>
+          <div class="run-copy"><b id="runMode">Pattern Run</b><span id="runHint">Watch the channel. Timer starts at Quest Moment.</span><small>Quest Moment = the setup you need to read.</small></div>
           <div class="hud-stats"><span id="scoreText">0</span><small>score</small></div>
           <div class="hud-stats"><span id="timeText">—</span><small>sec</small></div>
           <div class="game-wallet-mini"><span id="gameXpText">0 XP</span><button onclick="openScreen('shop')">Shop</button></div>
@@ -125,6 +140,7 @@
         <div class="hero-actions">
           <button class="primary" onclick="startRun()">Play Again</button>
           <button class="secondary" onclick="openScreen('map')">Lesson Map</button>
+          <button class="secondary" onclick="openScreen('library')">Pattern Library</button>
         </div>
       </section>
     </main>

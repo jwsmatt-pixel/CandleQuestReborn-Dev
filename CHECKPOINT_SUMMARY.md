@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.0 Checkpoint Summary
+# Candle Quest Reborn - v27.1 Checkpoint Summary
 
 ## Current build
 
-**v27.0 - World 1 Lockdown**
-Build marker: `v27_0_world1_lockdown`
+**v27.1 - First Player Onboarding Polish**
+Build marker: `v27_1_first_player_onboarding_polish`
 
 ## Base build
 
@@ -12,9 +12,9 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable baseline.
+World 1 locked/stable gameplay baseline with first-player onboarding polish.
 
-v27.0 formally locks World 1 as the current stable baseline after the accepted v26.9 World 1 Lockdown Candidate test pass. It preserves the v26.8.1 opaque guide removal build, the v26.8 World 1 QA / ambiguity sweep build, the v26.7 location logic build, the v26.6.1 chart overlay cleanup build, the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
+v27.1 keeps v27.0 as the locked World 1 gameplay baseline and adds only first-player onboarding polish. It preserves the v26.8.1 opaque guide removal build, the v26.8 World 1 QA / ambiguity sweep build, the v26.7 location logic build, the v26.6.1 chart overlay cleanup build, the v26.6 World 1 candle rhythm and engulfing replay sequencing build, the v26.5 generator fairness build, the v26.4 Pattern Bible wording/source-of-truth build, the v26.3.0 chart viewport unification build, the v26.2.12 mobile result hero-parity build, the v26.2.11 mobile result hero header structure, the v26.2.10 mobile result vertical layout and score-summary structure, the v26.2.7 mobile result coach overlay, desktop carousel arrows, and mobile swipe behaviour.
 
 ## Core design doctrine
 
@@ -47,14 +47,18 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v27.0
+## What changed in v27.1
 
 ### Code / game state
 
-- Updated the build marker and build badge to v27.0 World 1 Lockdown.
-- Promoted the accepted v26.9 World 1 Lockdown Candidate to the formal World 1 locked/stable baseline.
-- Made documentation-only checkpoint updates to record the lockdown status.
-- Made no gameplay, generator, scoring, answer pool, chart overlay, result flow, or Pattern Library wording changes.
+- Updated the build marker and build badge to v27.1 First Player Onboarding Polish.
+- Reworded the home screen to explain the first-player loop: watch candles move through the channel, wait for Quest Moment, read the final setup, choose the matching pattern, build streaks, and earn XP.
+- Added a small dismissible first-run Candle Basics helper.
+- Explained Quest Moment in player-facing copy.
+- Explained Range High, Channel Mean, and Range Low in beginner language.
+- Improved Pattern Library discoverability before and after runs.
+- Made onboarding-related localStorage handling fail-soft.
+- Made no gameplay, generator, scoring, answer pool, chart overlay, result flow, Pattern Library definition, timer, answer dock, XP, streak, coach overlay, replay sequencing, or location logic changes.
 - Preserved the v26.8.1 removal of player-facing setup-zone and Quest-zone guide rectangles.
 - Preserved the v26.8 active pattern source and stricter Bullish/Bearish Engulfing body-boundary validation.
 - Left v26.7 location profiles and setup-story weighting unchanged.
@@ -94,7 +98,7 @@ Does this feature move the player from recognising shapes toward reading market 
 - desktop gameplay layout
 - progression
 
-## v27.0 lockdown status
+## v27.1 onboarding status
 
 - W1 answer pool locked.
 - Pattern Bible v1.0 locked.
@@ -106,6 +110,7 @@ Does this feature move the player from recognising shapes toward reading market 
 - Opaque guide boxes removed.
 - Desktop/mobile tests passed for the v26.9 lockdown candidate.
 - Result summary and missed-read coach flow accepted.
+- First-player onboarding helper added without changing locked gameplay.
 
 ## Current World 1 active answer pool
 
@@ -253,7 +258,7 @@ Then check:
 - The mobile hero parity pass should still be visually checked on a real iPhone because Safari text metrics can differ from desktop emulation.
 - The bottom-sheet height may still need device-specific tuning after real iPhone testing.
 - Coach carousel slides remain generic teaching cues, not exact replays of missed candles.
-- Comparative coach cards are a future feature, not included in v27.0.
+- Comparative coach cards are a future feature, not included in v27.1.
 - Generator fairness is preserved through validation and retry rules, but location weighting still needs human visual sampling across many runs.
 
 ## Next intended work
@@ -262,7 +267,8 @@ Recommended sequence:
 
 ```text
 v27.0 - World 1 Lockdown
-v27.1+ - Future World 1 teaching expansions after lockdown
+v27.1 - First Player Onboarding Polish
+v27.2+ - Future World 1 teaching expansions after lockdown
 ```
 
 Do not combine lockdown, market rhythm changes, comparative cards, and deeper engulfing doctrine into one patch.
