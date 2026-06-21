@@ -52,6 +52,13 @@
           <h2>Read candles by playing.</h2>
           <p class="hero-copy">Start with World 1: Candle Basics. Watch candles move through the channel, then choose the pattern when Quest Moment appears. Build streaks, earn XP, and learn to read market structure faster.</p>
           <p class="hero-note">Quest Moment = the setup you need to read. Need the rules? Open the Pattern Library before or after a run.</p>
+          <section class="tempo-picker" aria-labelledby="tempoPickerTitle">
+            <div class="tempo-picker-head">
+              <div><b id="tempoPickerTitle">Replay Tempo</b><span>Learn - train - speedrun</span></div>
+              <span id="tempoMessage" class="tempo-message" aria-live="polite"></span>
+            </div>
+            <div id="tempoOptions" class="tempo-options"></div>
+          </section>
           <div class="hero-actions">
             <button class="primary" onclick="startRun()">Start World 1 Run</button>
             <button class="secondary" onclick="openScreen('map')">Lesson Map</button>

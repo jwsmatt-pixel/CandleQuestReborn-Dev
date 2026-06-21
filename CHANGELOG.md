@@ -1,5 +1,35 @@
 # Candle Quest Reborn — Changelog
 
+## v27.5 - Replay Tempo Unlocks
+
+Status: replay/setup pacing progression on the locked World 1 gameplay baseline
+
+### Changed
+
+- Added Beginner, Normal, and Speedrun replay tempo classes through one centralized tempo configuration.
+- Beginner preserves the v27.4 `520ms` replay tick and standard XP; Normal uses `390ms` and +10% XP; Speedrun uses `300ms` and +25% XP.
+- Added completed-run unlock progression: 10 Beginner runs unlock Normal, and 20 Normal runs unlock Speedrun.
+- Added persistent Speedrun mastery tracking toward 30 completed runs without adding another mode.
+- Added a compact home tempo selector with locked explanations, persisted selection, safe Beginner fallback, and result progress feedback.
+- Applied tempo XP multipliers once to the completed-run reward using consistent integer rounding.
+- Updated the build marker to `v27_5_replay_tempo_unlocks` and badge to `v27.5 - Replay Tempo Unlocks`.
+
+### Preserved
+
+- The Quest Moment answer timer remains exactly 7 seconds in every tempo; only replay/setup pacing changes.
+- Active World 1 answer pool remains exactly: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji.
+- World 1 generator, Pattern Bible recipes/validators, candle shapes, scoring, streaks, result/coach flow, and Pattern Library are unchanged.
+- v27.4 location probability tuning and Engulfing prior-candle/Quest Moment sequencing remain intact.
+
+### Testing required
+
+- Verify fresh-state locks, unlock thresholds, persisted counts/selection, and Beginner fallback.
+- Complete runs in all tempos and verify the 1.00x, 1.10x, and 1.25x rounded XP rewards.
+- Confirm the timer displays `—` during replay and starts at 7 at Quest Moment across tempos.
+- Recheck World 1 answers, Engulfing sequencing, result/review flow, Pattern Library, and responsive layout.
+
+---
+
 ## v27.4 - Location Probability Tuning
 
 Status: current World 1 location-probability tuning pass on the locked v27.0 gameplay baseline

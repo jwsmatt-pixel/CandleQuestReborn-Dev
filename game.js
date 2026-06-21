@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v27_4_location_probability_tuning";
+const CANDLE_QUEST_BUILD = "v27_5_replay_tempo_unlocks";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.4 - Location Probability Tuning";
+    b.textContent = "v27.5 - Replay Tempo Unlocks";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -13,6 +13,13 @@ function showBuildBadge(){
 setTimeout(showBuildBadge, 500);
 
 const $ = id => document.getElementById(id);
+
+const TEMPO_CONFIG = Object.freeze({
+  beginner: Object.freeze({label:"Beginner", replayInterval:520, xpMultiplier:1, description:"Learn the shapes.", xpLabel:"Standard XP", unlockRequirement:null}),
+  normal: Object.freeze({label:"Normal", replayInterval:390, xpMultiplier:1.1, description:"Train faster.", xpLabel:"+10% XP", unlockRequirement:{tempo:"beginner", completedRuns:10}}),
+  speedrun: Object.freeze({label:"Speedrun", replayInterval:300, xpMultiplier:1.25, description:"Fast reads.", xpLabel:"+25% XP", unlockRequirement:{tempo:"normal", completedRuns:20}})
+});
+const DEFAULT_TEMPO_RUNS = Object.freeze({beginner:0, normal:0, speedrun:0});
 
 function renderAnswerDock(mode="waiting", options=[]){
   const pad = $("answerPad");
@@ -309,9 +316,14 @@ function renderLibrary(category="Candle Basics"){
 function loadState(){
   try{
     const raw = localStorage.getItem("candleQuestRebornV1");
-    if(raw) return Object.assign({xp:0,best:0,skin:"classic",owned:["classic"]}, JSON.parse(raw));
+    if(raw){
+      const loaded = Object.assign({xp:0,best:0,skin:"classic",owned:["classic"],tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner"}, JSON.parse(raw));
+      loaded.tempoRuns = Object.assign({...DEFAULT_TEMPO_RUNS}, loaded.tempoRuns || {});
+      if(!isTempoUnlocked(loaded.selectedTempo, loaded.tempoRuns)) loaded.selectedTempo = "beginner";
+      return loaded;
+    }
   }catch(e){}
-  return {xp:0,best:0,skin:"classic",owned:["classic"]};
+  return {xp:0,best:0,skin:"classic",owned:["classic"],tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner"};
 }
 function saveState(){
   try{
@@ -321,6 +333,62 @@ function saveState(){
   const gameXp = $("gameXpText");
   if(gameXp) gameXp.textContent = `${state.xp} XP`;
   document.body.dataset.skin = state.skin === "classic" ? "" : state.skin;
+}
+
+function isTempoUnlocked(tempoId, runCounts=state?.tempoRuns){
+  const config = TEMPO_CONFIG[tempoId];
+  if(!config) return false;
+  const requirement = config.unlockRequirement;
+  return !requirement || (runCounts?.[requirement.tempo] || 0) >= requirement.completedRuns;
+}
+
+function getTempoLockMessage(tempoId){
+  const requirement = TEMPO_CONFIG[tempoId]?.unlockRequirement;
+  if(!requirement) return "";
+  return `Complete ${requirement.completedRuns} ${TEMPO_CONFIG[requirement.tempo].label} runs to unlock.`;
+}
+
+function selectTempo(tempoId){
+  const message = $("tempoMessage");
+  if(!isTempoUnlocked(tempoId)){
+    if(message) message.textContent = getTempoLockMessage(tempoId);
+    return;
+  }
+  state.selectedTempo = tempoId;
+  saveState();
+  renderTempoSelector();
+}
+
+function renderTempoSelector(){
+  const options = $("tempoOptions");
+  if(!options) return;
+  if(!isTempoUnlocked(state.selectedTempo)) state.selectedTempo = "beginner";
+  options.innerHTML = Object.entries(TEMPO_CONFIG).map(([id, config])=>{
+    const unlocked = isTempoUnlocked(id);
+    const selected = state.selectedTempo === id;
+    return `<button type="button" class="tempo-option ${selected ? "selected" : ""} ${unlocked ? "" : "locked"}" aria-pressed="${selected}" onclick="selectTempo('${id}')">
+      <span class="tempo-option-top"><b>${config.label}</b><em>${unlocked ? (selected ? "Selected" : "Available") : "Locked"}</em></span>
+      <small>${config.description}</small><strong>${config.xpLabel}</strong>
+      ${unlocked ? "" : `<small class="tempo-lock-copy">${getTempoLockMessage(id)}</small>`}
+    </button>`;
+  }).join("");
+  const message = $("tempoMessage");
+  if(message) message.textContent = "";
+}
+
+function getTempoProgressMessage(tempoId, unlockedBefore){
+  const count = state.tempoRuns[tempoId] || 0;
+  if(tempoId === "beginner"){
+    if(!unlockedBefore.normal && isTempoUnlocked("normal")) return "Normal unlocked!";
+    if(isTempoUnlocked("normal")) return `Normal unlocked - ${count} Beginner runs completed`;
+    return `Beginner progress: ${Math.min(count,10)}/10 runs to unlock Normal`;
+  }
+  if(tempoId === "normal"){
+    if(!unlockedBefore.speedrun && isTempoUnlocked("speedrun")) return "Speedrun unlocked!";
+    if(isTempoUnlocked("speedrun")) return `Speedrun unlocked - ${count} Normal runs completed`;
+    return `Normal progress: ${Math.min(count,20)}/20 runs to unlock Speedrun`;
+  }
+  return `Speedrun mastery: ${Math.min(count,30)}/30 runs`;
 }
 
 function isOnboardingHelperDismissed(){
@@ -377,7 +445,7 @@ function openScreen(id){
   if(id==="map") renderMap();
   if(id==="shop") renderShop();
   if(id==="library") renderLibrary();
-  if(id==="home") drawMini();
+  if(id==="home"){ drawMini(); renderTempoSelector(); }
 }
 function renderMap(){
   $("worldGrid").innerHTML = worlds.map(w=>{
@@ -740,8 +808,12 @@ function startRun(worldId=activeWorld){
   activeWorld = worldId;
   const world = worlds.find(w=>w.id===worldId) || worlds[0];
   const startPrice = 100;
+  const tempoId = isTempoUnlocked(state.selectedTempo) ? state.selectedTempo : "beginner";
+  const tempo = TEMPO_CONFIG[tempoId];
   run = {
     world,
+    tempoId,
+    tempo,
     score:0,
     price:startPrice,
     candles:[],
@@ -788,7 +860,7 @@ function startRun(worldId=activeWorld){
   // Mobile: fewer initial candles for clarity
   const initCandles = isMobile() ? 18 : 26;
   for(let i=0;i<initCandles;i++) addCandle();
-  $("runMode").textContent = world.title;
+  $("runMode").textContent = `${world.title} - ${tempo.label}`;
   $("runHint").textContent = "Watch the candles move. Timer starts at Quest Moment.";
   $("scoreText").textContent = "0";
   $("timeText").textContent = "—";
@@ -811,7 +883,7 @@ function startRun(worldId=activeWorld){
     run.nextFreeze--;
     if(run.nextFreeze<=0 && !(wasFinishingSetup && run.setupSteps <= 0)) freezeScenario();
     drawGame();
-  },520);
+  },tempo.replayInterval);
 }
 function quitRun(){
   if(run){clearInterval(run.timer);clearInterval(run.tick);clearInterval(run.questTimer);}
@@ -828,13 +900,19 @@ function endRun(){
   const perfectBonus = correct >= maxQ ? 50 : 0;
   const fastAnswerBonus = (run.fastCount || 0) * 3;
   const bonusXP = perfectBonus + fastAnswerBonus;
-  const earned = baseXP + bonusXP;
+  const rawXP = baseXP + bonusXP;
+  const earned = Math.round(rawXP * run.tempo.xpMultiplier);
+  const tempoBonusXP = earned - rawXP;
+  const completedTempoId = run.tempoId;
+  const completedTempoLabel = run.tempo.label;
+  const unlockedBefore = {normal:isTempoUnlocked("normal"), speedrun:isTempoUnlocked("speedrun")};
 
   state.xp += earned;
   state.best = Math.max(state.best, run.score);
+  state.tempoRuns[completedTempoId] = (state.tempoRuns[completedTempoId] || 0) + 1;
   saveState();
-  if(bonusXP > 0){
-    setTimeout(()=>showXPPop(bonusXP, perfectBonus > 0 ? "Perfect + speed bonus" : "Speed bonus"), 350);
+  if(bonusXP + tempoBonusXP > 0){
+    setTimeout(()=>showXPPop(bonusXP + tempoBonusXP, tempoBonusXP > 0 ? `${completedTempoLabel} XP bonus` : (perfectBonus > 0 ? "Perfect + speed bonus" : "Speed bonus")), 350);
   } else {
     setTimeout(()=>pulseXPWallet(), 350);
   }
@@ -849,6 +927,8 @@ function endRun(){
   const fastLine = (run.fastCount || 0) > 0 ? `<span class="summary-bonus">⚡ ${run.fastCount} fast reads · +${(run.fastCount || 0)*3} XP</span>` : "";
   const perfectLine = correct >= maxQ ? `<span class="summary-bonus perfect">✦ Perfect bonus +50 XP</span>` : "";
   const bonusRow = (fastLine || perfectLine) ? `<div class="summary-bonus-row">${fastLine}${perfectLine}</div>` : "";
+  const tempoProgress = getTempoProgressMessage(completedTempoId, unlockedBefore);
+  const tempoXPLine = `<div class="tempo-result"><b>${run.tempo.label} replay</b><span>${run.tempo.xpLabel}${tempoBonusXP > 0 ? ` - +${tempoBonusXP} XP this run` : ""}</span><small>${tempoProgress}</small></div>`;
   const missedCount = (run.missedReads || []).length;
   const missedReview = renderMissedReadsReview(run.missedReads || []);
   const reviewButton = missedCount > 0
@@ -861,6 +941,7 @@ function endRun(){
       <div class="summary-label">correct reads</div>
       <div class="summary-comment">${runComment}</div>
       ${bonusRow}
+      ${tempoXPLine}
       <div class="summary-step-actions">${reviewButton}</div>
     </div>
     <div class="result-step result-step-review" data-step-panel="review">
@@ -2293,6 +2374,7 @@ function drawMini(){
 setInterval(()=>{ if($("home").classList.contains("active")) drawMini(); },1800);
 
 saveState();
+renderTempoSelector();
 renderMap();
 renderShop();
 renderLibrary();

@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v27.4 - Location Probability Tuning`
-**Build marker:** `v27_4_location_probability_tuning`
+**Current build:** `v27.5 - Replay Tempo Unlocks`
+**Build marker:** `v27_5_replay_tempo_unlocks`
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** World 1 locked/stable gameplay baseline with tuned location probabilities
+**Status:** World 1 locked/stable gameplay baseline with replay tempo progression
 
 ---
 
@@ -149,6 +149,8 @@ v27.2 keeps the v27.0 World 1 gameplay baseline locked and preserves v27.1 onboa
 v27.3 keeps the v27.0 World 1 gameplay baseline locked and prepares the game for first external testers with small clarity polish. The home screen now points directly at World 1: Candle Basics, the first-run helper clarifies that answer buttons unlock at Quest Moment, the visible Pattern Library stays focused on the five active World 1 answers, and the iPhone install tip stays home-only so it cannot cover gameplay or result actions. Generator logic, answer pool, Pattern Bible validation, replay sequencing, location realism, scoring, timer, chart layout, result flow, and missed-read coach behavior remain unchanged.
 
 v27.4 keeps realistic World 1 location bias while reducing position-based shortcuts. Hammer and Shooting Star remain edge-first with occasional mean-adjacent setups, Bullish and Bearish Engulfing gain more Channel Mean control-shift scenarios, and Doji remains common at the mean without being automatic there. Pattern recipes, validation, answer pool, replay sequencing, scoring, timer, and presentation remain unchanged.
+
+v27.5 adds a replay tempo progression loop without changing recognition time or World 1 generation. Beginner preserves the v27.4 setup pace and standard XP. Ten completed Beginner runs unlock Normal, which targets a roughly four-second replay and awards +10% XP. Twenty completed Normal runs unlock Speedrun, which targets a roughly three-second replay and awards +25% XP. Completed Speedrun runs track toward 30-run mastery. Counts and the last unlocked selection persist in localStorage, while the Quest Moment answer timer remains exactly 7 seconds.
 
 ---
 
@@ -392,6 +394,7 @@ v27.1 - First Player Onboarding Polish
 v27.2 - Pattern Library Polish
 v27.3 - First Tester Readiness Pass
 v27.4 - Location Probability Tuning
+v27.5 - Replay Tempo Unlocks
 ```
 
 World 1 gameplay is locked at the v27.0 stable baseline. Future work should preserve that gameplay baseline unless a new checkpoint explicitly changes behaviour.

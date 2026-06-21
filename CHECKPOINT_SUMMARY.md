@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.4 Checkpoint Summary
+# Candle Quest Reborn - v27.5 Checkpoint Summary
 
 ## Current build
 
-**v27.4 - Location Probability Tuning**
-Build marker: `v27_4_location_probability_tuning`
+**v27.5 - Replay Tempo Unlocks**
+Build marker: `v27_5_replay_tempo_unlocks`
 
 ## Base build
 
@@ -12,9 +12,9 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable gameplay baseline with tuned location probabilities.
+World 1 locked/stable gameplay baseline with replay tempo progression.
 
-v27.4 preserves the accepted v27.0-v27.3 game, presentation, and onboarding behaviour while tuning only the existing World 1 location-profile weights and targets. It keeps the five-answer pool, Pattern Bible recipes and validators, candle rhythm, Engulfing sequencing, clean chart, result flow, and mobile/desktop layouts unchanged.
+v27.5 preserves the accepted v27.4 World 1 generator and location tuning while adding only replay/setup pacing, completed-run unlock progress, and tempo XP multipliers. It keeps the five-answer pool, Pattern Bible recipes and validators, candle rhythm, Engulfing sequencing, 7-second answer window, clean chart, result/coach flow, and mobile/desktop gameplay layouts unchanged.
 
 ## Core design doctrine
 
@@ -47,7 +47,17 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v27.4
+## What changed in v27.5
+
+- Added Beginner at the existing v27.4 replay pace with standard XP, unlocked by default.
+- Added Normal at a faster readable pace with +10% XP, unlocked after 10 completed Beginner runs.
+- Added Speedrun at the fastest pace with +25% XP, unlocked after 20 completed Normal runs.
+- Added persistent progress toward 30 completed Speedrun runs as future mastery tracking only.
+- Added a compact selector, locked explanations, persisted selection, and result progress feedback.
+- Kept XP integer-based by rounding the multiplied completed-run reward once.
+- Preserved the 7-second Quest Moment timer; replay tempo changes setup pacing only.
+
+## Preserved from v27.4
 
 ### Code / game state
 
@@ -276,7 +286,8 @@ v27.1 - First Player Onboarding Polish
 v27.2 - Pattern Library Polish
 v27.3 - First Tester Readiness Pass
 v27.4 - Location Probability Tuning
-v27.5+ - Future World 1 teaching expansions after lockdown
+v27.5 - Replay Tempo Unlocks
+v27.6+ - Future World 1 teaching expansions after lockdown
 ```
 
 Do not combine lockdown, market rhythm changes, comparative cards, and deeper engulfing doctrine into one patch.
