@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.5 Checkpoint Summary
+# Candle Quest Reborn - v27.6 Checkpoint Summary
 
 ## Current build
 
-**v27.5 - Replay Tempo Unlocks**
-Build marker: `v27_5_replay_tempo_unlocks`
+**v27.6 - Mochi Store Prototype**
+Build marker: `v27_6_mochi_store_prototype`
 
 ## Base build
 
@@ -12,9 +12,9 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable gameplay baseline with replay tempo progression.
+World 1 locked/stable gameplay baseline with the first cosmetic familiar.
 
-v27.5 preserves the accepted v27.4 World 1 generator and location tuning while adding only replay/setup pacing, completed-run unlock progress, and tempo XP multipliers. It keeps the five-answer pool, Pattern Bible recipes and validators, candle rhythm, Engulfing sequencing, 7-second answer window, clean chart, result/coach flow, and mobile/desktop gameplay layouts unchanged.
+v27.6 preserves the accepted v27.5 gameplay and replay tempo progression while adding Mochi the Market Cat as a cosmetic-only shop familiar. Mochi costs 250 XP, supports buy/equip state with localStorage persistence, appears on home and result screens when equipped, and uses small CSS performance reactions without changing the chart-reading loop.
 
 ## Core design doctrine
 
@@ -47,7 +47,16 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v27.5
+## What changed in v27.6
+
+- Added Mochi the Market Cat, the first Familiar, to the existing Cosmetics shop for 250 XP.
+- Added insufficient-XP, buy, equip, and equipped states with purchase feedback and automatic equip on unlock.
+- Persisted Mochi ownership and equipped state in the existing localStorage payload, including a safe fallback that prevents unowned equipment.
+- Added compact pixel-art Mochi placements on home and result screens.
+- Added simple performance reactions, including Perfect Run bounce/sparkle/rainbow and Bad Luck sleepy loaf.
+- Kept Mochi cosmetic only with no hints, timer changes, score boosts, reveals, or pattern assistance.
+
+## Preserved from v27.5
 
 - Added Beginner at the existing v27.4 replay pace with standard XP, unlocked by default.
 - Added Normal at a faster readable pace with +10% XP, unlocked after 10 completed Beginner runs.
@@ -287,7 +296,8 @@ v27.2 - Pattern Library Polish
 v27.3 - First Tester Readiness Pass
 v27.4 - Location Probability Tuning
 v27.5 - Replay Tempo Unlocks
-v27.6+ - Future World 1 teaching expansions after lockdown
+v27.6 - Mochi Store Prototype
+v27.7+ - Future World 1 teaching expansions after lockdown
 ```
 
 Do not combine lockdown, market rhythm changes, comparative cards, and deeper engulfing doctrine into one patch.

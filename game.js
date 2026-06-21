@@ -1,11 +1,11 @@
-const CANDLE_QUEST_BUILD = "v27_5_replay_tempo_unlocks";
+const CANDLE_QUEST_BUILD = "v27_6_mochi_store_prototype";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.5 - Replay Tempo Unlocks";
+    b.textContent = "v27.6 - Mochi Store Prototype";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -88,6 +88,13 @@ const skins = [
   {id:"neon", name:"Neon Breakout", price:320, desc:"Energetic late-night mode."},
   {id:"gold", name:"Gold Floor", price:600, desc:"Premium pro-desk feel."}
 ];
+const MOCHI = {
+  id:"mochi",
+  name:"Mochi the Market Cat",
+  type:"Familiar",
+  price:250,
+  desc:"A tiny pixel familiar with playful nyan energy. Watches your reps. Judges your candles. Loves clean reads."
+};
 
 
 const patternDefinitions = {
@@ -317,13 +324,14 @@ function loadState(){
   try{
     const raw = localStorage.getItem("candleQuestRebornV1");
     if(raw){
-      const loaded = Object.assign({xp:0,best:0,skin:"classic",owned:["classic"],tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner"}, JSON.parse(raw));
+      const loaded = Object.assign({xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner"}, JSON.parse(raw));
       loaded.tempoRuns = Object.assign({...DEFAULT_TEMPO_RUNS}, loaded.tempoRuns || {});
+      if(!loaded.mochiOwned) loaded.equippedFamiliar = null;
       if(!isTempoUnlocked(loaded.selectedTempo, loaded.tempoRuns)) loaded.selectedTempo = "beginner";
       return loaded;
     }
   }catch(e){}
-  return {xp:0,best:0,skin:"classic",owned:["classic"],tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner"};
+  return {xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner"};
 }
 function saveState(){
   try{
@@ -333,6 +341,30 @@ function saveState(){
   const gameXp = $("gameXpText");
   if(gameXp) gameXp.textContent = `${state.xp} XP`;
   document.body.dataset.skin = state.skin === "classic" ? "" : state.skin;
+  renderHomeFamiliar();
+}
+
+function mochiMarkup(reaction="calm", caption="Chart-room familiar"){
+  return `<div class="mochi-familiar reaction-${reaction}" role="img" aria-label="Mochi the Market Cat, ${reaction.replace("-"," ")}">
+    <span class="mochi-rainbow" aria-hidden="true"></span>
+    <svg class="mochi-pixel" viewBox="0 0 64 52" aria-hidden="true" shape-rendering="crispEdges">
+      <path class="mochi-tail" d="M48 31h8v-5h5v13h-5v5H45v-7h3z"/>
+      <path class="mochi-body" d="M13 20h5V9h8v6h12V9h8v11h5v25H13z"/>
+      <path class="mochi-ear" d="M18 10h7v7h-7zm21 0h7v7h-7z"/>
+      <path class="mochi-face" d="M23 26h5v5h-5zm14 0h5v5h-5zM30 34h5v3h-5z"/>
+      <path class="mochi-cheek" d="M18 34h7v3h-7zm22 0h7v3h-7z"/>
+      <path class="mochi-paws" d="M18 43h10v6H18zm19 0h10v6H37z"/>
+    </svg>
+    <span class="mochi-copy"><b>Mochi</b><small>${caption}</small></span>
+    <span class="mochi-sparkles" aria-hidden="true">✦</span>
+  </div>`;
+}
+function renderHomeFamiliar(){
+  const host = $("homeFamiliar");
+  if(!host) return;
+  host.innerHTML = state.mochiOwned && state.equippedFamiliar === MOCHI.id
+    ? mochiMarkup("calm", "Ready to judge some candles.")
+    : "";
 }
 
 function isTempoUnlocked(tempoId, runCounts=state?.tempoRuns){
@@ -445,7 +477,7 @@ function openScreen(id){
   if(id==="map") renderMap();
   if(id==="shop") renderShop();
   if(id==="library") renderLibrary();
-  if(id==="home"){ drawMini(); renderTempoSelector(); }
+  if(id==="home"){ drawMini(); renderTempoSelector(); renderHomeFamiliar(); }
 }
 function renderMap(){
   $("worldGrid").innerHTML = worlds.map(w=>{
@@ -470,7 +502,7 @@ function openLesson(id){
   openScreen("lesson");
 }
 function renderShop(){
-  $("shopGrid").innerHTML = skins.map(s=>{
+  const skinCards = skins.map(s=>{
     const owned = state.owned.includes(s.id);
     const active = state.skin === s.id || (s.id==="classic" && state.skin==="classic");
     const canBuy = state.xp >= s.price;
@@ -480,6 +512,41 @@ function renderShop(){
       <button ${(!owned && !canBuy)?'disabled':''} onclick="${owned?`equipSkin('${s.id}')`:`buySkin('${s.id}')`}">${active?'Equipped':owned?'Equip':`Buy ${s.price} XP`}</button>
     </div>`;
   }).join("");
+  const owned = state.mochiOwned;
+  const active = owned && state.equippedFamiliar === MOCHI.id;
+  const canBuy = state.xp >= MOCHI.price;
+  const action = active
+    ? `<span class="familiar-equipped">Equipped</span>`
+    : owned
+      ? `<button onclick="equipMochi()">Equip</button>`
+      : `<button ${canBuy?'':'disabled'} onclick="buyMochi()">${canBuy?`Buy - ${MOCHI.price} XP`:`Need ${MOCHI.price} XP`}</button>`;
+  const mochiCard = `<div class="skin-card familiar-card ${(!owned && !canBuy)?'locked':''}">
+    ${mochiMarkup(active ? "calm" : "blink", "Shop preview")}
+    <div class="familiar-card-head"><h3>${MOCHI.name}</h3><span>${MOCHI.type}</span></div>
+    <p>${MOCHI.desc}</p><small>Cosmetic only - no gameplay advantage.</small>${action}
+  </div>`;
+  $("shopGrid").innerHTML = mochiCard + skinCards;
+}
+function setShopMessage(message){
+  const host = $("shopMessage");
+  if(host) host.textContent = message;
+}
+function buyMochi(){
+  if(state.mochiOwned) return;
+  if(state.xp < MOCHI.price){ setShopMessage(`Mochi needs ${MOCHI.price} XP to unlock.`); return; }
+  state.xp -= MOCHI.price;
+  state.mochiOwned = true;
+  state.equippedFamiliar = MOCHI.id;
+  saveState();
+  setShopMessage("Mochi unlocked and equipped!");
+  renderShop();
+}
+function equipMochi(){
+  if(!state.mochiOwned) return;
+  state.equippedFamiliar = MOCHI.id;
+  saveState();
+  setShopMessage("Mochi equipped!");
+  renderShop();
 }
 function buySkin(id){
   const s = skins.find(x=>x.id===id);
@@ -934,12 +1001,18 @@ function endRun(){
   const reviewButton = missedCount > 0
     ? `<button class="secondary result-review-btn" onclick="showResultStep('review')">Review missed reads</button>`
     : `<button class="secondary result-review-btn" onclick="showResultStep('review')">View clean-run note</button>`;
+  const mochiReaction = correct >= maxQ ? "perfect" : correct >= 7 ? "elite" : correct >= 4 ? "good" : "bad-luck";
+  const mochiCaption = correct >= maxQ ? "Perfect read! Maximum sparkle." : correct >= 7 ? "Tail flick approved." : correct >= 4 ? "Calm blink. Keep training." : "Sleepy loaf. Next rep.";
+  const resultMochi = state.mochiOwned && state.equippedFamiliar === MOCHI.id
+    ? `<div class="familiar-result">${mochiMarkup(mochiReaction, mochiCaption)}</div>`
+    : "";
 
   $("resultBody").innerHTML = `
     <div class="result-step result-step-score active" data-step-panel="score">
       <div class="summary-correct">${correct}/${maxQ}</div>
       <div class="summary-label">correct reads</div>
       <div class="summary-comment">${runComment}</div>
+      ${resultMochi}
       ${bonusRow}
       ${tempoXPLine}
       <div class="summary-step-actions">${reviewButton}</div>

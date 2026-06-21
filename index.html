@@ -64,6 +64,7 @@
             <button class="secondary" onclick="openScreen('map')">Lesson Map</button>
             <button class="secondary" onclick="openScreen('library')">Pattern Library</button>
           </div>
+          <div id="homeFamiliar" class="familiar-home" aria-live="polite"></div>
         </div>
         <div class="phone-card">
           <canvas id="miniCanvas" width="300" height="420"></canvas>
@@ -157,7 +158,8 @@
       <button class="ghost" onclick="openScreen('home')">← Home</button>
       <section class="shop-card">
         <p class="eyebrow">Cosmetics</p>
-        <h2>Spend XP on chart skins.</h2>
+        <h2>Make the chart room yours.</h2>
+        <p id="shopMessage" class="shop-message" aria-live="polite"></p>
         <div id="shopGrid" class="shop-grid"></div>
       </section>
     </main>

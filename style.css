@@ -77,6 +77,35 @@ h2{font-size:clamp(42px,8vw,76px);line-height:.88;letter-spacing:-.075em;margin:
 .world-card h3,.skin-card h3{font-size:22px;letter-spacing:-.035em;margin:0 0 6px}
 .world-card p,.skin-card p{color:var(--muted);font-weight:800;line-height:1.35;font-size:13px;min-height:50px}
 .world-card button,.skin-card button{width:100%;margin-top:12px;border:0;background:var(--green);color:#fff;border-radius:16px;padding:11px;font-weight:950;cursor:pointer}
+.skin-card button:disabled{background:#a8b8ad;cursor:not-allowed}
+.shop-message{min-height:20px;margin:10px 0 0;color:var(--green-dark);font-size:13px;font-weight:900}
+.familiar-card{position:relative;border-color:#f6c8dd;background:linear-gradient(145deg,#fff8fc,#f5fff7)}
+.familiar-card.locked{opacity:.72}
+.familiar-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.familiar-card-head h3{margin:0}
+.familiar-card-head span{flex:0 0 auto;border:1px solid #f4a9cc;border-radius:999px;padding:4px 7px;color:#a63670;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.08em}
+.familiar-card > p{min-height:0;margin-bottom:7px}
+.familiar-card > small{display:block;color:#53705c;font-size:10px;font-weight:900}
+.familiar-equipped{display:grid;place-items:center;min-height:44px;margin-top:12px;border:2px solid #bdeca9;border-radius:16px;background:#eaffdf;color:var(--green-dark);font-weight:950}
+.familiar-home{min-height:0;margin-top:12px}
+.familiar-home:empty{display:none}
+.familiar-result{display:flex;justify-content:center;margin:6px auto 3px}
+.mochi-familiar{position:relative;display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:5px 9px 5px 5px;border:2px solid #f6c8dd;border-radius:14px;background:#fff8fc;color:#442438;box-shadow:0 3px 0 #f4d9e6;transform-origin:center bottom}
+.mochi-pixel{width:48px;height:39px;flex:0 0 auto;image-rendering:pixelated;filter:drop-shadow(2px 3px 0 rgba(90,43,67,.18))}
+.mochi-body{fill:#f5d8c7}.mochi-ear{fill:#e89ab8}.mochi-face{fill:#43283a}.mochi-cheek{fill:#ee82aa}.mochi-paws{fill:#fff7ed}.mochi-tail{fill:#f5d8c7}
+.mochi-copy{display:block;text-align:left;line-height:1.08}.mochi-copy b,.mochi-copy small{display:block}.mochi-copy b{font-size:12px}.mochi-copy small{margin-top:3px;color:#7f5268;font-size:9px;font-weight:850}
+.mochi-sparkles{display:none;position:absolute;right:-4px;top:-9px;color:#f4b400;font-size:16px}
+.mochi-rainbow{display:none;position:absolute;left:-24px;bottom:10px;width:28px;height:12px;background:linear-gradient(#ff5b73 0 25%,#ffd45b 25% 50%,#62d68b 50% 75%,#58a9ff 75%);image-rendering:pixelated}
+.reaction-perfect{animation:mochiHappy .65s ease-in-out 2}.reaction-perfect .mochi-sparkles,.reaction-perfect .mochi-rainbow{display:block;animation:mochiSparkle .7s steps(2,end) infinite}
+.reaction-elite .mochi-tail{animation:mochiTail .65s steps(2,end) 3;transform-origin:48px 38px}
+.reaction-good .mochi-face,.reaction-blink .mochi-face{animation:mochiBlink 2.8s steps(2,end) infinite}
+.reaction-bad-luck{animation:mochiLoaf 1s ease both}.reaction-bad-luck .mochi-pixel{transform:scaleY(.82);transform-origin:center bottom}
+@keyframes mochiHappy{50%{transform:translateY(-6px)}}
+@keyframes mochiSparkle{50%{opacity:.35}}
+@keyframes mochiTail{50%{transform:translateX(2px) rotate(8deg)}}
+@keyframes mochiBlink{48%,52%{opacity:.25}}
+@keyframes mochiLoaf{to{transform:translateY(2px)}}
+@media(prefers-reduced-motion:reduce){.mochi-familiar,.mochi-familiar *{animation:none!important}}
 .lesson-card{max-width:820px;margin:0 auto}
 .lesson-card h2{font-size:clamp(34px,6vw,58px)}
 .lesson-card p{color:var(--muted);font-weight:850;line-height:1.5;font-size:17px}

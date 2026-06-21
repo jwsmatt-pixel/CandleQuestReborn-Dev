@@ -1,5 +1,32 @@
 # Candle Quest Reborn — Changelog
 
+## v27.6 - Mochi Store Prototype
+
+Status: first cosmetic familiar on the locked World 1 gameplay baseline
+
+### Changed
+
+- Added Mochi the Market Cat as a compact pixel-art Familiar in the existing Cosmetics shop for `250 XP`.
+- Added clear insufficient-XP, buy, owned, equip, and equipped states; buying Mochi subtracts exactly `250 XP` and auto-equips the familiar.
+- Persisted Mochi ownership and equipped state in the existing fail-soft localStorage save payload.
+- Added equipped Mochi appearances on the home and result screens without placing the familiar over gameplay UI.
+- Added lightweight CSS reactions: a bounce, sparkle, and rainbow pop for a Perfect Run; tail flick, blink, and sleepy-loaf treatments for lower result tiers.
+- Updated the build marker to `v27_6_mochi_store_prototype` and badge to `v27.6 - Mochi Store Prototype`.
+
+### Preserved
+
+- Mochi is cosmetic only and gives no hints, answer reveals, timing changes, scoring boosts, pattern assistance, or other gameplay advantage.
+- Active World 1 answer pool remains exactly: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji.
+- v27.4 location tuning, v27.5 replay tempo unlocks and XP multipliers, the 7-second answer timer, result/coach flow, Pattern Library, and chart presentation are unchanged.
+
+### Testing required
+
+- Verify Mochi shop states below and above `250 XP`, exact purchase subtraction, auto-equip messaging, manual equip, and refresh persistence.
+- Verify equipped Mochi appears cleanly on home and result screens, including Perfect Run and Bad Luck reactions.
+- Recheck a complete World 1 run, all replay tempo unlocks/multipliers, the 7-second Quest Moment timer, Pattern Library, coach flow, and mobile/desktop layout.
+
+---
+
 ## v27.5 - Replay Tempo Unlocks
 
 Status: replay/setup pacing progression on the locked World 1 gameplay baseline
