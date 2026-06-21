@@ -47,6 +47,17 @@
     </header>
 
     <main id="home" class="screen active">
+      <section id="devHomeTools" class="dev-tools-panel" aria-labelledby="devHomeToolsTitle" hidden>
+        <div class="dev-tools-copy">
+          <b id="devHomeToolsTitle">DEV TOOLS</b>
+          <span>Dev mode active via ?dev=1</span>
+          <small id="devHomeMessage" aria-live="polite"></small>
+        </div>
+        <div class="dev-tools-actions">
+          <button type="button" onclick="devAddXP()">Add 500 XP</button>
+          <button type="button" onclick="devResetMochi()">Reset Mochi</button>
+        </div>
+      </section>
       <section class="hero">
         <div>
           <p class="eyebrow">Reborn Edition</p>
@@ -161,10 +172,16 @@
         <p class="eyebrow">Cosmetics</p>
         <h2>Make the chart room yours.</h2>
         <p id="shopMessage" class="shop-message" aria-live="polite"></p>
-        <div id="devShopTools" class="dev-shop-tools" hidden>
-          <b>Dev Preview Tools</b>
-          <button type="button" onclick="devAddXP()">Add 500 XP</button>
-          <button type="button" onclick="devResetMochi()">Reset Mochi</button>
+        <div id="devShopTools" class="dev-tools-panel dev-shop-tools" aria-labelledby="devShopToolsTitle" hidden>
+          <div class="dev-tools-copy">
+            <b id="devShopToolsTitle">DEV TOOLS</b>
+            <span>Dev mode active via ?dev=1</span>
+            <small id="devShopMessage" aria-live="polite"></small>
+          </div>
+          <div class="dev-tools-actions">
+            <button type="button" onclick="devAddXP()">Add 500 XP</button>
+            <button type="button" onclick="devResetMochi()">Reset Mochi</button>
+          </div>
         </div>
         <div id="shopGrid" class="shop-grid"></div>
       </section>

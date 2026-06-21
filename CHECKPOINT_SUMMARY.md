@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.6.1 Checkpoint Summary
+# Candle Quest Reborn - v27.6.2 Checkpoint Summary
 
 ## Current build
 
-**v27.6.1 - Dev Preview Tools**
-Build marker: `v27_6_1_dev_preview_tools`
+**v27.6.2 - Dev Tools Visibility Patch**
+Build marker: `v27_6_2_dev_tools_visibility_patch`
 
 ## Base build
 
@@ -12,9 +12,9 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable gameplay baseline with hidden developer preview tools.
+World 1 locked/stable gameplay baseline with visible, URL-gated developer preview tools.
 
-v27.6.1 preserves the accepted v27.6 gameplay and Mochi systems while adding URL-controlled developer preview tools. `?dev=1` temporarily exposes all tempos, displays a dev badge, and enables intentional XP and Mochi test actions without changing normal unlock progress.
+v27.6.2 preserves the accepted gameplay, tempo, and Mochi systems while making the existing URL-controlled tools easy to find. `?dev=1` now shows compact `DEV TOOLS` panels on Home and in the Shop, with immediate access to XP grants and Mochi resets. Without that flag, all dev controls and the `DEV PREVIEW` badge remain hidden and normal gameplay is unchanged.
 
 ## Core design doctrine
 
@@ -47,13 +47,18 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v27.6.1
+## What changed in v27.6.2
 
-- Added hidden `?dev=1` Dev Preview Mode and a visible `DEV PREVIEW` badge.
-- Temporarily enabled Beginner, Normal, and Speedrun selection for testing without persisting locked selections or run-count progress.
-- Added dev-only shop controls for adding `500 XP` and resetting Mochi ownership/equipment.
-- Kept all dev UI and overrides absent when the URL flag is removed.
+- Added an obvious mobile-friendly `DEV TOOLS` panel near the top of Home when `?dev=1` is active.
+- Kept a matching panel near the top of the Shop with `Add 500 XP` and `Reset Mochi` controls.
+- Added immediate action feedback while retaining the existing persisted XP and Mochi reset behaviour.
+- Kept all dev panels, buttons, and the `DEV PREVIEW` badge absent when the URL flag is removed.
 - Preserved normal gameplay, World 1 generation and answer pool, tempo progression, Mochi purchasing/equipping, scoring, timer, result flow, Pattern Library, and layouts.
+
+## Preserved from v27.6.1
+
+- Kept temporary Beginner, Normal, and Speedrun selection for testing without persisting locked selections or run-count progress.
+- Kept the URL-controlled `DEV PREVIEW` badge away from the game screen.
 
 ## Preserved from v27.6
 
@@ -306,6 +311,7 @@ v27.4 - Location Probability Tuning
 v27.5 - Replay Tempo Unlocks
 v27.6 - Mochi Store Prototype
 v27.6.1 - Dev Preview Tools
+v27.6.2 - Dev Tools Visibility Patch
 v27.7+ - Future World 1 teaching expansions after lockdown
 ```
 

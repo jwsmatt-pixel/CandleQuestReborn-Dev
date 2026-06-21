@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v27.6.2 - Dev Tools Visibility Patch
+
+### Changed
+
+- Added a clear, compact `DEV TOOLS` panel to the home screen when `?dev=1` is active.
+- Kept matching dev controls visible near the top of the Shop for quick access.
+- Added immediate shared feedback for the `Add 500 XP` and `Reset Mochi` actions.
+- Updated the build marker to `v27_6_2_dev_tools_visibility_patch` and badge to `v27.6.2 - Dev Tools Visibility Patch`.
+
+### Preserved
+
+- Dev panels, buttons, and the `DEV PREVIEW` badge remain hidden without `?dev=1`.
+- Normal gameplay, World 1 generation and answer pool, tempo progression and temporary dev access, Mochi logic, 7-second timer, scoring, result flow, Pattern Library, and chart presentation are unchanged.
+
 ## v27.6.1 - Dev Preview Tools
 
 ### Added

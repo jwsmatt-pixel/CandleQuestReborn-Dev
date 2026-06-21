@@ -1,7 +1,7 @@
 # Candle Quest Reborn
 
-**Current build:** `v27.6.1 - Dev Preview Tools`
-**Build marker:** `v27_6_1_dev_preview_tools`
+**Current build:** `v27.6.2 - Dev Tools Visibility Patch`
+**Build marker:** `v27_6_2_dev_tools_visibility_patch`
 **Base:** `v26.2.3 · Result Flow Stepper`  
 **Status:** World 1 locked/stable gameplay baseline with the first cosmetic familiar
 
@@ -155,6 +155,8 @@ v27.5 adds a replay tempo progression loop without changing recognition time or 
 v27.6 adds Mochi the Market Cat as the first cosmetic Familiar in the existing shop. Mochi costs 250 XP and supports insufficient-XP, buy, owned, equip, and equipped states. Ownership and equipment persist in localStorage; purchase auto-equips Mochi. When equipped, the compact pixel familiar appears on home and result screens with simple CSS reactions, including a Perfect Run rainbow sparkle and a Bad Luck sleepy loaf. Mochi is cosmetic only and provides no gameplay advantage.
 
 v27.6.1 adds hidden developer preview tools behind `?dev=1`. Dev mode shows a clear badge, temporarily permits all replay tempos, and adds shop controls for `500 XP` grants and Mochi ownership resets. Preview-only tempo access does not persist selection or unlock progress, all tools disappear when the flag is removed, and normal gameplay remains unchanged.
+
+v27.6.2 makes those dev tools obvious without changing their scope. When `?dev=1` is active, compact `DEV TOOLS` panels appear on Home and near the top of the Shop with `Add 500 XP` and `Reset Mochi` actions and immediate feedback. The panels, buttons, and `DEV PREVIEW` badge remain hidden from normal users, and normal gameplay is unchanged.
 
 ---
 
@@ -401,6 +403,7 @@ v27.4 - Location Probability Tuning
 v27.5 - Replay Tempo Unlocks
 v27.6 - Mochi Store Prototype
 v27.6.1 - Dev Preview Tools
+v27.6.2 - Dev Tools Visibility Patch
 ```
 
 World 1 gameplay is locked at the v27.0 stable baseline. Future work should preserve that gameplay baseline unless a new checkpoint explicitly changes behaviour.
@@ -442,6 +445,6 @@ icons/
 Use a cache-busting URL after uploading a new build, for example:
 
 ```text
-?fresh=2761
-?fresh=2761&dev=1
+https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2762
+https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2762&dev=1
 ```

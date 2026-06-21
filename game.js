@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v27_6_1_dev_preview_tools";
+const CANDLE_QUEST_BUILD = "v27_6_2_dev_tools_visibility_patch";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.6.1 - Dev Preview Tools";
+    b.textContent = "v27.6.2 - Dev Tools Visibility Patch";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -486,7 +486,7 @@ function openScreen(id){
   if(id==="map") renderMap();
   if(id==="shop") renderShop();
   if(id==="library") renderLibrary();
-  if(id==="home"){ drawMini(); renderTempoSelector(); renderHomeFamiliar(); }
+  if(id==="home"){ renderDevTools(); drawMini(); renderTempoSelector(); renderHomeFamiliar(); }
 }
 function renderMap(){
   $("worldGrid").innerHTML = worlds.map(w=>{
@@ -511,8 +511,7 @@ function openLesson(id){
   openScreen("lesson");
 }
 function renderShop(){
-  const devTools = $("devShopTools");
-  if(devTools) devTools.hidden = !DEV_PREVIEW_MODE;
+  renderDevTools();
   const skinCards = skins.map(s=>{
     const owned = state.owned.includes(s.id);
     const active = state.skin === s.id || (s.id==="classic" && state.skin==="classic");
@@ -538,6 +537,12 @@ function renderShop(){
   </div>`;
   $("shopGrid").innerHTML = mochiCard + skinCards;
 }
+function renderDevTools(){
+  ["devHomeTools", "devShopTools"].forEach(id=>{
+    const panel = $(id);
+    if(panel) panel.hidden = !DEV_PREVIEW_MODE;
+  });
+}
 function updateDevPreviewBadge(screenId){
   const badge = $("devPreviewBadge");
   const screen = $(screenId);
@@ -549,7 +554,7 @@ function devAddXP(){
   if(!DEV_PREVIEW_MODE) return;
   state.xp += 500;
   saveState();
-  setShopMessage("DEV: Added 500 XP.");
+  setDevToolsMessage("+500 XP added");
   renderShop();
 }
 function devResetMochi(){
@@ -557,8 +562,14 @@ function devResetMochi(){
   state.mochiOwned = false;
   state.equippedFamiliar = null;
   saveState();
-  setShopMessage("DEV: Mochi ownership reset.");
+  setDevToolsMessage("Mochi reset");
   renderShop();
+}
+function setDevToolsMessage(message){
+  ["devHomeMessage", "devShopMessage"].forEach(id=>{
+    const host = $(id);
+    if(host) host.textContent = message;
+  });
 }
 function setShopMessage(message){
   const host = $("shopMessage");
