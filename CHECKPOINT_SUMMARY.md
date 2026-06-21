@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.8 Checkpoint Summary
+# Candle Quest Reborn - v27.8.1 Checkpoint Summary
 
 ## Current build
 
-**v27.8 - Study Progress Foundations**
-Build marker: `v27_8_study_progress_foundations`
+**v27.8.1 - Result Score Font Polish**
+Build marker: `v27_8_1_result_score_font_polish`
 
 ## Base build
 
@@ -12,9 +12,21 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable gameplay baseline with persistent pattern-learning progress.
+World 1 locked/stable gameplay baseline with persistent pattern-learning progress and refined mobile result stats.
 
-v27.8 connects Candle Lens study to live World 1 reps. Each completed question records the correct pattern as seen, records correct recognition when earned, and surfaces accuracy, status, and a compact Study Focus inside the Pattern Library.
+v27.8.1 reduces only the lower mobile result stat-card numerals for Score, XP earned, and Best score. The hero result header remains bold, gameplay and scoring logic are unchanged, and all v27.8 study progress systems are preserved.
+
+## What changed in v27.8.1
+
+- Reduced the mobile lower result stat-card numerals by roughly 15% while retaining readable labels and existing card dimensions.
+- Preserved the main result hero scale, including PERFECT RUN, 10/10, and CORRECT READS.
+- Updated the build marker and visible badge for v27.8.1.
+
+## Preserved in v27.8.1
+
+- No gameplay, scoring, XP, result logic, generator, timer, answer-pool, or progression behavior changed.
+- All v27.8 study progress tracking, Pattern Library stats, Study Focus, and missed-read links remain intact.
+- Candle Lens, Mochi, tempo unlocks, Dev Tools visibility, mobile answer dock, and clean chart presentation remain unchanged.
 
 ## What changed in v27.8
 

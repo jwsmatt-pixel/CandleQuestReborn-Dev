@@ -1,5 +1,22 @@
 # Candle Quest Reborn — Changelog
 
+## v27.8.1 - Result Score Font Polish
+
+### Changed
+
+- Reduced the mobile result stat-card numeral size for Score, XP earned, and Best score by roughly 15%.
+- Updated the build marker to `v27_8_1_result_score_font_polish` and badge to `v27.8.1 - Result Score Font Polish`.
+
+### Preserved
+
+- The main result hero header remains bold, including PERFECT RUN, 10/10, and CORRECT READS.
+- Gameplay, scoring, XP, result logic, and all v27.8 study progress systems are unchanged.
+
+### Testing required
+
+- Verify the lower stat-card numerals and labels on iPhone-sized screens and confirm the desktop result remains readable.
+- Recheck a complete World 1 run plus the timer, locked answer pool, Pattern Library study stats, Candle Lens, Mochi, tempo unlocks, Dev Tools, and clean chart presentation.
+
 ## v27.8 - Study Progress Foundations
 
 ### Added

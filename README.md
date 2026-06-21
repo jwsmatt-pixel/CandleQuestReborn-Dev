@@ -1,7 +1,7 @@
 # Candle Quest Reborn
 
-**Current build:** `v27.8 - Study Progress Foundations`
-**Build marker:** `v27_8_study_progress_foundations`
+**Current build:** `v27.8.1 - Result Score Font Polish`
+**Build marker:** `v27_8_1_result_score_font_polish`
 **Base:** `v26.2.3 · Result Flow Stepper`  
 **Status:** World 1 locked/stable gameplay baseline with mobile-first visual teaching and persistent study progress
 
@@ -68,6 +68,12 @@ Players learn by:
 - missed-read links back to the correct Pattern Library card
 - fail-soft localStorage persistence for World 1 pattern progress
 - basic cosmetic shop scaffold
+
+### v27.8.1 Result Score Font Polish
+
+- reduces the mobile lower result stat-card numerals for Score, XP earned, and Best score
+- preserves the bold result hero header, including PERFECT RUN, 10/10, and CORRECT READS
+- makes no gameplay or scoring logic changes and preserves all v27.8 study progress systems
 
 ### v27.8 Study Progress Foundations
 

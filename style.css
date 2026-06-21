@@ -2576,3 +2576,11 @@ body[data-screen="result"] .topbar{
     line-height:1.28!important;
   }
 }
+
+/* v27.8.1 - Result Score Font Polish
+   Reduce only the lower mobile stat-card numerals; preserve the result hero scale. */
+@media(max-width:850px){
+  #result[data-step="score"] .result-stats b{
+    font-size:clamp(18px, 4.9vw, 25px)!important;
+  }
+}
