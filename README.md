@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v27.7 - Candle Lens Pattern Preview`
-**Build marker:** `v27_7_candle_lens_pattern_preview`
+**Current build:** `v27.8 - Study Progress Foundations`
+**Build marker:** `v27_8_study_progress_foundations`
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** World 1 locked/stable gameplay baseline with mobile-first visual pattern teaching
+**Status:** World 1 locked/stable gameplay baseline with mobile-first visual teaching and persistent study progress
 
 ---
 
@@ -63,8 +63,20 @@ Players learn by:
 - perfect-run bonus
 - run-complete summary tiers
 - end-of-run missed-reads coach carousel
-- Pattern Library
+- Pattern Library with per-pattern seen, correct, accuracy, and learning status
+- Study Focus recommendation based on live World 1 reps
+- missed-read links back to the correct Pattern Library card
+- fail-soft localStorage persistence for World 1 pattern progress
 - basic cosmetic shop scaffold
+
+### v27.8 Study Progress Foundations
+
+- tracks Hammer, Shooting Star, Doji, Bullish Engulfing, and Bearish Engulfing during World 1 only
+- increments seen for the correct pattern on every completed question and increments correct only for a correct answer
+- calculates accuracy and friendly New, Learning, Improving, Strong, and Mastered labels
+- recommends the lowest-accuracy pattern with at least three reps in Study Focus
+- opens, scrolls to, and highlights the correct library card from missed-read coaching
+- keeps generator logic, Pattern Bible rules, the five-answer pool, timer, scoring, tempo, Mochi, and Candle Lens unchanged
 
 ### Visual identity
 
@@ -407,6 +419,7 @@ v27.6 - Mochi Store Prototype
 v27.6.1 - Dev Preview Tools
 v27.6.2 - Dev Tools Visibility Patch
 v27.7 - Candle Lens Pattern Preview
+v27.8 - Study Progress Foundations
 ```
 
 World 1 gameplay is locked at the v27.0 stable baseline. Future work should preserve that gameplay baseline unless a new checkpoint explicitly changes behaviour.
@@ -448,6 +461,6 @@ icons/
 Use a cache-busting URL after uploading a new build, for example:
 
 ```text
-https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2770
-https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2770&dev=1
+https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2780
+https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2780&dev=1
 ```

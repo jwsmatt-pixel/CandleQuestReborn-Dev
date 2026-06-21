@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.7 Checkpoint Summary
+# Candle Quest Reborn - v27.8 Checkpoint Summary
 
 ## Current build
 
-**v27.7 - Candle Lens Pattern Preview**
-Build marker: `v27_7_candle_lens_pattern_preview`
+**v27.8 - Study Progress Foundations**
+Build marker: `v27_8_study_progress_foundations`
 
 ## Base build
 
@@ -12,9 +12,25 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable gameplay baseline with a mobile-first guided visual learning preview.
+World 1 locked/stable gameplay baseline with persistent pattern-learning progress.
 
-v27.7 preserves the accepted gameplay, tempo, Mochi, and Dev Tools systems while teaching the five active World 1 patterns visually before the first run. Candle Lens freezes curated examples, isolates the signal candle or pair, adds concise feature callouts, and offers expanded explanations without touching live generator state.
+v27.8 connects Candle Lens study to live World 1 reps. Each completed question records the correct pattern as seen, records correct recognition when earned, and surfaces accuracy, status, and a compact Study Focus inside the Pattern Library.
+
+## What changed in v27.8
+
+- Added localStorage-backed seen/correct stats for Hammer, Shooting Star, Doji, Bullish Engulfing, and Bearish Engulfing.
+- Added calculated accuracy plus New, Learning, Improving, Strong, and Mastered labels to the World 1 library cards.
+- Added a Study Focus recommendation using the lowest accuracy among patterns seen at least three times, with a no-data fallback.
+- Added missed-read Review Pattern buttons that open, scroll to, and highlight the correct Pattern Library card.
+- Added a dev-only reset that clears only World 1 pattern study stats.
+- Updated the build marker and visible badge for v27.8.
+
+## Preserved in v27.8
+
+- World 1 generator, Pattern Bible recipes/validation, active five-answer pool, replay and Engulfing sequencing, and v27.4 location tuning.
+- The 7-second answer timer, scoring, result flow, tempo XP multipliers/unlocks, Mochi purchase/equip/persistence, and clean chart.
+- v27.6.2 `?dev=1` visibility behavior and the v27.7 Candle Lens preview, seen state, and Study Bonus.
+- Tracking is World 1 only; distractors are not marked seen and no future-world stats are created.
 
 ## What changed in v27.7
 
@@ -329,7 +345,8 @@ v27.6 - Mochi Store Prototype
 v27.6.1 - Dev Preview Tools
 v27.6.2 - Dev Tools Visibility Patch
 v27.7 - Candle Lens Pattern Preview
-v27.8+ - Future World 1 teaching expansions after Candle Lens
+v27.8 - Study Progress Foundations
+v27.9+ - Future World 1 teaching expansions
 ```
 
 Do not combine lockdown, market rhythm changes, comparative cards, and deeper engulfing doctrine into one patch.

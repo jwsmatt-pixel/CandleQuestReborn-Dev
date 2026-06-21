@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v27_7_candle_lens_pattern_preview";
+const CANDLE_QUEST_BUILD = "v27_8_study_progress_foundations";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.7 - Candle Lens Pattern Preview";
+    b.textContent = "v27.8 - Study Progress Foundations";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -21,6 +21,41 @@ const TEMPO_CONFIG = Object.freeze({
   speedrun: Object.freeze({label:"Speedrun", replayInterval:300, xpMultiplier:1.25, description:"Fast reads.", xpLabel:"+25% XP", unlockRequirement:{tempo:"normal", completedRuns:20}})
 });
 const DEFAULT_TEMPO_RUNS = Object.freeze({beginner:0, normal:0, speedrun:0});
+const STUDY_PATTERNS = Object.freeze([
+  Object.freeze({name:"Bullish Engulfing", key:"bullishEngulfing"}),
+  Object.freeze({name:"Bearish Engulfing", key:"bearishEngulfing"}),
+  Object.freeze({name:"Hammer", key:"hammer"}),
+  Object.freeze({name:"Shooting Star", key:"shootingStar"}),
+  Object.freeze({name:"Doji", key:"doji"})
+]);
+const STUDY_PATTERN_BY_NAME = new Map(STUDY_PATTERNS.map(pattern=>[pattern.name, pattern]));
+
+function emptyPatternStats(){
+  return Object.fromEntries(STUDY_PATTERNS.map(pattern=>[pattern.key, {seen:0, correct:0}]));
+}
+
+function normalizePatternStats(raw){
+  const normalized = emptyPatternStats();
+  STUDY_PATTERNS.forEach(pattern=>{
+    const source = raw?.[pattern.key] || {};
+    const seen = Math.max(0, Math.floor(Number(source.seen) || 0));
+    const correct = Math.min(seen, Math.max(0, Math.floor(Number(source.correct) || 0)));
+    normalized[pattern.key] = {seen, correct};
+  });
+  return normalized;
+}
+
+function getPatternProgress(patternName){
+  const pattern = STUDY_PATTERN_BY_NAME.get(patternName);
+  const stats = pattern ? state.patternStats[pattern.key] : {seen:0, correct:0};
+  const accuracy = stats.seen ? Math.round((stats.correct / stats.seen) * 100) : 0;
+  let status = "New";
+  if(stats.seen >= 10 && accuracy >= 90) status = "Mastered";
+  else if(stats.seen >= 5 && accuracy >= 80) status = "Strong";
+  else if(stats.seen >= 3 && accuracy >= 60) status = "Improving";
+  else if(stats.seen >= 3) status = "Learning";
+  return {...stats, accuracy, status};
+}
 
 function renderAnswerDock(mode="waiting", options=[]){
   const pad = $("answerPad");
@@ -347,34 +382,70 @@ function renderLibrary(category="Candle Basics"){
   category = tabs.includes(category) ? category : "Candle Basics";
   tabsEl.innerHTML = `<button class="active" type="button" aria-current="true">World 1: Candle Basics</button>`;
 
-  grid.innerHTML = patternDefinitions[category].map((d,i)=>`
-    <article class="definition-card">
+  grid.innerHTML = patternDefinitions[category].map((d,i)=>{
+    const progress = getPatternProgress(d.name);
+    const patternKey = STUDY_PATTERN_BY_NAME.get(d.name)?.key || "";
+    const progressMarkup = progress.seen === 0
+      ? `<div class="pattern-progress pattern-progress--empty"><b>Seen 0</b><span class="pattern-status status-new">New</span><small>Complete runs to build this stat.</small></div>`
+      : `<div class="pattern-progress"><span><b>${progress.seen}</b><small>Seen</small></span><span><b>${progress.correct}</b><small>Correct</small></span><span><b>${progress.accuracy}%</b><small>Accuracy</small></span><span class="pattern-status status-${progress.status.toLowerCase()}">${progress.status}</span></div>`;
+    return `
+    <article class="definition-card" id="pattern-${patternKey}" data-pattern-name="${d.name}">
       <div class="definition-topline">
         <span class="definition-number">${i+1}</span>
         <span class="definition-type">${d.type}</span>
       </div>
       <h3>${d.name}</h3>
       <p><b>Read:</b> ${d.read}</p>
+      ${progressMarkup}
       <p><b>${d.must ? "Bible condition" : "Best location"}:</b> ${d.location}</p>
       ${d.must ? `<p><b>Must-have:</b> ${d.must}</p>` : ""}
       ${d.invalid ? `<p><b>Invalid if:</b> ${d.invalid}</p>` : ""}
       <p class="definition-cue"><b>Quest cue:</b> ${d.cue}</p>
     </article>
-  `).join("");
+  `}).join("");
+  renderStudyFocus();
+}
+
+function renderStudyFocus(){
+  const host = $("studyFocus");
+  if(!host) return;
+  const candidates = STUDY_PATTERNS.map(pattern=>({pattern, progress:getPatternProgress(pattern.name)}))
+    .filter(item=>item.progress.seen >= 3)
+    .sort((a,b)=>a.progress.accuracy - b.progress.accuracy || b.progress.seen - a.progress.seen);
+  if(!candidates.length){
+    host.innerHTML = `<div><b>Study Focus</b><p>Complete a few runs to reveal your strongest and developing patterns.</p></div>`;
+    return;
+  }
+  const focus = candidates[0];
+  host.innerHTML = `<div><b>Study Focus: ${focus.pattern.name}</b><p>Your ${focus.pattern.name} accuracy is ${focus.progress.accuracy}%. Review its shape, key features, and common lookalikes.</p></div><button type="button" onclick="focusPatternCard('${focus.pattern.name.replace(/'/g,"\\'")}')">Review</button>`;
+}
+
+function focusPatternCard(patternName){
+  const pattern = STUDY_PATTERN_BY_NAME.get(patternName);
+  if(!pattern) return;
+  openScreen("library");
+  requestAnimationFrame(()=>{
+    const card = $(`pattern-${pattern.key}`);
+    if(!card) return;
+    card.scrollIntoView({behavior:"smooth", block:"center"});
+    card.classList.add("study-highlight");
+    setTimeout(()=>card.classList.remove("study-highlight"), 2200);
+  });
 }
 
 function loadState(){
   try{
     const raw = localStorage.getItem("candleQuestRebornV1");
     if(raw){
-      const loaded = Object.assign({xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner"}, JSON.parse(raw));
+      const loaded = Object.assign({xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner",patternStats:emptyPatternStats()}, JSON.parse(raw));
       loaded.tempoRuns = Object.assign({...DEFAULT_TEMPO_RUNS}, loaded.tempoRuns || {});
+      loaded.patternStats = normalizePatternStats(loaded.patternStats);
       if(!loaded.mochiOwned) loaded.equippedFamiliar = null;
       if(!isTempoUnlockedByProgress(loaded.selectedTempo, loaded.tempoRuns)) loaded.selectedTempo = "beginner";
       return loaded;
     }
   }catch(e){}
-  return {xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner"};
+  return {xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner",patternStats:emptyPatternStats()};
 }
 function saveState(){
   try{
@@ -613,6 +684,13 @@ function devResetCandleLens(){
     localStorage.removeItem(CANDLE_LENS_BONUS_KEY);
   }catch(e){}
   setDevToolsMessage("Candle Lens seen and Study Bonus reset");
+}
+function devResetPatternStats(){
+  if(!DEV_PREVIEW_MODE) return;
+  state.patternStats = emptyPatternStats();
+  saveState();
+  setDevToolsMessage("World 1 pattern stats reset");
+  if(document.body.dataset.screen === "library") renderLibrary();
 }
 function setDevToolsMessage(message){
   ["devHomeMessage", "devShopMessage"].forEach(id=>{
@@ -895,6 +973,7 @@ function renderMissedReadsReview(missedReads){
                   <span><b>Level</b>${escapeHTML(g.level)}</span>
                 </div>
                 ${g.choices ? `<em>Confused with: ${escapeHTML(g.choices)}</em>` : ""}
+                <button class="review-pattern-btn" type="button" onclick="focusPatternCard('${g.correct.replace(/'/g,"\\'")}')">Review ${escapeHTML(g.correct)}</button>
               </div>
             </article>
           `).join("")}
@@ -2297,6 +2376,7 @@ function timeoutQuestMoment(){
   $("scoreText").textContent = run.score;
   if(!lostStreak) updateStreakHud();
   recordMissedRead(run.current, "Timeout");
+  recordPatternAttempt(run.current, false);
   $("runHint").textContent = `Time up — answer was ${run.current}.`;
   document.querySelectorAll("#answerPad button").forEach(b=>{
     b.disabled = true;
@@ -2408,6 +2488,7 @@ function answer(label){
   if(!run || !run.current) return;
   stopQuestTimer();
   const ok = label === run.current;
+  recordPatternAttempt(run.current, ok);
 
   if(ok){
     run.combo++;
@@ -2449,6 +2530,16 @@ function answer(label){
     else if(b.textContent === label) b.classList.add("wrong");
   });
   setTimeout(()=>finishQuestMoment(),750);
+}
+
+function recordPatternAttempt(patternName, wasCorrect){
+  if(!run || run.world.id !== 1) return;
+  const pattern = STUDY_PATTERN_BY_NAME.get(patternName);
+  if(!pattern) return;
+  const stats = state.patternStats[pattern.key];
+  stats.seen += 1;
+  if(wasCorrect) stats.correct += 1;
+  saveState();
 }
 
 

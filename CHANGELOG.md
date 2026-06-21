@@ -1,5 +1,26 @@
 # Candle Quest Reborn — Changelog
 
+## v27.8 - Study Progress Foundations
+
+### Added
+
+- Added persistent World 1 per-pattern `seen` and `correct` counts, with calculated accuracy and encouraging New, Learning, Improving, Strong, and Mastered status labels.
+- Added compact progress summaries to all five World 1 Pattern Library cards and a Study Focus recommendation for the lowest-accuracy pattern with at least three attempts.
+- Added Review Pattern buttons to missed-read coach cards. They open the Pattern Library, scroll to the correct card, and briefly highlight it.
+- Added a `?dev=1` Reset Pattern Stats control that clears only World 1 study progress.
+- Updated the build marker to `v27_8_study_progress_foundations` and badge to `v27.8 - Study Progress Foundations`.
+
+### Preserved
+
+- Study tracking is World 1 only and counts the correct pattern once per completed question; distractor selections are not counted as seen.
+- Stats persist in the existing fail-soft localStorage save payload. XP, Mochi, tempo progress, Candle Lens state, and run history are unaffected by the study-stat reset.
+- World 1 generation, Pattern Bible rules, the locked five-answer pool, location tuning, replay and Engulfing sequencing, the 7-second timer, scoring, tempo, Mochi, Candle Lens, chart presentation, and result flow are unchanged.
+
+### Testing required
+
+- Verify default, correct, incorrect, timeout, persistence, status threshold, Study Focus, Review Pattern focus/highlight, and dev reset paths.
+- Recheck a complete World 1 run, tempo progression, Mochi shop, Candle Lens, Dev Tools, and phone/desktop layouts.
+
 ## v27.7 - Candle Lens Pattern Preview
 
 ### Added

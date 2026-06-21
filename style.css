@@ -750,6 +750,32 @@ body[data-screen="candle-lens"] .install-tip{display:none!important}
   padding:16px;
   box-shadow:0 5px 0 #dbece0;
 }
+.study-focus{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:14px 0 10px;
+  padding:13px 14px;
+  border:2px solid rgba(88,204,2,.28);
+  border-radius:18px;
+  background:rgba(88,204,2,.08);
+}
+.study-focus b{display:block;color:var(--ink);font-size:15px}
+.study-focus p{margin:3px 0 0;color:var(--muted);font-size:12px;font-weight:850;line-height:1.35}
+.study-focus button,.review-pattern-btn{flex:0 0 auto;border:0;border-radius:13px;padding:10px 12px;background:var(--green-dark);color:#fff;font-size:12px;font-weight:950;cursor:pointer}
+.pattern-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:11px 0;padding:10px;border:1px solid rgba(20,120,55,.15);border-radius:16px;background:rgba(255,255,255,.75)}
+.pattern-progress>span:not(.pattern-status){min-width:0;text-align:center}
+.pattern-progress b,.pattern-progress small{display:block}
+.pattern-progress b{color:var(--ink);font-size:17px}
+.pattern-progress small{color:var(--muted);font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.pattern-status{grid-column:1/-1;justify-self:start;border-radius:999px;padding:5px 8px;background:#eaffdf;color:var(--green-dark);font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.06em}
+.status-learning{background:#fff2cf;color:#8a6200}.status-improving{background:#e3f1ff;color:#24638d}.status-strong{background:#dff8e8;color:#17683a}.status-mastered{background:#d7f7c6;color:#215f0b}
+.pattern-progress--empty{display:flex;align-items:center;flex-wrap:wrap}
+.pattern-progress--empty small{flex-basis:100%;margin-top:4px;text-transform:none;letter-spacing:0}
+.definition-card.study-highlight{animation:studyCardHighlight 2.2s ease;scroll-margin:20px}
+@keyframes studyCardHighlight{0%,35%{border-color:var(--green);box-shadow:0 0 0 5px rgba(88,204,2,.22),0 5px 0 var(--green-dark)}100%{border-color:var(--line);box-shadow:0 5px 0 #dbece0}}
+.review-pattern-btn{width:100%;margin-top:11px;min-height:44px}
 .definition-topline{
   display:flex;
   align-items:center;
@@ -813,6 +839,8 @@ body[data-skin="gold"] .definition-card{
     margin-left:-2px;
     margin-right:-2px;
   }
+  .study-focus{align-items:stretch;flex-direction:column}
+  .study-focus button{width:100%;min-height:44px}
 }
 
 
