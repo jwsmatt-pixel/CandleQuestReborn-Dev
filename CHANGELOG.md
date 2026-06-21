@@ -1,5 +1,40 @@
 # Candle Quest Reborn — Changelog
 
+<<<<<<< HEAD
+## v27.3 - First Tester Readiness Pass
+
+Status: current first external tester readiness pass on the locked v27.0 World 1 gameplay baseline
+
+### Changed
+
+- Updated `game.js` build marker to `v27_3_first_tester_readiness_pass`.
+- Updated build badge to `v27.3 - First Tester Readiness Pass`.
+- Clarified the home screen primary action as `Start World 1 Run`.
+- Tightened home and daily-goal copy so first testers understand the World 1 / Candle Basics entry point.
+- Clarified the first-run helper so players know answer buttons unlock at Quest Moment.
+- Kept the visible Pattern Library focused on `World 1: Candle Basics` and the five active World 1 patterns.
+- Shortened the clean-run review button label to reduce result-screen ambiguity.
+- Kept the iPhone install tip home-only so it cannot cover gameplay answers, library controls, or result actions.
+
+### Preserved
+
+- v27.0 gameplay behaviour remains locked.
+- v27.1 first-player onboarding and v27.2 Pattern Library quick-scan cards remain in place.
+- Active World 1 answer pool remains exactly: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji.
+- Bullish Candle and Bearish Candle remain non-active reference concepts, not World 1 quiz answers.
+- Generator logic, candle generation, Pattern Bible validation, answer selection, timer duration, scoring, XP, streaks, answer dock logic, chart layout, result flow, missed-read coach overlay, shop scaffold, replay sequencing, candle rhythm, and location logic were not changed.
+- Range High / Channel Mean / Range Low gameplay lines, Quest Moment banner, clean chart view, and removed opaque guide boxes remain intact.
+
+### Testing required
+
+- Desktop app load, home/start clarity, Pattern Library open/readability, Start World 1 Run, answer selection, timer, ten-question completion, result summary, and Review missed reads.
+- iPhone/mobile app load, first-run helper readability/dismissal, Pattern Library readability, Start World 1 Run, answer dock tap targets, result flow, bottom-sheet review, and carousel swipe.
+- Confirm build badge shows `v27.3 - First Tester Readiness Pass`.
+- Confirm active World 1 answers remain Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji only.
+- Confirm generator fairness, Engulfing replay sequencing, location realism, candle rhythm, clean chart presentation, Range lines, Quest Moment banner, answer dock, XP, scoring, streaks, result flow, and coach overlay still work.
+
+---
+
 ## v27.2 - Pattern Library Polish
 
 Status: current Pattern Library clarity build on the locked v27.0 World 1 gameplay baseline
@@ -33,6 +68,8 @@ Status: current Pattern Library clarity build on the locked v27.0 World 1 gamepl
 
 ---
 
+=======
+>>>>>>> parent of 368a8e1 (v27.1 First Player Onboarding Polish)
 ## v27.1 - First Player Onboarding Polish
 
 Status: current onboarding polish build on the locked v27.0 World 1 gameplay baseline
