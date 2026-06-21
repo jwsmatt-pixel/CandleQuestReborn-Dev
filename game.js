@@ -1,11 +1,12 @@
-const CANDLE_QUEST_BUILD = "v27_6_mochi_store_prototype";
+const CANDLE_QUEST_BUILD = "v27_6_1_dev_preview_tools";
+const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.6 - Mochi Store Prototype";
+    b.textContent = "v27.6.1 - Dev Preview Tools";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -37,6 +38,7 @@ function renderAnswerDock(mode="waiting", options=[]){
 
 
 const state = loadState();
+let persistedTempoSelection = state.selectedTempo;
 document.body.dataset.screen = "home";
 let activeWorld = 1;
 let run = null;
@@ -327,7 +329,7 @@ function loadState(){
       const loaded = Object.assign({xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner"}, JSON.parse(raw));
       loaded.tempoRuns = Object.assign({...DEFAULT_TEMPO_RUNS}, loaded.tempoRuns || {});
       if(!loaded.mochiOwned) loaded.equippedFamiliar = null;
-      if(!isTempoUnlocked(loaded.selectedTempo, loaded.tempoRuns)) loaded.selectedTempo = "beginner";
+      if(!isTempoUnlockedByProgress(loaded.selectedTempo, loaded.tempoRuns)) loaded.selectedTempo = "beginner";
       return loaded;
     }
   }catch(e){}
@@ -335,7 +337,8 @@ function loadState(){
 }
 function saveState(){
   try{
-    localStorage.setItem("candleQuestRebornV1", JSON.stringify(state));
+    const savedState = {...state, selectedTempo:persistedTempoSelection};
+    localStorage.setItem("candleQuestRebornV1", JSON.stringify(savedState));
   }catch(e){}
   $("xpText").textContent = `${state.xp} XP`;
   const gameXp = $("gameXpText");
@@ -367,11 +370,15 @@ function renderHomeFamiliar(){
     : "";
 }
 
-function isTempoUnlocked(tempoId, runCounts=state?.tempoRuns){
+function isTempoUnlockedByProgress(tempoId, runCounts=state?.tempoRuns){
   const config = TEMPO_CONFIG[tempoId];
   if(!config) return false;
   const requirement = config.unlockRequirement;
   return !requirement || (runCounts?.[requirement.tempo] || 0) >= requirement.completedRuns;
+}
+
+function isTempoUnlocked(tempoId, runCounts=state?.tempoRuns){
+  return DEV_PREVIEW_MODE || isTempoUnlockedByProgress(tempoId, runCounts);
 }
 
 function getTempoLockMessage(tempoId){
@@ -387,6 +394,7 @@ function selectTempo(tempoId){
     return;
   }
   state.selectedTempo = tempoId;
+  if(isTempoUnlockedByProgress(tempoId)) persistedTempoSelection = tempoId;
   saveState();
   renderTempoSelector();
 }
@@ -411,13 +419,13 @@ function renderTempoSelector(){
 function getTempoProgressMessage(tempoId, unlockedBefore){
   const count = state.tempoRuns[tempoId] || 0;
   if(tempoId === "beginner"){
-    if(!unlockedBefore.normal && isTempoUnlocked("normal")) return "Normal unlocked!";
-    if(isTempoUnlocked("normal")) return `Normal unlocked - ${count} Beginner runs completed`;
+    if(!unlockedBefore.normal && isTempoUnlockedByProgress("normal")) return "Normal unlocked!";
+    if(isTempoUnlockedByProgress("normal")) return `Normal unlocked - ${count} Beginner runs completed`;
     return `Beginner progress: ${Math.min(count,10)}/10 runs to unlock Normal`;
   }
   if(tempoId === "normal"){
-    if(!unlockedBefore.speedrun && isTempoUnlocked("speedrun")) return "Speedrun unlocked!";
-    if(isTempoUnlocked("speedrun")) return `Speedrun unlocked - ${count} Normal runs completed`;
+    if(!unlockedBefore.speedrun && isTempoUnlockedByProgress("speedrun")) return "Speedrun unlocked!";
+    if(isTempoUnlockedByProgress("speedrun")) return `Speedrun unlocked - ${count} Normal runs completed`;
     return `Normal progress: ${Math.min(count,20)}/20 runs to unlock Speedrun`;
   }
   return `Speedrun mastery: ${Math.min(count,30)}/30 runs`;
@@ -474,6 +482,7 @@ function openScreen(id){
   document.body.dataset.screen = id;
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   $(id).classList.add("active");
+  updateDevPreviewBadge(id);
   if(id==="map") renderMap();
   if(id==="shop") renderShop();
   if(id==="library") renderLibrary();
@@ -502,6 +511,8 @@ function openLesson(id){
   openScreen("lesson");
 }
 function renderShop(){
+  const devTools = $("devShopTools");
+  if(devTools) devTools.hidden = !DEV_PREVIEW_MODE;
   const skinCards = skins.map(s=>{
     const owned = state.owned.includes(s.id);
     const active = state.skin === s.id || (s.id==="classic" && state.skin==="classic");
@@ -526,6 +537,28 @@ function renderShop(){
     <p>${MOCHI.desc}</p><small>Cosmetic only - no gameplay advantage.</small>${action}
   </div>`;
   $("shopGrid").innerHTML = mochiCard + skinCards;
+}
+function updateDevPreviewBadge(screenId){
+  const badge = $("devPreviewBadge");
+  const screen = $(screenId);
+  if(!badge) return;
+  badge.hidden = !DEV_PREVIEW_MODE || screenId === "game";
+  if(!badge.hidden && screen) screen.prepend(badge);
+}
+function devAddXP(){
+  if(!DEV_PREVIEW_MODE) return;
+  state.xp += 500;
+  saveState();
+  setShopMessage("DEV: Added 500 XP.");
+  renderShop();
+}
+function devResetMochi(){
+  if(!DEV_PREVIEW_MODE) return;
+  state.mochiOwned = false;
+  state.equippedFamiliar = null;
+  saveState();
+  setShopMessage("DEV: Mochi ownership reset.");
+  renderShop();
 }
 function setShopMessage(message){
   const host = $("shopMessage");
@@ -881,6 +914,7 @@ function startRun(worldId=activeWorld){
     world,
     tempoId,
     tempo,
+    tempoPreviewOnly:DEV_PREVIEW_MODE && !isTempoUnlockedByProgress(tempoId),
     score:0,
     price:startPrice,
     candles:[],
@@ -972,11 +1006,11 @@ function endRun(){
   const tempoBonusXP = earned - rawXP;
   const completedTempoId = run.tempoId;
   const completedTempoLabel = run.tempo.label;
-  const unlockedBefore = {normal:isTempoUnlocked("normal"), speedrun:isTempoUnlocked("speedrun")};
+  const unlockedBefore = {normal:isTempoUnlockedByProgress("normal"), speedrun:isTempoUnlockedByProgress("speedrun")};
 
   state.xp += earned;
   state.best = Math.max(state.best, run.score);
-  state.tempoRuns[completedTempoId] = (state.tempoRuns[completedTempoId] || 0) + 1;
+  if(!run.tempoPreviewOnly) state.tempoRuns[completedTempoId] = (state.tempoRuns[completedTempoId] || 0) + 1;
   saveState();
   if(bonusXP + tempoBonusXP > 0){
     setTimeout(()=>showXPPop(bonusXP + tempoBonusXP, tempoBonusXP > 0 ? `${completedTempoLabel} XP bonus` : (perfectBonus > 0 ? "Perfect + speed bonus" : "Speed bonus")), 350);
@@ -2446,6 +2480,7 @@ function drawMini(){
 }
 setInterval(()=>{ if($("home").classList.contains("active")) drawMini(); },1800);
 
+updateDevPreviewBadge("home");
 saveState();
 renderTempoSelector();
 renderMap();

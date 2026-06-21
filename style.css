@@ -79,6 +79,10 @@ h2{font-size:clamp(42px,8vw,76px);line-height:.88;letter-spacing:-.075em;margin:
 .world-card button,.skin-card button{width:100%;margin-top:12px;border:0;background:var(--green);color:#fff;border-radius:16px;padding:11px;font-weight:950;cursor:pointer}
 .skin-card button:disabled{background:#a8b8ad;cursor:not-allowed}
 .shop-message{min-height:20px;margin:10px 0 0;color:var(--green-dark);font-size:13px;font-weight:900}
+.dev-preview-badge{width:max-content;margin:0 0 8px;padding:5px 8px;border:1px solid rgba(255,255,255,.65);border-radius:999px;background:rgba(104,39,124,.9);color:#fff;font-size:10px;font-weight:950;letter-spacing:.08em;pointer-events:none;box-shadow:0 3px 12px rgba(0,0,0,.22)}
+.dev-preview-badge[hidden],.dev-shop-tools[hidden]{display:none!important}
+.dev-shop-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 2px;padding:9px 10px;border:2px dashed #b879c7;border-radius:14px;background:#fff7ff;color:#68277c}
+.dev-shop-tools b{margin-right:auto;font-size:12px}.dev-shop-tools button{padding:7px 10px;font-size:11px}
 .familiar-card{position:relative;border-color:#f6c8dd;background:linear-gradient(145deg,#fff8fc,#f5fff7)}
 .familiar-card.locked{opacity:.72}
 .familiar-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}

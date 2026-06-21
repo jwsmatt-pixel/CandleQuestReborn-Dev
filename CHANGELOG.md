@@ -1,5 +1,20 @@
 # Candle Quest Reborn — Changelog
 
+## v27.6.1 - Dev Preview Tools
+
+### Added
+
+- Added hidden `?dev=1` Dev Preview Mode with a visible `DEV PREVIEW` badge.
+- Added temporary Beginner, Normal, and Speedrun tempo access without changing stored unlock counters.
+- Added dev-only shop controls to grant `500 XP` and reset Mochi ownership/equipment.
+
+### Preserved
+
+- Dev controls stay hidden without `?dev=1`, and removing the flag restores normal tempo locks.
+- Preview-only locked tempo selections and completed runs do not persist tempo selection or unlock progress.
+- Mochi purchase/equip persistence, World 1 gameplay, the five-answer pool, 7-second timer, scoring, tempo XP multipliers, result flow, Pattern Library, and clean chart remain unchanged.
+- Updated the build marker to `v27_6_1_dev_preview_tools` and badge to `v27.6.1 - Dev Preview Tools`.
+
 ## v27.6 - Mochi Store Prototype
 
 Status: first cosmetic familiar on the locked World 1 gameplay baseline

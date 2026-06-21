@@ -1,7 +1,7 @@
 # Candle Quest Reborn
 
-**Current build:** `v27.6 - Mochi Store Prototype`
-**Build marker:** `v27_6_mochi_store_prototype`
+**Current build:** `v27.6.1 - Dev Preview Tools`
+**Build marker:** `v27_6_1_dev_preview_tools`
 **Base:** `v26.2.3 · Result Flow Stepper`  
 **Status:** World 1 locked/stable gameplay baseline with the first cosmetic familiar
 
@@ -153,6 +153,8 @@ v27.4 keeps realistic World 1 location bias while reducing position-based shortc
 v27.5 adds a replay tempo progression loop without changing recognition time or World 1 generation. Beginner preserves the v27.4 setup pace and standard XP. Ten completed Beginner runs unlock Normal, which targets a roughly four-second replay and awards +10% XP. Twenty completed Normal runs unlock Speedrun, which targets a roughly three-second replay and awards +25% XP. Completed Speedrun runs track toward 30-run mastery. Counts and the last unlocked selection persist in localStorage, while the Quest Moment answer timer remains exactly 7 seconds.
 
 v27.6 adds Mochi the Market Cat as the first cosmetic Familiar in the existing shop. Mochi costs 250 XP and supports insufficient-XP, buy, owned, equip, and equipped states. Ownership and equipment persist in localStorage; purchase auto-equips Mochi. When equipped, the compact pixel familiar appears on home and result screens with simple CSS reactions, including a Perfect Run rainbow sparkle and a Bad Luck sleepy loaf. Mochi is cosmetic only and provides no gameplay advantage.
+
+v27.6.1 adds hidden developer preview tools behind `?dev=1`. Dev mode shows a clear badge, temporarily permits all replay tempos, and adds shop controls for `500 XP` grants and Mochi ownership resets. Preview-only tempo access does not persist selection or unlock progress, all tools disappear when the flag is removed, and normal gameplay remains unchanged.
 
 ---
 
@@ -398,6 +400,7 @@ v27.3 - First Tester Readiness Pass
 v27.4 - Location Probability Tuning
 v27.5 - Replay Tempo Unlocks
 v27.6 - Mochi Store Prototype
+v27.6.1 - Dev Preview Tools
 ```
 
 World 1 gameplay is locked at the v27.0 stable baseline. Future work should preserve that gameplay baseline unless a new checkpoint explicitly changes behaviour.
@@ -439,5 +442,6 @@ icons/
 Use a cache-busting URL after uploading a new build, for example:
 
 ```text
-?fresh=2760
+?fresh=2761
+?fresh=2761&dev=1
 ```

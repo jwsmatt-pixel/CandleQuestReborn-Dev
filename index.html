@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="devPreviewBadge" class="dev-preview-badge" hidden>DEV PREVIEW</div>
   
   <div id="installTip" class="install-tip">
     <div><b>iPhone Install Tip</b><span>Open in Safari → Share → Add to Home Screen</span></div>
@@ -160,6 +161,11 @@
         <p class="eyebrow">Cosmetics</p>
         <h2>Make the chart room yours.</h2>
         <p id="shopMessage" class="shop-message" aria-live="polite"></p>
+        <div id="devShopTools" class="dev-shop-tools" hidden>
+          <b>Dev Preview Tools</b>
+          <button type="button" onclick="devAddXP()">Add 500 XP</button>
+          <button type="button" onclick="devResetMochi()">Reset Mochi</button>
+        </div>
         <div id="shopGrid" class="shop-grid"></div>
       </section>
     </main>

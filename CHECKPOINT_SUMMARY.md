@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.6 Checkpoint Summary
+# Candle Quest Reborn - v27.6.1 Checkpoint Summary
 
 ## Current build
 
-**v27.6 - Mochi Store Prototype**
-Build marker: `v27_6_mochi_store_prototype`
+**v27.6.1 - Dev Preview Tools**
+Build marker: `v27_6_1_dev_preview_tools`
 
 ## Base build
 
@@ -12,9 +12,9 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable gameplay baseline with the first cosmetic familiar.
+World 1 locked/stable gameplay baseline with hidden developer preview tools.
 
-v27.6 preserves the accepted v27.5 gameplay and replay tempo progression while adding Mochi the Market Cat as a cosmetic-only shop familiar. Mochi costs 250 XP, supports buy/equip state with localStorage persistence, appears on home and result screens when equipped, and uses small CSS performance reactions without changing the chart-reading loop.
+v27.6.1 preserves the accepted v27.6 gameplay and Mochi systems while adding URL-controlled developer preview tools. `?dev=1` temporarily exposes all tempos, displays a dev badge, and enables intentional XP and Mochi test actions without changing normal unlock progress.
 
 ## Core design doctrine
 
@@ -47,7 +47,15 @@ Does this feature move the player from recognising shapes toward reading market 
 - `icons/icon-192.png`
 - `icons/icon-512.png`
 
-## What changed in v27.6
+## What changed in v27.6.1
+
+- Added hidden `?dev=1` Dev Preview Mode and a visible `DEV PREVIEW` badge.
+- Temporarily enabled Beginner, Normal, and Speedrun selection for testing without persisting locked selections or run-count progress.
+- Added dev-only shop controls for adding `500 XP` and resetting Mochi ownership/equipment.
+- Kept all dev UI and overrides absent when the URL flag is removed.
+- Preserved normal gameplay, World 1 generation and answer pool, tempo progression, Mochi purchasing/equipping, scoring, timer, result flow, Pattern Library, and layouts.
+
+## Preserved from v27.6
 
 - Added Mochi the Market Cat, the first Familiar, to the existing Cosmetics shop for 250 XP.
 - Added insufficient-XP, buy, equip, and equipped states with purchase feedback and automatic equip on unlock.
@@ -297,6 +305,7 @@ v27.3 - First Tester Readiness Pass
 v27.4 - Location Probability Tuning
 v27.5 - Replay Tempo Unlocks
 v27.6 - Mochi Store Prototype
+v27.6.1 - Dev Preview Tools
 v27.7+ - Future World 1 teaching expansions after lockdown
 ```
 
