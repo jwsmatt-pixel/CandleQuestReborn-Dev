@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.6.2 Checkpoint Summary
+# Candle Quest Reborn - v27.7 Checkpoint Summary
 
 ## Current build
 
-**v27.6.2 - Dev Tools Visibility Patch**
-Build marker: `v27_6_2_dev_tools_visibility_patch`
+**v27.7 - Candle Lens Pattern Preview**
+Build marker: `v27_7_candle_lens_pattern_preview`
 
 ## Base build
 
@@ -12,9 +12,25 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable gameplay baseline with visible, URL-gated developer preview tools.
+World 1 locked/stable gameplay baseline with a mobile-first guided visual learning preview.
 
-v27.6.2 preserves the accepted gameplay, tempo, and Mochi systems while making the existing URL-controlled tools easy to find. `?dev=1` now shows compact `DEV TOOLS` panels on Home and in the Shop, with immediate access to XP grants and Mochi resets. Without that flag, all dev controls and the `DEV PREVIEW` badge remain hidden and normal gameplay is unchanged.
+v27.7 preserves the accepted gameplay, tempo, Mochi, and Dev Tools systems while teaching the five active World 1 patterns visually before the first run. Candle Lens freezes curated examples, isolates the signal candle or pair, adds concise feature callouts, and offers expanded explanations without touching live generator state.
+
+## What changed in v27.7
+
+- Added a first-run Candle Lens preview for Hammer, Shooting Star, Doji, Bullish Engulfing, and Bearish Engulfing.
+- Added a modern rectangular inspection window with enlarged signal candles, feature callouts, short explanations, and optional expanded text.
+- Added `Skip`, `Explain More`, `Next`, and final `Start Run` controls plus Home `Review Patterns` access.
+- Persisted first-view state with `world1CandleLensSeen` so returning World 1 starts are not interrupted.
+- Added a one-time `+50 XP` Study Bonus for full completion, persisted separately and never awarded for skipping or replaying.
+- Added a small dev-only reset for Candle Lens seen/bonus state while keeping all v27.6.2 tools URL-gated.
+- Updated the build marker and visible badge for v27.7.
+
+## Preserved in v27.7
+
+- World 1 generator, Pattern Bible recipes/validation, active answer pool, replay and Engulfing sequencing, and location tuning.
+- The 7-second answer timer, scoring, result/missed-read coach flow, tempo XP multipliers and unlock counts.
+- Mochi purchase/equip/persistence, Pattern Library content, mobile answer dock, clean live chart, and `?dev=1` visibility behavior.
 
 ## Core design doctrine
 
@@ -312,7 +328,8 @@ v27.5 - Replay Tempo Unlocks
 v27.6 - Mochi Store Prototype
 v27.6.1 - Dev Preview Tools
 v27.6.2 - Dev Tools Visibility Patch
-v27.7+ - Future World 1 teaching expansions after lockdown
+v27.7 - Candle Lens Pattern Preview
+v27.8+ - Future World 1 teaching expansions after Candle Lens
 ```
 
 Do not combine lockdown, market rhythm changes, comparative cards, and deeper engulfing doctrine into one patch.

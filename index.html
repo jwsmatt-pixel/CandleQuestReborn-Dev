@@ -56,6 +56,7 @@
         <div class="dev-tools-actions">
           <button type="button" onclick="devAddXP()">Add 500 XP</button>
           <button type="button" onclick="devResetMochi()">Reset Mochi</button>
+          <button type="button" onclick="devResetCandleLens()">Reset Candle Lens</button>
         </div>
       </section>
       <section class="hero">
@@ -72,7 +73,8 @@
             <div id="tempoOptions" class="tempo-options"></div>
           </section>
           <div class="hero-actions">
-            <button class="primary" onclick="startRun()">Start World 1 Run</button>
+            <button class="primary" onclick="startRun(1)">Start World 1 Run</button>
+            <button class="secondary candle-lens-review-button" onclick="reviewCandleLens()">Review Patterns</button>
             <button class="secondary" onclick="openScreen('map')">Lesson Map</button>
             <button class="secondary" onclick="openScreen('library')">Pattern Library</button>
           </div>
@@ -88,7 +90,7 @@
           <b>Today's Goal</b>
           <span>Complete one World 1 10-question run and score 7 or more correct reads.</span>
         </div>
-        <button onclick="startRun()">Start Run</button>
+        <button onclick="startRun(1)">Start Run</button>
       </section>
     </main>
 
@@ -181,12 +183,45 @@
           <div class="dev-tools-actions">
             <button type="button" onclick="devAddXP()">Add 500 XP</button>
             <button type="button" onclick="devResetMochi()">Reset Mochi</button>
+            <button type="button" onclick="devResetCandleLens()">Reset Candle Lens</button>
           </div>
         </div>
         <div id="shopGrid" class="shop-grid"></div>
       </section>
     </main>
   </div>
+
+  <section id="candleLensPreview" class="candle-lens-preview hidden" role="dialog" aria-modal="true" aria-labelledby="candleLensTitle">
+    <div class="candle-lens-shell">
+      <header class="candle-lens-header">
+        <div>
+          <p class="eyebrow">Candle Lens</p>
+          <span id="candleLensProgress">Pattern 1 of 5</span>
+        </div>
+        <button type="button" class="candle-lens-skip" onclick="skipCandleLens()">Skip</button>
+      </header>
+      <div class="candle-lens-stage" aria-label="Frozen chart teaching example">
+        <canvas id="candleLensChart" width="760" height="300"></canvas>
+        <div class="candle-lens-freeze">QUEST MOMENT - CHART FROZEN</div>
+        <div class="candle-lens-window">
+          <span class="candle-lens-scan-label">SIGNAL INSPECTION</span>
+          <canvas id="candleLensFocus" width="340" height="220"></canvas>
+          <div id="candleLensCallouts" class="candle-lens-callouts"></div>
+        </div>
+      </div>
+      <article class="candle-lens-copy">
+        <h2 id="candleLensTitle">Hammer</h2>
+        <p id="candleLensMeaning" class="candle-lens-meaning"></p>
+        <b>Look for:</b>
+        <ul id="candleLensFeatures"></ul>
+        <div id="candleLensMore" class="candle-lens-more hidden"></div>
+      </article>
+      <footer class="candle-lens-actions">
+        <button type="button" class="secondary" id="candleLensExplain" onclick="toggleCandleLensMore()" aria-expanded="false">Explain More</button>
+        <button type="button" class="primary" id="candleLensNext" onclick="nextCandleLens()">Next</button>
+      </footer>
+    </div>
+  </section>
 
   <script src="game.js"></script>
 </body>

@@ -1,5 +1,29 @@
 # Candle Quest Reborn — Changelog
 
+## v27.7 - Candle Lens Pattern Preview
+
+### Added
+
+- Added a first-run World 1 Candle Lens preview covering Hammer, Shooting Star, Doji, Bullish Engulfing, and Bearish Engulfing before live play begins.
+- Added frozen curated chart examples, a rectangular inspection lens, enlarged signal candles, visual callouts, short `Look for` cues, and optional expanded explanations.
+- Added large `Skip`, `Explain More`, `Next`, and final `Start Run` controls plus a persistent Home `Review Patterns` button.
+- Added `world1CandleLensSeen` persistence so later World 1 starts run normally after the preview is completed or skipped.
+- Added a one-time `+50 XP` Study Bonus for completing all five cards, persisted with `world1CandleLensStudyBonusClaimed`; skipped and replayed previews do not award it.
+- Added a dev-only Candle Lens reset alongside the preserved `?dev=1` tools.
+- Updated the build marker to `v27_7_candle_lens_pattern_preview` and badge to `v27.7 - Candle Lens Pattern Preview`.
+
+### Preserved
+
+- World 1 generation and Pattern Bible logic are unchanged; preview candles are isolated curated teaching examples.
+- The active answer pool remains exactly Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji.
+- Replay sequencing, location tuning, tempo unlocks and multipliers, Mochi persistence, Dev Tools visibility, the 7-second answer timer, scoring, result/coach flow, Pattern Library, and clean live chart remain unchanged.
+
+### Testing required
+
+- Verify first-run, completion, skip, repeat-start, manual review, one-time bonus, and dev reset persistence paths.
+- Check all five cards and expanded explanations on phone and desktop, including safe areas and vertical scrolling.
+- Recheck a complete World 1 run, tempo progression, Mochi shop, Dev Tools, Pattern Library, and result coach flow.
+
 ## v27.6.2 - Dev Tools Visibility Patch
 
 ### Changed

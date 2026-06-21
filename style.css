@@ -241,6 +241,118 @@ body[data-screen]:not([data-screen="home"]) .install-tip{display:none!important}
 .onboarding-card button{
   width:100%;
 }
+
+/* v27.7 - Candle Lens Pattern Preview */
+.candle-lens-preview{
+  position:fixed;
+  inset:0;
+  z-index:20000;
+  display:grid;
+  place-items:center;
+  padding:max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+  background:rgba(4,10,7,.78);
+  backdrop-filter:blur(10px);
+  overflow-y:auto;
+}
+.candle-lens-preview.hidden{display:none}
+.candle-lens-shell{
+  width:min(920px,100%);
+  max-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overflow-y:auto;
+  background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(239,255,247,.96));
+  border:1px solid rgba(255,255,255,.75);
+  border-radius:28px;
+  padding:16px;
+  box-shadow:0 28px 90px rgba(0,0,0,.48),0 0 0 1px rgba(49,201,119,.2);
+}
+.candle-lens-header,.candle-lens-actions{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.candle-lens-header{margin-bottom:12px}
+.candle-lens-header .eyebrow{margin:0}
+.candle-lens-header span{display:block;color:var(--muted);font-size:12px;font-weight:900;margin-top:2px}
+.candle-lens-skip{border:0;background:transparent;color:#36533d;font-weight:950;padding:10px 12px;cursor:pointer}
+.candle-lens-stage{
+  position:relative;
+  min-height:300px;
+  overflow:hidden;
+  border-radius:22px;
+  background:#0b120e;
+  border:1px solid rgba(49,201,119,.34);
+}
+#candleLensChart{display:block;width:100%;height:300px}
+.candle-lens-freeze{
+  position:absolute;
+  left:14px;
+  top:14px;
+  z-index:2;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:999px;
+  padding:6px 9px;
+  background:rgba(7,18,15,.8);
+  color:#fff;
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:.08em;
+}
+.candle-lens-window{
+  position:absolute;
+  right:18px;
+  top:18px;
+  bottom:18px;
+  width:min(48%,410px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  border:1px solid rgba(105,255,194,.74);
+  border-radius:18px;
+  padding:28px 12px 12px;
+  background:rgba(9,30,24,.82);
+  box-shadow:0 16px 50px rgba(0,0,0,.4),inset 0 0 28px rgba(49,201,119,.08);
+  backdrop-filter:blur(9px);
+  animation:candleLensIn .32s ease-out both;
+}
+@keyframes candleLensIn{from{opacity:0;transform:scale(.94) translateX(18px)}to{opacity:1;transform:none}}
+.candle-lens-scan-label{position:absolute;left:12px;top:9px;color:#7dffc7;font-size:9px;font-weight:950;letter-spacing:.12em}
+#candleLensFocus{display:block;width:100%;height:150px;border-radius:12px}
+.candle-lens-callouts{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.candle-lens-callouts span{border:1px solid rgba(125,255,199,.35);border-radius:999px;padding:5px 7px;background:rgba(125,255,199,.1);color:#d9ffed;font-size:9px;font-weight:950}
+.candle-lens-copy{padding:14px 4px 4px}
+.candle-lens-copy h2{font-size:clamp(30px,5vw,48px);line-height:.95}
+.candle-lens-meaning{margin:8px 0 12px;color:#36533d;font-size:16px;font-weight:900}
+.candle-lens-copy>b{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--green-dark)}
+.candle-lens-copy ul{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:7px 0 0;padding:0;list-style:none}
+.candle-lens-copy li{border:1px solid #c9f1bd;border-radius:13px;padding:8px 10px;background:#f4fff0;color:#36533d;font-size:12px;font-weight:900}
+.candle-lens-copy li::before{content:"+ ";color:var(--green-dark)}
+.candle-lens-more{margin-top:10px;border-left:3px solid var(--green);padding:9px 11px;background:rgba(88,204,2,.08);border-radius:0 12px 12px 0;color:#36533d;font-size:13px;line-height:1.4;font-weight:800}
+.candle-lens-more.hidden{display:none}
+.candle-lens-actions{justify-content:flex-end;margin-top:12px}
+.candle-lens-actions button{min-width:140px}
+body[data-screen="candle-lens"] .install-tip{display:none!important}
+
+@media(max-width:600px){
+  .candle-lens-preview{place-items:start center;padding:8px max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+  .candle-lens-shell{max-height:calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));border-radius:22px;padding:11px}
+  .candle-lens-header{margin-bottom:8px}
+  .candle-lens-stage{min-height:244px;border-radius:17px}
+  #candleLensChart{height:244px}
+  .candle-lens-freeze{left:8px;top:8px;font-size:8px;padding:5px 7px}
+  .candle-lens-window{left:44%;right:8px;top:38px;bottom:8px;width:auto;padding:24px 7px 7px;border-radius:14px}
+  #candleLensFocus{height:120px}
+  .candle-lens-callouts{gap:4px;margin-top:5px}
+  .candle-lens-callouts span{font-size:8px;padding:4px 5px}
+  .candle-lens-copy{padding-top:10px}
+  .candle-lens-copy h2{font-size:clamp(28px,9vw,38px)}
+  .candle-lens-meaning{font-size:14px;margin:5px 0 8px}
+  .candle-lens-copy ul{grid-template-columns:1fr;gap:4px;margin-top:5px}
+  .candle-lens-copy li{font-size:11px;padding:6px 8px}
+  .candle-lens-more{max-height:130px;overflow-y:auto;font-size:12px;padding:8px 9px}
+  .candle-lens-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+  .candle-lens-actions button{min-width:0;width:100%;padding:10px 8px;border-radius:15px}
+}
 #gameCanvas{touch-action:none}
 @media(max-width:850px){
   body{background:#f6fff6}

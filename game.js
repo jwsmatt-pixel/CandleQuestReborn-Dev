@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v27_6_2_dev_tools_visibility_patch";
+const CANDLE_QUEST_BUILD = "v27_7_candle_lens_pattern_preview";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.6.2 - Dev Tools Visibility Patch";
+    b.textContent = "v27.7 - Candle Lens Pattern Preview";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -45,6 +45,47 @@ let run = null;
 let miniTimer = null;
 let onboardingHelperShownThisSession = false;
 const ONBOARDING_HELPER_KEY = "candleQuestOnboardingHelperDismissedV27_1";
+const CANDLE_LENS_SEEN_KEY = "world1CandleLensSeen";
+const CANDLE_LENS_BONUS_KEY = "world1CandleLensStudyBonusClaimed";
+let candleLensState = null;
+
+const CANDLE_LENS_PATTERNS = Object.freeze([
+  {
+    name:"Hammer", meaning:"Lower prices were rejected.",
+    features:["small body near the top","long lower wick","little or no upper wick"],
+    callouts:["Long lower wick","Body near top","Tiny upper wick"],
+    more:"A Hammer shows that price pushed lower, but buyers stepped in before the candle closed. The key feature is the lower wick. It should be clearly longer than the body, while the body sits near the top of the candle range. Do not confuse it with a Doji. A Doji has a tiny centred body and more balanced wicks.",
+    candles:[[100,101.2,98.8,100.7],[100.7,101.5,99.9,101.1],[101.1,101.5,95.1,100.4]], signalCount:1
+  },
+  {
+    name:"Shooting Star", meaning:"Higher prices were rejected.",
+    features:["small body near the bottom","long upper wick","little or no lower wick"],
+    callouts:["Long upper wick","Body near bottom","Tiny lower wick"],
+    more:"A Shooting Star shows that price pushed higher, but sellers stepped in before the candle closed. The key feature is the upper wick. It should be clearly longer than the body, while the body sits near the bottom of the candle range. Do not confuse it with a Doji. A Doji has a tiny centred body and more balanced wicks.",
+    candles:[[99,100.4,98.5,100],[100,101.4,99.7,101],[101.1,106.2,100.2,100.4]], signalCount:1
+  },
+  {
+    name:"Doji", meaning:"The market paused in indecision.",
+    features:["tiny body","open and close almost equal","balanced upper and lower wicks"],
+    callouts:["Tiny body","Balanced wicks","Open = close"],
+    more:"A Doji shows indecision. Price moved up and down, but opened and closed at nearly the same level. The body should be very small and roughly centred. Neither wick should dominate. Do not confuse it with a Hammer or Shooting Star. Those candles show stronger rejection from one side.",
+    candles:[[99,100.6,98.4,100],[100,101,99.2,100.4],[100.4,103.4,97.4,100.45]], signalCount:1
+  },
+  {
+    name:"Bullish Engulfing", meaning:"Buyers overpowered the previous bearish candle.",
+    features:["bearish candle first","bullish candle second","second body engulfs the first body"],
+    callouts:["Bearish candle first","Bullish body second","Body engulfs body"],
+    more:"A Bullish Engulfing pattern uses two candles. The first candle is bearish. The second candle is bullish and its body fully swallows the body of the first candle. The important part is body engulfing, not just wick engulfing.",
+    candles:[[101,101.6,99.8,100.3],[100.5,100.9,98.7,99.2],[98.8,101.4,98.4,101]], signalCount:2
+  },
+  {
+    name:"Bearish Engulfing", meaning:"Sellers overpowered the previous bullish candle.",
+    features:["bullish candle first","bearish candle second","second body engulfs the first body"],
+    callouts:["Bullish candle first","Bearish body second","Body engulfs body"],
+    more:"A Bearish Engulfing pattern uses two candles. The first candle is bullish. The second candle is bearish and its body fully swallows the body of the first candle. The important part is body engulfing, not just wick engulfing.",
+    candles:[[99,100.2,98.6,99.7],[99.4,101.2,99,100.8],[101.2,101.6,98.5,99]], signalCount:2
+  }
+]);
 
 const worlds = [
   {
@@ -565,6 +606,14 @@ function devResetMochi(){
   setDevToolsMessage("Mochi reset");
   renderShop();
 }
+function devResetCandleLens(){
+  if(!DEV_PREVIEW_MODE) return;
+  try{
+    localStorage.removeItem(CANDLE_LENS_SEEN_KEY);
+    localStorage.removeItem(CANDLE_LENS_BONUS_KEY);
+  }catch(e){}
+  setDevToolsMessage("Candle Lens seen and Study Bonus reset");
+}
 function setDevToolsMessage(message){
   ["devHomeMessage", "devShopMessage"].forEach(id=>{
     const host = $(id);
@@ -914,8 +963,118 @@ function isMobile(){
 }
 
 
-// ─── RUN BOOTSTRAP ────────────────────────────────────────────────────────────
+// ─── CANDLE LENS / RUN BOOTSTRAP ─────────────────────────────────────────────
+function hasSeenCandleLens(){
+  try{ return localStorage.getItem(CANDLE_LENS_SEEN_KEY) === "true"; }
+  catch(e){ return false; }
+}
+function markCandleLensSeen(){
+  try{ localStorage.setItem(CANDLE_LENS_SEEN_KEY, "true"); }catch(e){}
+}
 function startRun(worldId=activeWorld){
+  if(worldId === 1 && !hasSeenCandleLens()){
+    openCandleLens(worldId);
+    return;
+  }
+  beginRun(worldId);
+}
+function reviewCandleLens(){ openCandleLens(1); }
+function openCandleLens(worldId=1){
+  candleLensState = {index:0, expanded:false, worldId};
+  const preview = $("candleLensPreview");
+  if(!preview) return beginRun(worldId);
+  document.body.dataset.screen = "candle-lens";
+  preview.classList.remove("hidden");
+  renderCandleLens();
+}
+function closeCandleLens(){
+  const preview = $("candleLensPreview");
+  if(preview) preview.classList.add("hidden");
+}
+function skipCandleLens(){
+  const worldId = candleLensState?.worldId || 1;
+  markCandleLensSeen();
+  closeCandleLens();
+  candleLensState = null;
+  beginRun(worldId);
+}
+function toggleCandleLensMore(){
+  if(!candleLensState) return;
+  candleLensState.expanded = !candleLensState.expanded;
+  renderCandleLens();
+}
+function nextCandleLens(){
+  if(!candleLensState) return;
+  if(candleLensState.index < CANDLE_LENS_PATTERNS.length - 1){
+    candleLensState.index++;
+    candleLensState.expanded = false;
+    renderCandleLens();
+    return;
+  }
+  const worldId = candleLensState.worldId;
+  markCandleLensSeen();
+  const awarded = claimCandleLensStudyBonus();
+  closeCandleLens();
+  candleLensState = null;
+  beginRun(worldId);
+  if(awarded) setTimeout(()=>showXPPop(50, "Candle Lens Study Bonus"), 200);
+}
+function claimCandleLensStudyBonus(){
+  try{
+    if(localStorage.getItem(CANDLE_LENS_BONUS_KEY) === "true") return false;
+    localStorage.setItem(CANDLE_LENS_BONUS_KEY, "true");
+  }catch(e){ return false; }
+  state.xp += 50;
+  saveState();
+  return true;
+}
+function renderCandleLens(){
+  if(!candleLensState) return;
+  const item = CANDLE_LENS_PATTERNS[candleLensState.index];
+  $("candleLensProgress").textContent = `Pattern ${candleLensState.index + 1} of ${CANDLE_LENS_PATTERNS.length}`;
+  $("candleLensTitle").textContent = item.name;
+  $("candleLensMeaning").textContent = item.meaning;
+  $("candleLensFeatures").innerHTML = item.features.map(feature=>`<li>${escapeHTML(feature)}</li>`).join("");
+  $("candleLensCallouts").innerHTML = item.callouts.map(label=>`<span>${escapeHTML(label)}</span>`).join("");
+  const more = $("candleLensMore");
+  more.textContent = item.more;
+  more.classList.toggle("hidden", !candleLensState.expanded);
+  const explain = $("candleLensExplain");
+  explain.textContent = candleLensState.expanded ? "Show Less" : "Explain More";
+  explain.setAttribute("aria-expanded", String(candleLensState.expanded));
+  $("candleLensNext").textContent = candleLensState.index === CANDLE_LENS_PATTERNS.length - 1 ? "Start Run" : "Next";
+  requestAnimationFrame(()=>drawCandleLens(item));
+}
+function drawCandleLens(item){
+  const chart = $("candleLensChart");
+  const focus = $("candleLensFocus");
+  if(!chart || !focus) return;
+  drawCandleLensCanvas(chart, item.candles, false);
+  drawCandleLensCanvas(focus, item.candles.slice(-item.signalCount), true);
+}
+function drawCandleLensCanvas(canvas, candles, focused){
+  const ctx = canvas.getContext("2d"), W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = focused ? "rgba(8,24,20,.96)" : "#0b120e";
+  ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = "rgba(255,255,255,.07)";
+  ctx.lineWidth = 1;
+  for(let y=30;y<H;y+=42){ ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke(); }
+  const values = candles.flat(), min = Math.min(...values)-1, max = Math.max(...values)+1;
+  const mapY = value => H-24-((value-min)/(max-min))*(H-48);
+  const gap = focused ? Math.min(130, W/(candles.length+1)) : 95;
+  const start = W/2 - ((candles.length-1)*gap)/2;
+  candles.forEach((c,index)=>{
+    const [o,h,l,cl] = c;
+    drawFlatCandle(ctx,start+index*gap,mapY(o),mapY(h),mapY(l),mapY(cl),focused?30:16,cl>=o,focused);
+  });
+  if(!focused){
+    ctx.fillStyle="rgba(7,12,9,.56)";
+    ctx.fillRect(0,0,W,H);
+  }
+}
+
+function beginRun(worldId=activeWorld){
   activeWorld = worldId;
   const world = worlds.find(w=>w.id===worldId) || worlds[0];
   const startPrice = 100;
