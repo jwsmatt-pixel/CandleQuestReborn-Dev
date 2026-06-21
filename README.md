@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v27.8.1 - Result Score Font Polish`
-**Build marker:** `v27_8_1_result_score_font_polish`
+**Current build:** `v27.9 - World 2 Rules Bible`
+**Build marker:** `v27_9_world_2_rules_bible`
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** World 1 locked/stable gameplay baseline with mobile-first visual teaching and persistent study progress
+**Status:** World 1 locked/stable; World 2 doctrine defined but gameplay not yet active
 
 ---
 
@@ -74,6 +74,14 @@ Players learn by:
 - reduces the mobile lower result stat-card numerals for Score, XP earned, and Best score
 - preserves the bold result hero header, including PERFECT RUN, 10/10, and CORRECT READS
 - makes no gameplay or scoring logic changes and preserves all v27.8 study progress systems
+
+### v27.9 World 2 Rules Bible
+
+- defines World 2 as Support & Resistance, focused on Location + Context
+- establishes the future answer pool: Support Holds, Resistance Rejects, Support Breaks, and Resistance Breaks
+- adds formal must-have, invalid, visual cue, confusion, coach, and generator guidance for each concept
+- marks World 2 as Coming Soon on the Lesson Map and prevents it from starting gameplay
+- leaves the World 1 generator, Pattern Bible, and five-answer pool unchanged
 
 ### v27.8 Study Progress Foundations
 
@@ -210,13 +218,70 @@ Important note:
 
 v26.1 keeps Bullish/Bearish Engulfing as active gameplay patterns while using doctrine-based logic for single-candle patterns.
 
-### World 2 — Levels
+### World 2 — Support & Resistance
 
-- Support Reclaim
-- Resistance Reject
-- Mean Chop
-- Range Bounce
-- Level Break
+Status: **Coming Soon.** The Rules Bible is defined, but World 2 is not playable and has no active generator.
+
+Learning focus: **Location + Context**. The beginner question is: **Did the level hold, or did it break?** Use simple language such as floor, ceiling, hold, break, rejection, buyers defended, and sellers defended.
+
+Locked World 2 answer pool:
+
+- Support Holds
+- Resistance Rejects
+- Support Breaks
+- Resistance Breaks
+
+#### Support Holds
+
+- Core meaning: Price tests a lower support level and buyers defend it.
+- Beginner translation: Support acts like a floor. Price comes down, tests the floor, and bounces upward instead of breaking through.
+- Must-have: Price approaches or taps clear support; support is obvious before the signal; price does not close decisively below; a clear upward reaction follows; the level looks defended.
+- Invalid if: Price clearly closes below support; the upward reaction is too weak; support is unclear; price never meaningfully tests it; or the setup looks more like Support Breaks.
+- Visual cue: Price moves down into the floor, rejects lower prices, and lifts away.
+- Common confusions: Support Breaks, Hammer, Bullish Engulfing.
+- Candle Lens cue: Look at the level first. Did price test the floor and bounce?
+- Coach feedback: This was Support Holds because price tested the floor and buyers defended it.
+- Future generator note: Draw clear support, build a small approach, then tap or slightly wick into the level and bounce cleanly away. Avoid decisive closes below.
+
+#### Resistance Rejects
+
+- Core meaning: Price tests an upper resistance level and sellers defend it.
+- Beginner translation: Resistance acts like a ceiling. Price pushes upward, tests the ceiling, and gets rejected downward.
+- Must-have: Price approaches or taps clear resistance; resistance is obvious before the signal; price does not close decisively above; a clear downward reaction follows; the level looks defended.
+- Invalid if: Price clearly closes above resistance; the downward reaction is too weak; resistance is unclear; price never meaningfully tests it; or the setup looks more like Resistance Breaks.
+- Visual cue: Price pushes into the ceiling, fails, and turns downward.
+- Common confusions: Resistance Breaks, Shooting Star, Bearish Engulfing.
+- Candle Lens cue: Look at the level first. Did price test the ceiling and fail?
+- Coach feedback: This was Resistance Rejects because price tested the ceiling and sellers defended it.
+- Future generator note: Draw clear resistance, build a small approach, then tap or wick into the level and reject cleanly downward. Avoid decisive closes above.
+
+#### Support Breaks
+
+- Core meaning: Price breaks down through a clear support level.
+- Beginner translation: The floor fails. Price moves through support and begins accepting below it.
+- Must-have: Price approaches clear lower support; support is obvious before the break; price closes decisively below; the break is clear; continuation or acceptance appears below the level.
+- Invalid if: Price only wicks below and closes back above; immediately bounces like Support Holds; support is unclear; the break candle is too small; or hold versus break is ambiguous.
+- Visual cue: Price loses the floor and moves below it.
+- Common confusions: Support Holds, Bearish Engulfing, Range Low reaction.
+- Candle Lens cue: Look for the close below the floor. A wick below is not enough.
+- Coach feedback: This was Support Breaks because the floor failed and price moved below support.
+- Future generator note: Draw clear support, build pressure, then close decisively below and continue or remain below. Avoid immediate reclaim until fakeouts are taught later.
+
+#### Resistance Breaks
+
+- Core meaning: Price breaks up through a clear resistance level.
+- Beginner translation: The ceiling fails. Price moves through resistance and begins accepting above it.
+- Must-have: Price approaches clear upper resistance; resistance is obvious before the break; price closes decisively above; the break is clear; continuation or acceptance appears above the level.
+- Invalid if: Price only wicks above and closes back below; immediately rejects like Resistance Rejects; resistance is unclear; the break candle is too small; or rejection versus break is ambiguous.
+- Visual cue: Price clears the ceiling and moves above it.
+- Common confusions: Resistance Rejects, Bullish Engulfing, Range High reaction.
+- Candle Lens cue: Look for the close above the ceiling. A wick above is not enough.
+- Coach feedback: This was Resistance Breaks because the ceiling failed and price moved above resistance.
+- Future generator note: Draw clear resistance, build pressure, then close decisively above and continue or remain above. Avoid immediate rejection until fakeouts are taught later.
+
+#### Future generator boundaries
+
+Require a clear support/resistance line, visible approach, decisive hold or break, enough pre-signal candles for context, no ambiguous fakeouts, and a clean mobile-readable chart. Defer liquidity sweeps, fakeouts, support/resistance flips, break and retest, trendline breaks, volume profile, order flow, and advanced market structure to later worlds.
 
 ### World 3 — Breakouts
 
@@ -467,6 +532,6 @@ icons/
 Use a cache-busting URL after uploading a new build, for example:
 
 ```text
-https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2780
-https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2780&dev=1
+https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2790
+https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2790&dev=1
 ```
