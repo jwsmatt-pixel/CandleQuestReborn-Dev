@@ -1,16 +1,9 @@
 # Candle Quest Reborn
 
-<<<<<<< HEAD
-**Current build:** `v27.3 - First Tester Readiness Pass`  
-**Build marker:** `v27_3_first_tester_readiness_pass`  
+**Current build:** `v27.4 - Location Probability Tuning`
+**Build marker:** `v27_4_location_probability_tuning`
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** World 1 locked/stable gameplay baseline with first tester readiness polish
-=======
-**Current build:** `v27.1 - First Player Onboarding Polish`  
-**Build marker:** `v27_1_first_player_onboarding_polish`  
-**Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** World 1 locked/stable gameplay baseline with first-player onboarding polish
->>>>>>> parent of 368a8e1 (v27.1 First Player Onboarding Polish)
+**Status:** World 1 locked/stable gameplay baseline with tuned location probabilities
 
 ---
 
@@ -151,13 +144,12 @@ v27.0 formally locks World 1 as the current stable baseline after the accepted v
 
 v27.1 keeps the v27.0 World 1 gameplay baseline locked while improving first-player onboarding. The home screen now explains the watch/wait/read/choose loop, a small dismissible Candle Basics helper appears on first run, Quest Moment is defined in player-facing copy, range lines are explained in beginner language, and Pattern Library access is more visible before and after runs. Generator logic, answer pool, Pattern Bible fairness, replay sequencing, location realism, scoring, timer, chart layout, result screen, and missed-read coach behavior remain unchanged.
 
-<<<<<<< HEAD
 v27.2 keeps the v27.0 World 1 gameplay baseline locked and preserves v27.1 onboarding while improving the Pattern Library as a beginner study reference. The World 1 cards now present meaning, what to look for, usual location, and common confusion in quick-scan rows, with Range High, Channel Mean, and Range Low explained in simple location language. Generator logic, answer pool, Pattern Bible validation, replay sequencing, location realism, scoring, timer, chart layout, result screen, and missed-read coach behavior remain unchanged.
 
 v27.3 keeps the v27.0 World 1 gameplay baseline locked and prepares the game for first external testers with small clarity polish. The home screen now points directly at World 1: Candle Basics, the first-run helper clarifies that answer buttons unlock at Quest Moment, the visible Pattern Library stays focused on the five active World 1 answers, and the iPhone install tip stays home-only so it cannot cover gameplay or result actions. Generator logic, answer pool, Pattern Bible validation, replay sequencing, location realism, scoring, timer, chart layout, result flow, and missed-read coach behavior remain unchanged.
 
-=======
->>>>>>> parent of 368a8e1 (v27.1 First Player Onboarding Polish)
+v27.4 keeps realistic World 1 location bias while reducing position-based shortcuts. Hammer and Shooting Star remain edge-first with occasional mean-adjacent setups, Bullish and Bearish Engulfing gain more Channel Mean control-shift scenarios, and Doji remains common at the mean without being automatic there. Pattern recipes, validation, answer pool, replay sequencing, scoring, timer, and presentation remain unchanged.
+
 ---
 
 ## World structure
@@ -397,11 +389,9 @@ v26.8.1 - Opaque Guide Removal
 v26.9 - World 1 Lockdown Candidate
 v27.0 - World 1 Lockdown
 v27.1 - First Player Onboarding Polish
-<<<<<<< HEAD
 v27.2 - Pattern Library Polish
 v27.3 - First Tester Readiness Pass
-=======
->>>>>>> parent of 368a8e1 (v27.1 First Player Onboarding Polish)
+v27.4 - Location Probability Tuning
 ```
 
 World 1 gameplay is locked at the v27.0 stable baseline. Future work should preserve that gameplay baseline unless a new checkpoint explicitly changes behaviour.

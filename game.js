@@ -1,19 +1,11 @@
-<<<<<<< HEAD
-const CANDLE_QUEST_BUILD = "v27_3_first_tester_readiness_pass";
-=======
-const CANDLE_QUEST_BUILD = "v27_1_first_player_onboarding_polish";
->>>>>>> parent of 368a8e1 (v27.1 First Player Onboarding Polish)
+const CANDLE_QUEST_BUILD = "v27_4_location_probability_tuning";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-<<<<<<< HEAD
-    b.textContent = "v27.3 - First Tester Readiness Pass";
-=======
-    b.textContent = "v27.1 - First Player Onboarding Polish";
->>>>>>> parent of 368a8e1 (v27.1 First Player Onboarding Polish)
+    b.textContent = "v27.4 - Location Probability Tuning";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1242,8 +1234,8 @@ function _chooseW1LocationProfile(patternName){
   const M = run.midpoint;
   const roll = Math.random();
 
-  if(patternName === "Hammer" || patternName === "Bullish Engulfing"){
-    if(roll < 0.78){
+  if(patternName === "Hammer"){
+    if(roll < 0.70){
       const target = S + 0.46 + Math.random() * 0.42;
       return {
         id:"range-low-support",
@@ -1253,9 +1245,9 @@ function _chooseW1LocationProfile(patternName){
         edgeIntent:true
       };
     }
-    const target = M - 0.55 - Math.random() * 1.10;
+    const target = M - 0.40 - Math.random() * 0.90;
     return {
-      id:"mean-pullback-weakness",
+      id:"lower-mean-pullback",
       target,
       direction:-1,
       zone:{low:target - 1.15, high:target + 1.15, label:"setup zone: lower channel pullback"},
@@ -1264,8 +1256,30 @@ function _chooseW1LocationProfile(patternName){
     };
   }
 
-  if(patternName === "Shooting Star" || patternName === "Bearish Engulfing"){
-    if(roll < 0.78){
+  if(patternName === "Bullish Engulfing"){
+    if(roll < 0.55){
+      const target = S + 0.46 + Math.random() * 0.42;
+      return {
+        id:"range-low-support",
+        target,
+        direction:-1,
+        zone:{low:S - 1.3, high:S + 1.3, label:"setup zone: range low"},
+        edgeIntent:true
+      };
+    }
+    const target = M - 0.25 - Math.random() * 0.65;
+    return {
+      id:"channel-mean-reclaim",
+      target,
+      direction:-1,
+      zone:{low:M - 1.15, high:M + 1.15, label:"setup zone: channel mean reclaim"},
+      edgeIntent:false,
+      style:"impulse-pullback"
+    };
+  }
+
+  if(patternName === "Shooting Star"){
+    if(roll < 0.70){
       const target = R - 0.46 - Math.random() * 0.42;
       return {
         id:"range-high-resistance",
@@ -1275,9 +1289,9 @@ function _chooseW1LocationProfile(patternName){
         edgeIntent:true
       };
     }
-    const target = M + 0.55 + Math.random() * 1.10;
+    const target = M + 0.40 + Math.random() * 0.90;
     return {
-      id:"mean-rally-rejection",
+      id:"upper-mean-rally",
       target,
       direction:1,
       zone:{low:target - 1.15, high:target + 1.15, label:"setup zone: upper channel rally"},
@@ -1286,8 +1300,30 @@ function _chooseW1LocationProfile(patternName){
     };
   }
 
+  if(patternName === "Bearish Engulfing"){
+    if(roll < 0.55){
+      const target = R - 0.46 - Math.random() * 0.42;
+      return {
+        id:"range-high-resistance",
+        target,
+        direction:1,
+        zone:{low:R - 1.3, high:R + 1.3, label:"setup zone: range high"},
+        edgeIntent:true
+      };
+    }
+    const target = M + 0.25 + Math.random() * 0.65;
+    return {
+      id:"channel-mean-rejection",
+      target,
+      direction:1,
+      zone:{low:M - 1.15, high:M + 1.15, label:"setup zone: channel mean rejection"},
+      edgeIntent:false,
+      style:"impulse-pullback"
+    };
+  }
+
   if(patternName === "Doji"){
-    if(roll < 0.74){
+    if(roll < 0.52){
       const target = M + (Math.random() < 0.5 ? -1 : 1) * (0.12 + Math.random() * 0.42);
       return {
         id:"channel-mean-hesitation",

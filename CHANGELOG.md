@@ -1,6 +1,31 @@
 # Candle Quest Reborn — Changelog
 
-<<<<<<< HEAD
+## v27.4 - Location Probability Tuning
+
+Status: current World 1 location-probability tuning pass on the locked v27.0 gameplay baseline
+
+### Changed
+
+- Updated `game.js` build marker to `v27_4_location_probability_tuning` and the visible badge to `v27.4 - Location Probability Tuning`.
+- Split the former shared edge/mean location profiles into pattern-specific weights.
+- Kept Hammer and Shooting Star edge-first at 70%, with 30% realistic mean-adjacent pullback/rally setups.
+- Kept Bullish and Bearish Engulfing edge-biased at 55%, while increasing Channel Mean reclaim/rejection setups to 45%.
+- Reduced Doji Channel Mean weighting from 74% to 52%; its remaining 48% is evenly divided between Range High and Range Low hesitation.
+
+### Preserved
+
+- Active World 1 answer pool remains exactly: Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji.
+- Existing candle recipes, Pattern Bible validators, setup rhythm, Engulfing two-candle sequencing, scoring, timer, XP, streaks, result flow, Pattern Library, and coach overlay remain unchanged.
+- Range High / Channel Mean / Range Low lines, Quest Moment banner, clean chart, and removal of opaque guide boxes remain intact.
+
+### Testing required
+
+- Sample multiple runs on desktop and iPhone/mobile, including a complete ten-question run and result/review flow.
+- Confirm mean scenarios include Doji hesitation, Bullish Engulfing reclaim, and Bearish Engulfing rejection without making location deterministic.
+- Confirm Hammer and Shooting Star retain realistic primary edge bias and all five final patterns remain visually Pattern Bible-compliant.
+
+---
+
 ## v27.3 - First Tester Readiness Pass
 
 Status: current first external tester readiness pass on the locked v27.0 World 1 gameplay baseline
@@ -68,8 +93,6 @@ Status: current Pattern Library clarity build on the locked v27.0 World 1 gamepl
 
 ---
 
-=======
->>>>>>> parent of 368a8e1 (v27.1 First Player Onboarding Polish)
 ## v27.1 - First Player Onboarding Polish
 
 Status: current onboarding polish build on the locked v27.0 World 1 gameplay baseline
