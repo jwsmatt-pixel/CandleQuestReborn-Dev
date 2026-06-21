@@ -1,5 +1,30 @@
 # Candle Quest Reborn — Changelog
 
+## v27.9 - World 2 Rules Bible
+
+### Added
+
+- Defined World 2 as `Support & Resistance`, teaching Location + Context through the question: did the level hold, or did it break?
+- Added a frozen future answer pool: Support Hold, Resistance Rejection, Support Break, and Resistance Break.
+- Added formal core meaning, must-have, invalid, visual cue, common confusion, coach wording, and future generator notes for all four concepts.
+- Added future generator boundaries requiring a clear level, visible approach, decisive behaviour, sufficient context candles, and no early ambiguous fakeouts.
+- Added a disabled Lesson Map card labelled `World 2`, `Support & Resistance`, and `Coming Soon` with beginner floor/ceiling copy.
+
+### Changed
+
+- Updated the build marker to `v27_9_world_2_rules_bible` and badge to `v27.9 - World 2 Rules Bible`.
+- Replaced the dormant older World 2 labels with the four Rules Bible concepts and blocked World 2 lesson/run entry until its generator is deliberately implemented.
+
+### Preserved
+
+- World 1 remains exactly Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji.
+- World 1 Pattern Bible, generator, v27.4 location tuning, v27.5 tempo logic, Mochi, Dev Tools, Candle Lens, Study Progress, result polish, replay sequencing, 7-second timer, scoring, coach flow, Pattern Library stats, answer dock, and clean chart are unchanged.
+
+### Testing required
+
+- Verify app load, World 1 start and completion, exact five-answer pool, 7-second timer, Pattern Library stats, Candle Lens, Mochi, tempo unlock UI, `?dev=1` tools, and result presentation.
+- Verify World 2 is clearly Coming Soon at phone and desktop widths and cannot open a lesson or start gameplay.
+
 ## v27.8.1 - Result Score Font Polish
 
 ### Changed

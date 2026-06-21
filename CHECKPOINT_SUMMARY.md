@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.8.1 Checkpoint Summary
+# Candle Quest Reborn - v27.9 Checkpoint Summary
 
 ## Current build
 
-**v27.8.1 - Result Score Font Polish**
-Build marker: `v27_8_1_result_score_font_polish`
+**v27.9 - World 2 Rules Bible**
+Build marker: `v27_9_world_2_rules_bible`
 
 ## Base build
 
@@ -12,7 +12,29 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 locked/stable gameplay baseline with persistent pattern-learning progress and refined mobile result stats.
+World 1 remains the locked/stable playable baseline. World 2 now has a formal Support & Resistance Rules Bible and a non-playable Lesson Map placeholder.
+
+## What changed in v27.9
+
+- Defined the World 2 learning layer as Location + Context: did the level hold, or did it break?
+- Locked the proposed World 2 pool to Support Hold, Resistance Rejection, Support Break, and Resistance Break.
+- Documented core meaning, must-have conditions, invalid conditions, visual cues, common confusions, simple coach wording, and future generator notes for each concept.
+- Added a Coming Soon Lesson Map card and defensive run guards; World 2 gameplay remains inactive.
+- Updated the build marker and visible badge.
+
+## World 2 Rules Bible v1.0
+
+- **Support Hold:** A clear support test stays above the floor and reacts upward. Invalid when price clearly breaks below, the reaction or level is weak, or hold versus break is ambiguous. Confusions: Support Break, Hammer, Bullish Engulfing. Coach: "Support Hold means price tested the floor and buyers defended it."
+- **Resistance Rejection:** A clear resistance test stays below the ceiling and reacts downward. Invalid when price clearly breaks above, the reaction or level is weak, or rejection versus break is ambiguous. Confusions: Resistance Break, Shooting Star, Bearish Engulfing. Coach: "Resistance Rejection means price tested the ceiling and sellers defended it."
+- **Support Break:** Price decisively closes through clear support and continues or accepts below it. A wick below that closes back above, an immediate reversal, or an unclear/small break is invalid. Confusions: Support Hold, Bearish Engulfing, Range Low reaction. Coach: "Support Break means the floor failed and price moved through it."
+- **Resistance Break:** Price decisively closes through clear resistance and continues or accepts above it. A wick above that closes back below, an immediate reversal, or an unclear/small break is invalid. Confusions: Resistance Rejection, Bullish Engulfing, Range High reaction. Coach: "Resistance Break means the ceiling failed and price moved through it."
+
+Future generation must show a clear level, visible approach, decisive hold or break, enough pre-signal context, and no ambiguous fakeouts. Complex multi-level structure, liquidity sweeps, breakout retests, trendline breaks, volume profile, and advanced order flow are deferred.
+
+## Preserved in v27.9
+
+- World 1 answer pool remains exactly Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji.
+- World 1 Pattern Bible/generator, location tuning, replay and Engulfing sequencing, Quest Moment, 7-second timer, scoring, tempo progression, Mochi, Dev Tools, Candle Lens, Study Progress, Pattern Library stats, result coach flow, mobile answer dock, and clean chart remain unchanged.
 
 v27.8.1 reduces only the lower mobile result stat-card numerals for Score, XP earned, and Best score. The hero result header remains bold, gameplay and scoring logic are unchanged, and all v27.8 study progress systems are preserved.
 
@@ -281,7 +303,7 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 
 - Hammer vs Bullish Engulfing
 - Shooting Star vs Bearish Engulfing
-- Support Reclaim vs Range Bounce
+- Support Hold vs Support Break
 - Clean Breakout vs Range Expansion
 
 ## Next recommended test
@@ -358,7 +380,8 @@ v27.6.1 - Dev Preview Tools
 v27.6.2 - Dev Tools Visibility Patch
 v27.7 - Candle Lens Pattern Preview
 v27.8 - Study Progress Foundations
-v27.9+ - Future World 1 teaching expansions
+v27.9 - World 2 Rules Bible
+v27.10+ - World 2 generator planning and later teaching expansions
 ```
 
 Do not combine lockdown, market rhythm changes, comparative cards, and deeper engulfing doctrine into one patch.

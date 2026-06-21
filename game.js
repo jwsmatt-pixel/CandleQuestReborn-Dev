@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v27_8_1_result_score_font_polish";
+const CANDLE_QUEST_BUILD = "v27_9_world_2_rules_bible";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.8.1 - Result Score Font Polish";
+    b.textContent = "v27.9 - World 2 Rules Bible";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -122,6 +122,56 @@ const CANDLE_LENS_PATTERNS = Object.freeze([
   }
 ]);
 
+const WORLD_2_RULES_BIBLE = Object.freeze({
+  world:"World 2",
+  theme:"Support & Resistance",
+  learningFocus:"Location + Context",
+  teachingQuestion:"Did the level hold, or did it break?",
+  answerPool:Object.freeze(["Support Hold","Resistance Rejection","Support Break","Resistance Break"]),
+  concepts:Object.freeze({
+    "Support Hold":Object.freeze({
+      coreMeaning:"Price tests a lower support area and holds above it. Buyers defend the level.",
+      mustHave:Object.freeze(["Price approaches or taps a clear lower support level.","Price does not close decisively below support.","A reaction upward appears after the test.","The level acts like a floor.","The player can visually see support was respected."]),
+      invalidIf:Object.freeze(["Price breaks clearly below support.","The reaction is too weak to show a hold.","The level is not visually obvious.","The candle action is ambiguous between hold and break.","Price never meaningfully tests the level."]),
+      visualCue:"Price comes down into support, rejects lower prices, and lifts away.",
+      commonConfusions:Object.freeze(["Support Break","Hammer","Bullish Engulfing"]),
+      coachWording:"Support Hold means price tested the floor and buyers defended it.",
+      generatorNotes:"Show a clear approach and test at support, followed by an obvious upward reaction without a decisive close below the level."
+    }),
+    "Resistance Rejection":Object.freeze({
+      coreMeaning:"Price tests an upper resistance area and fails to break above it. Sellers defend the level.",
+      mustHave:Object.freeze(["Price approaches or taps a clear upper resistance level.","Price does not close decisively above resistance.","A reaction downward appears after the test.","The level acts like a ceiling.","The player can visually see resistance was respected."]),
+      invalidIf:Object.freeze(["Price breaks clearly above resistance.","The reaction is too weak to show rejection.","The level is not visually obvious.","The candle action is ambiguous between rejection and break.","Price never meaningfully tests the level."]),
+      visualCue:"Price pushes into resistance, fails, and turns down.",
+      commonConfusions:Object.freeze(["Resistance Break","Shooting Star","Bearish Engulfing"]),
+      coachWording:"Resistance Rejection means price tested the ceiling and sellers defended it.",
+      generatorNotes:"Show a clear approach and test at resistance, followed by an obvious downward reaction without a decisive close above the level."
+    }),
+    "Support Break":Object.freeze({
+      coreMeaning:"Price breaks down through a clear support level. The floor fails.",
+      mustHave:Object.freeze(["Price approaches a clear support level.","Price closes decisively below support.","The break is visually obvious.","The move shows continuation or acceptance below the level.","The player can see the floor failed."]),
+      invalidIf:Object.freeze(["Price only wicks below support but closes back above.","The move immediately reverses and looks like a hold.","The support level is not visually clear.","The break candle is too small or ambiguous.","There is no clear level interaction."]),
+      visualCue:"Price loses support and accepts below the level.",
+      commonConfusions:Object.freeze(["Support Hold","Bearish Engulfing","Range Low reaction"]),
+      coachWording:"Support Break means the floor failed and price moved through it.",
+      generatorNotes:"Require a decisive close below clear support plus continuation or visible acceptance below it; a wick through the line is not enough."
+    }),
+    "Resistance Break":Object.freeze({
+      coreMeaning:"Price breaks up through a clear resistance level. The ceiling fails.",
+      mustHave:Object.freeze(["Price approaches a clear resistance level.","Price closes decisively above resistance.","The break is visually obvious.","The move shows continuation or acceptance above the level.","The player can see the ceiling failed."]),
+      invalidIf:Object.freeze(["Price only wicks above resistance but closes back below.","The move immediately reverses and looks like rejection.","The resistance level is not visually clear.","The break candle is too small or ambiguous.","There is no clear level interaction."]),
+      visualCue:"Price clears resistance and accepts above the level.",
+      commonConfusions:Object.freeze(["Resistance Rejection","Bullish Engulfing","Range High reaction"]),
+      coachWording:"Resistance Break means the ceiling failed and price moved through it.",
+      generatorNotes:"Require a decisive close above clear resistance plus continuation or visible acceptance above it; a wick through the line is not enough."
+    })
+  }),
+  futureGenerator:Object.freeze({
+    require:Object.freeze(["Clear support or resistance line.","Visible approach into the level.","Decisive hold or break behaviour.","Enough pre-signal candles for context.","No ambiguous fakeouts unless intentionally taught later."]),
+    defer:Object.freeze(["Complex multi-level market structure.","Liquidity sweeps.","Retests after breakout.","Trendline breaks.","Volume profile concepts.","Advanced order-flow concepts."])
+  })
+});
+
 const worlds = [
   {
     id:1, icon:"Ⅰ", title:"Candle Basics", unlock:0,
@@ -131,11 +181,11 @@ const worlds = [
     patterns:["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"]
   },
   {
-    id:2, icon:"Ⅱ", title:"Levels", unlock:80,
-    short:"Support, resistance and channel mean.",
-    lesson:"Levels are the map. Candles are the footsteps. A beginner improves fastest by learning whether price is rejecting a level, accepting through it, or chopping around the Channel Mean.",
-    rules:["Support = area buyers defend.","Resistance = area sellers defend.","Channel Mean = the middle of the range; signals are weaker here."],
-    patterns:["Support Reclaim","Resistance Reject","Mean Chop","Range Bounce","Level Break"]
+    id:2, icon:"Ⅱ", title:"Support & Resistance", unlock:Infinity, comingSoon:true,
+    short:"Learn how price reacts to floors and ceilings.",
+    lesson:"World 2 teaches level interaction: did the floor or ceiling hold, or did it break?",
+    rules:["Support acts like a floor.","Resistance acts like a ceiling.","Read the approach, test, and reaction at the level."],
+    patterns:WORLD_2_RULES_BIBLE.answerPool
   },
   {
     id:3, icon:"Ⅲ", title:"Breakouts", unlock:180,
@@ -223,43 +273,18 @@ const patternDefinitions = {
       cue:"Tiny body, balanced wicks, indecision."
     }
   ],
-  "Levels": [
-    {
-      name:"Support Reclaim",
-      type:"Failed breakdown / reclaim",
-      read:"Price dips below support or Range Low, then closes back above it.",
-      location:"Range Low or support area.",
-      cue:"The breakdown failed. Buyers reclaimed the level."
-    },
-    {
-      name:"Resistance Reject",
-      type:"Failed breakout / rejection",
-      read:"Price pushes into resistance or Range High, then closes back below it.",
-      location:"Range High or resistance area.",
-      cue:"The breakout attempt failed. Sellers defended the level."
-    },
-    {
-      name:"Mean Chop",
-      type:"No-trade / balance",
-      read:"Price rotates around the Channel Mean without clean acceptance either way.",
-      location:"Middle of the channel.",
-      cue:"The market is balanced. Signals are weaker here."
-    },
-    {
-      name:"Range Bounce",
-      type:"Rotation",
-      read:"Price rejects one edge of the channel and rotates back inward.",
-      location:"Range High or Range Low.",
-      cue:"The edge held. Expect rotation toward the mean or opposite side."
-    },
-    {
-      name:"Level Break",
-      type:"Acceptance attempt",
-      read:"Price closes beyond a key channel level with intent.",
-      location:"Usually Range High or Range Low.",
-      cue:"Do not trust the wick alone. Look for close and hold."
-    }
-  ],
+  "Levels": WORLD_2_RULES_BIBLE.answerPool.map(name=>{
+    const concept = WORLD_2_RULES_BIBLE.concepts[name];
+    return {
+      name,
+      type:"World 2 Rules Bible v1.0",
+      read:concept.coreMeaning,
+      location:concept.visualCue,
+      must:concept.mustHave.join(" "),
+      invalid:concept.invalidIf.join(" "),
+      cue:concept.coachWording
+    };
+  }),
   "Breakouts": [
     {
       name:"Clean Breakout",
@@ -602,18 +627,20 @@ function openScreen(id){
 }
 function renderMap(){
   $("worldGrid").innerHTML = worlds.map(w=>{
-    const locked = state.xp < w.unlock;
+    const locked = w.comingSoon || state.xp < w.unlock;
+    const buttonLabel = w.comingSoon ? "Coming Soon" : locked ? `Unlock at ${w.unlock} XP` : "Study / Play";
     return `<div class="world-card ${locked?'locked':''}">
       <div class="world-icon">${locked?'🔒':w.icon}</div>
+      ${w.comingSoon ? `<small>World ${w.id}</small>` : ""}
       <h3>${w.title}</h3>
       <p>${w.short}</p>
-      <button ${locked?'disabled':''} onclick="openLesson(${w.id})">${locked?`Unlock at ${w.unlock} XP`:'Study / Play'}</button>
+      <button ${locked?'disabled':''} onclick="openLesson(${w.id})">${buttonLabel}</button>
     </div>`;
   }).join("");
 }
 function openLesson(id){
   const w = worlds.find(x=>x.id===id);
-  if(!w || state.xp < w.unlock) return;
+  if(!w || w.comingSoon || state.xp < w.unlock) return;
   activeWorld = id;
   $("lessonEyebrow").textContent = `World ${id}`;
   $("lessonTitle").textContent = w.title;
@@ -1051,6 +1078,8 @@ function markCandleLensSeen(){
   try{ localStorage.setItem(CANDLE_LENS_SEEN_KEY, "true"); }catch(e){}
 }
 function startRun(worldId=activeWorld){
+  const world = worlds.find(w=>w.id===worldId);
+  if(!world || world.comingSoon) return;
   if(worldId === 1 && !hasSeenCandleLens()){
     openCandleLens(worldId);
     return;
@@ -1154,8 +1183,9 @@ function drawCandleLensCanvas(canvas, candles, focused){
 }
 
 function beginRun(worldId=activeWorld){
-  activeWorld = worldId;
   const world = worlds.find(w=>w.id===worldId) || worlds[0];
+  if(world.comingSoon) return;
+  activeWorld = worldId;
   const startPrice = 100;
   const tempoId = isTempoUnlocked(state.selectedTempo) ? state.selectedTempo : "beginner";
   const tempo = TEMPO_CONFIG[tempoId];
