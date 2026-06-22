@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_1_mobile_layout_foundation";
+const CANDLE_QUEST_BUILD = "v28_2_world_2_fairness_pass";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.1 - Mobile Layout Foundation";
+    b.textContent = "v28.2 - World 2 Fairness Pass";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -2504,25 +2504,28 @@ function prepareWorld2Question(){
   const isSupport = pattern.startsWith("Support");
   const isBreak = pattern.endsWith("Breaks");
   const level = previousClose + (isSupport ? -4.2 : 4.2);
-  const approach = isSupport
-    ? [previousClose-0.55, previousClose-1.15, previousClose-1.85, previousClose-2.55, level+0.75]
-    : [previousClose+0.55, previousClose+1.15, previousClose+1.85, previousClose+2.55, level-0.75];
-  const reaction = isSupport
-    ? (isBreak ? [level-1.05, level-1.65, level-2.15] : [level+0.55, level+1.35, level+2.15])
-    : (isBreak ? [level+1.05, level+1.65, level+2.15] : [level-0.55, level-1.35, level-2.15]);
-  const closes = [...approach, ...reaction];
+  const direction = isSupport ? 1 : -1;
+  const offsetFromLevel = offset => level + offset * direction;
+
+  // Mirror one beginner-readable story around the teaching line: six closes
+  // build context before the signal, then three closes prove hold or acceptance.
+  const approachOffsets = [3.65, 3.05, 2.4, 1.75, 1.1, 0.48];
+  const reactionOffsets = isBreak
+    ? [-1.15, -1.75, -2.25]
+    : [1.25, 2.0, 2.7];
+  const closes = [...approachOffsets, ...reactionOffsets].map(offsetFromLevel);
   let open = previousClose;
   const scenario = [];
 
   closes.forEach((close,index)=>{
-    const signalIndex = approach.length;
+    const signalIndex = approachOffsets.length;
     const decisiveBreak = isBreak && index === signalIndex;
     const holdTest = !isBreak && index === signalIndex;
-    let high = Math.max(open, close) + (decisiveBreak ? 0.18 : 0.28);
-    let low = Math.min(open, close) - (decisiveBreak ? 0.18 : 0.28);
+    let high = Math.max(open, close) + (decisiveBreak ? 0.16 : 0.24);
+    let low = Math.min(open, close) - (decisiveBreak ? 0.16 : 0.24);
     if(holdTest){
-      if(isSupport) low = level - 0.22;
-      else high = level + 0.22;
+      if(isSupport) low = level - 0.12;
+      else high = level + 0.12;
     }
     scenario.push([open, high, low, close]);
     open = close;

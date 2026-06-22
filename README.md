@@ -1,9 +1,16 @@
 # Candle Quest Reborn
 
-**Current build:** `v28.0.3 - W2 Label Size Tuning`
-**Build marker:** `v28_0_3_w2_label_size_tuning`
+**Current build:** `v28.2 - World 2 Fairness Pass`
+**Build marker:** `v28_2_world_2_fairness_pass`
 **Base:** `v26.2.3 · Result Flow Stepper`  
 **Status:** World 1 locked/stable; World 2 playable as an early Support & Resistance prototype
+
+### v28.2 World 2 Fairness Pass
+
+- gives every World 2 question a longer, clearer approach into one obvious teaching line
+- makes holds/rejections show a firm test followed by a strong reaction away from the level
+- makes breaks show a decisive close through the level followed by continued acceptance beyond it
+- preserves the stable World 2 viewport and level position, `22px` labels, exact answer wording, and v28.1 mobile layout
 
 ---
 

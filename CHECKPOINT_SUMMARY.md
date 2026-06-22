@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.1 Checkpoint Summary
+# Candle Quest Reborn - v28.2 Checkpoint Summary
 
 ## Current build
 
-**v28.1 - Mobile Layout Foundation**
-Build marker: `v28_1_mobile_layout_foundation`
+**v28.2 - World 2 Fairness Pass**
+Build marker: `v28_2_world_2_fairness_pass`
 
 ## Base build
 
@@ -12,7 +12,16 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 remains the locked/stable playable baseline. World 2 remains a playable early Support & Resistance prototype with a stable per-question teaching level and viewport.
+World 1 remains the locked/stable playable baseline. World 2 now uses clearer beginner-defensible hold, rejection, and break scenarios while retaining its stable per-question teaching level and viewport.
+
+## What changed in v28.2
+
+- All four World 2 scenarios now use a longer, controlled approach so the teaching level is visible before the signal.
+- Support Holds and Resistance Rejects test the line without a decisive close through it, then react strongly away over multiple candles.
+- Support Breaks and Resistance Breaks close decisively through the line, then print two continuation/acceptance candles beyond it.
+- The four scenarios are mirrored around support and resistance so floor and ceiling lessons have consistent visual standards.
+- The exact World 2 answer wording, one-line chart, locked viewport, stable replay/Quest Moment level position, `22px` labels, and v28.1 mobile layout remain preserved.
+- World 1 and all unrelated gameplay systems remain unchanged.
 
 ## What changed in v28.1
 

@@ -1,5 +1,21 @@
 # Candle Quest Reborn — Changelog
 
+## v28.2 - World 2 Fairness Pass
+
+### Changed
+
+- Rebuilt all four World 2 generated scenarios around one mirrored, beginner-readable level story.
+- Extended the visible approach so the support floor or resistance ceiling is established before the signal moment.
+- Strengthened Support Holds and Resistance Rejects with a controlled level test and a clear multi-candle reaction away from the line.
+- Strengthened Support Breaks and Resistance Breaks with a decisive full-body close through the line and two continuation/acceptance candles beyond it.
+- Updated the build marker to `v28_2_world_2_fairness_pass` and badge to `v28.2 - World 2 Fairness Pass`.
+
+### Preserved
+
+- World 2 keeps its exact four-answer wording, one teaching line, locked per-question viewport, stable replay-to-Quest-Moment level position, and `22px` level labels.
+- World 1 generation and answer pool, mobile layout, answer dock, 10-question flow, 7-second timer, scoring, XP, streaks, Mochi, shop, tempo unlocks, Dev Tools, Pattern Library structure, Candle Lens, and Study Progress are unchanged.
+- No fakeouts, sweeps, flips, retests, order blocks, volume concepts, order flow, or advanced market structure were introduced.
+
 ## v28.1 - Mobile Layout Foundation
 
 ### Changed
