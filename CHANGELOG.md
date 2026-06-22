@@ -1,5 +1,21 @@
 # Candle Quest Reborn — Changelog
 
+## v28.1 - Mobile Layout Foundation
+
+### Changed
+
+- Rebuilt the narrow-screen game flow as an intentional vertical stack: world/status HUD, replay window, answer dock, feedback, and exit.
+- Gave the question/status copy a full-width HUD row so it remains readable instead of being compressed beside score, timer, and XP controls.
+- Increased mobile spacing and answer-button tap area while keeping the replay/chart window visually dominant.
+- Made the fifth World 1 answer span the dock width on narrow screens; World 2 retains its balanced two-by-two answer layout.
+- Stacked mobile result stat cards with clear internal spacing and preserved the existing wide desktop cockpit.
+- Updated the build marker to `v28_1_mobile_layout_foundation` and badge to `v28.1 - Mobile Layout Foundation`.
+
+### Preserved
+
+- World 1 and World 2 gameplay, exact answer pools, Pattern Bible logic, generators, level stability, 10-question runs, 7-second timer, scoring, XP, streaks, Mochi, shop, tempo unlocks, Dev Tools, Pattern Library, Candle Lens, and Study Progress are unchanged.
+- World 2 support/resistance line behavior and label sizing are unchanged.
+
 ## v28.0.3 - W2 Label Size Tuning
 
 ### Changed

@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.0.3 Checkpoint Summary
+# Candle Quest Reborn - v28.1 Checkpoint Summary
 
 ## Current build
 
-**v28.0.3 - W2 Label Size Tuning**
-Build marker: `v28_0_3_w2_label_size_tuning`
+**v28.1 - Mobile Layout Foundation**
+Build marker: `v28_1_mobile_layout_foundation`
 
 ## Base build
 
@@ -13,6 +13,15 @@ Build marker: `v26_3_0_chart_viewport_unification`
 ## Current status
 
 World 1 remains the locked/stable playable baseline. World 2 remains a playable early Support & Resistance prototype with a stable per-question teaching level and viewport.
+
+## What changed in v28.1
+
+- Narrow screens now use a deliberate vertical training flow with a full-width world/question status row, the replay window as the central learning object, a separated answer dock, and feedback below the HUD.
+- Score, timer, XP, Shop, and streak information remain available without crushing the question copy into a narrow column.
+- Mobile answer controls have larger tap targets, more breathing room, and a full-width fifth World 1 option; the four World 2 options remain a balanced two-by-two grid.
+- Mobile result stats are presented as clearly separated stacked cards instead of compressed desktop columns.
+- Wide desktop styling remains unchanged, while the shared narrow breakpoint also improves cramped desktop windows and tablet-like widths.
+- World 1 and World 2 gameplay logic, exact answer pools, generators, Pattern Bible logic, World 2 level stability and label sizing, scoring, XP, timer, and run length are unchanged.
 
 ## What changed in v28.0.3
 
