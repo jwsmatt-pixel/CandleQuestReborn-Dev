@@ -17,13 +17,18 @@ World 1 remains the locked/stable playable baseline. World 2 now has a formal Su
 ## What changed in v27.9
 
 - Defined the World 2 learning layer as Location + Context: did the level hold, or did it break?
+<<<<<<< HEAD
 - Locked the World 2 pool to Support Holds, Resistance Rejects, Support Breaks, and Resistance Breaks.
+=======
+- Locked the proposed World 2 pool to Support Hold, Resistance Rejection, Support Break, and Resistance Break.
+>>>>>>> 87b47d3c15811310db955f0a5cddddb8c7cd4a4b
 - Documented core meaning, must-have conditions, invalid conditions, visual cues, common confusions, simple coach wording, and future generator notes for each concept.
 - Added a Coming Soon Lesson Map card and defensive run guards; World 2 gameplay remains inactive.
 - Updated the build marker and visible badge.
 
 ## World 2 Rules Bible v1.0
 
+<<<<<<< HEAD
 - **Support Holds:** The floor is clear before price tests it, price does not close decisively below, and buyers produce a visible bounce. Candle Lens: look at the level first and ask whether price tested the floor and bounced. Invalid when the floor breaks, the reaction or level is weak, or hold versus break is ambiguous.
 - **Resistance Rejects:** The ceiling is clear before price tests it, price does not close decisively above, and sellers produce a visible rejection. Candle Lens: look at the level first and ask whether price tested the ceiling and failed. Invalid when the ceiling breaks, the reaction or level is weak, or rejection versus break is ambiguous.
 - **Support Breaks:** The floor is clear before price reaches it, then price closes decisively below and continues or remains below. Candle Lens: look for the close below because a wick is not enough. Invalid when price reclaims the floor, the break is weak, or hold versus break is ambiguous.
@@ -32,6 +37,14 @@ World 1 remains the locked/stable playable baseline. World 2 now has a formal Su
 Each entry also records its beginner translation, visual cue, common confusions, coach feedback, and future generator recipe in the frozen `WORLD_2_RULES_BIBLE` data object.
 
 Future generation must show a clear level, visible approach, decisive hold or break, enough pre-signal context, no ambiguous fakeouts, and a clean mobile-readable chart. Liquidity sweeps, fakeouts, support/resistance flips, break and retest, trendline breaks, volume profile, order flow, and advanced market structure are deferred.
+=======
+- **Support Hold:** A clear support test stays above the floor and reacts upward. Invalid when price clearly breaks below, the reaction or level is weak, or hold versus break is ambiguous. Confusions: Support Break, Hammer, Bullish Engulfing. Coach: "Support Hold means price tested the floor and buyers defended it."
+- **Resistance Rejection:** A clear resistance test stays below the ceiling and reacts downward. Invalid when price clearly breaks above, the reaction or level is weak, or rejection versus break is ambiguous. Confusions: Resistance Break, Shooting Star, Bearish Engulfing. Coach: "Resistance Rejection means price tested the ceiling and sellers defended it."
+- **Support Break:** Price decisively closes through clear support and continues or accepts below it. A wick below that closes back above, an immediate reversal, or an unclear/small break is invalid. Confusions: Support Hold, Bearish Engulfing, Range Low reaction. Coach: "Support Break means the floor failed and price moved through it."
+- **Resistance Break:** Price decisively closes through clear resistance and continues or accepts above it. A wick above that closes back below, an immediate reversal, or an unclear/small break is invalid. Confusions: Resistance Rejection, Bullish Engulfing, Range High reaction. Coach: "Resistance Break means the ceiling failed and price moved through it."
+
+Future generation must show a clear level, visible approach, decisive hold or break, enough pre-signal context, and no ambiguous fakeouts. Complex multi-level structure, liquidity sweeps, breakout retests, trendline breaks, volume profile, and advanced order flow are deferred.
+>>>>>>> 87b47d3c15811310db955f0a5cddddb8c7cd4a4b
 
 ## Preserved in v27.9
 
@@ -305,7 +318,11 @@ Comparative coach cards are intentionally deferred. For now, each missed pattern
 
 - Hammer vs Bullish Engulfing
 - Shooting Star vs Bearish Engulfing
+<<<<<<< HEAD
 - Support Holds vs Support Breaks
+=======
+- Support Hold vs Support Break
+>>>>>>> 87b47d3c15811310db955f0a5cddddb8c7cd4a4b
 - Clean Breakout vs Range Expansion
 
 ## Next recommended test

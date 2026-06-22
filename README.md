@@ -78,7 +78,11 @@ Players learn by:
 ### v27.9 World 2 Rules Bible
 
 - defines World 2 as Support & Resistance, focused on Location + Context
+<<<<<<< HEAD
 - establishes the future answer pool: Support Holds, Resistance Rejects, Support Breaks, and Resistance Breaks
+=======
+- establishes the future answer pool: Support Hold, Resistance Rejection, Support Break, and Resistance Break
+>>>>>>> 87b47d3c15811310db955f0a5cddddb8c7cd4a4b
 - adds formal must-have, invalid, visual cue, confusion, coach, and generator guidance for each concept
 - marks World 2 as Coming Soon on the Lesson Map and prevents it from starting gameplay
 - leaves the World 1 generator, Pattern Bible, and five-answer pool unchanged
@@ -224,6 +228,7 @@ Status: **Coming Soon.** The Rules Bible is defined, but World 2 is not playable
 
 Learning focus: **Location + Context**. The beginner question is: **Did the level hold, or did it break?** Use simple language such as floor, ceiling, hold, break, rejection, buyers defended, and sellers defended.
 
+<<<<<<< HEAD
 Locked World 2 answer pool:
 
 - Support Holds
@@ -282,6 +287,58 @@ Locked World 2 answer pool:
 #### Future generator boundaries
 
 Require a clear support/resistance line, visible approach, decisive hold or break, enough pre-signal candles for context, no ambiguous fakeouts, and a clean mobile-readable chart. Defer liquidity sweeps, fakeouts, support/resistance flips, break and retest, trendline breaks, volume profile, order flow, and advanced market structure to later worlds.
+=======
+Proposed World 2 answer pool:
+
+- Support Hold
+- Resistance Rejection
+- Support Break
+- Resistance Break
+
+#### Support Hold
+
+- Core meaning: Price tests a lower support area and holds above it. Buyers defend the level.
+- Must-have: A clear approach or tap at lower support; no decisive close below; an upward reaction; support visibly acts like a floor.
+- Invalid if: Price clearly breaks below; reaction is weak; the level is unclear; hold versus break is ambiguous; or price never meaningfully tests support.
+- Visual cue: Price comes down into support, rejects lower prices, and lifts away.
+- Common confusions: Support Break, Hammer, Bullish Engulfing.
+- Coach wording: Support Hold means price tested the floor and buyers defended it.
+- Future generator note: Show an obvious approach and test, then a clear lift without a decisive close below support.
+
+#### Resistance Rejection
+
+- Core meaning: Price tests upper resistance and fails to break above it. Sellers defend the level.
+- Must-have: A clear approach or tap at upper resistance; no decisive close above; a downward reaction; resistance visibly acts like a ceiling.
+- Invalid if: Price clearly breaks above; reaction is weak; the level is unclear; rejection versus break is ambiguous; or price never meaningfully tests resistance.
+- Visual cue: Price pushes into resistance, fails, and turns down.
+- Common confusions: Resistance Break, Shooting Star, Bearish Engulfing.
+- Coach wording: Resistance Rejection means price tested the ceiling and sellers defended it.
+- Future generator note: Show an obvious approach and test, then a clear turn down without a decisive close above resistance.
+
+#### Support Break
+
+- Core meaning: Price breaks down through clear support. The floor fails.
+- Must-have: An approach to clear support; a decisive close below; an obvious break; continuation or visible acceptance below the level.
+- Invalid if: Price only wicks below and closes back above; immediately reverses like a hold; support is unclear; the break candle is small or ambiguous; or there is no clear interaction.
+- Visual cue: Price loses support and accepts below the level.
+- Common confusions: Support Hold, Bearish Engulfing, Range Low reaction.
+- Coach wording: Support Break means the floor failed and price moved through it.
+- Future generator note: Require a decisive close and follow-through below support; a wick through the line is not enough.
+
+#### Resistance Break
+
+- Core meaning: Price breaks up through clear resistance. The ceiling fails.
+- Must-have: An approach to clear resistance; a decisive close above; an obvious break; continuation or visible acceptance above the level.
+- Invalid if: Price only wicks above and closes back below; immediately reverses like rejection; resistance is unclear; the break candle is small or ambiguous; or there is no clear interaction.
+- Visual cue: Price clears resistance and accepts above the level.
+- Common confusions: Resistance Rejection, Bullish Engulfing, Range High reaction.
+- Coach wording: Resistance Break means the ceiling failed and price moved through it.
+- Future generator note: Require a decisive close and follow-through above resistance; a wick through the line is not enough.
+
+#### Future generator boundaries
+
+Require a clear support/resistance line, visible approach, decisive hold or break, enough pre-signal candles for context, and no ambiguous fakeouts. Defer complex multi-level structure, liquidity sweeps, breakout retests, trendline breaks, volume profile, and advanced order-flow concepts to later worlds.
+>>>>>>> 87b47d3c15811310db955f0a5cddddb8c7cd4a4b
 
 ### World 3 — Breakouts
 

@@ -5,7 +5,11 @@
 ### Added
 
 - Defined World 2 as `Support & Resistance`, teaching Location + Context through the question: did the level hold, or did it break?
+<<<<<<< HEAD
 - Added a frozen future answer pool: Support Holds, Resistance Rejects, Support Breaks, and Resistance Breaks.
+=======
+- Added a frozen future answer pool: Support Hold, Resistance Rejection, Support Break, and Resistance Break.
+>>>>>>> 87b47d3c15811310db955f0a5cddddb8c7cd4a4b
 - Added formal core meaning, must-have, invalid, visual cue, common confusion, coach wording, and future generator notes for all four concepts.
 - Added future generator boundaries requiring a clear level, visible approach, decisive behaviour, sufficient context candles, and no early ambiguous fakeouts.
 - Added a disabled Lesson Map card labelled `World 2`, `Support & Resistance`, and `Coming Soon` with beginner floor/ceiling copy.
