@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_0_world_2_playable_prototype";
+const CANDLE_QUEST_BUILD = "v28_0_1_replay_window_identity_pass";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.0 - World 2 Playable Prototype";
+    b.textContent = "v28.0.1 - Replay Window Identity Pass";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -2571,7 +2571,7 @@ function freezeScenario(){
   run.setupPhase = "quest";
 
   $("freezeBanner").classList.remove("hidden");
-  $("freezeBanner").textContent = "QUEST MOMENT · READ THE CHANNEL";
+  $("freezeBanner").textContent = "QUEST MOMENT · READ THE CANDLE";
   $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
   const options = shuffle([answer,...shuffle(pool.filter(x=>x!==answer)).slice(0,3)]);
   renderAnswerDock("quest", options);
@@ -2771,17 +2771,22 @@ function drawGame(frozen=false){
   const visibleCandles = run.candles.slice(run.candles.length - visibleCount);
 
   const candleVals = visibleCandles.flat();
-  const isWorld2 = run.world.id === 2 && Number.isFinite(run.teachingLevel);
-  const visibleMin = isWorld2 ? Math.min(run.teachingLevel, ...candleVals) : Math.min(run.support, ...candleVals);
-  const visibleMax = isWorld2 ? Math.max(run.teachingLevel, ...candleVals) : Math.max(run.resistance, ...candleVals);
-  const pad = mobile
-    ? Math.max(0.85, (run.resistance - run.support) * 0.105)
-    : Math.max(1.25, (run.resistance - run.support) * 0.18);
+  const isWorld2 = run.world.id === 2;
+  const hasTeachingLevel = isWorld2 && Number.isFinite(run.teachingLevel);
+  const visibleMin = hasTeachingLevel ? Math.min(run.teachingLevel, ...candleVals) : Math.min(run.support, ...candleVals);
+  const visibleMax = hasTeachingLevel ? Math.max(run.teachingLevel, ...candleVals) : Math.max(run.resistance, ...candleVals);
+  const visibleRange = Math.max(1, visibleMax - visibleMin);
+  const pad = isWorld2
+    ? Math.max(0.8, visibleRange * (mobile ? 0.1 : 0.12))
+    : mobile
+      ? Math.max(0.85, (run.resistance - run.support) * 0.105)
+      : Math.max(1.2, (run.resistance - run.support) * 0.16);
   const min = visibleMin - pad;
   const max = visibleMax + pad;
   const mapY = v => H - 54 - ((v - min) / (max - min)) * (H - 100);
 
-  const futurePad = frozen ? 120 : 88;
+  // Keep the replay and Quest Moment stage identical so freezing cannot shift candles.
+  const futurePad = 96;
   const left = mobile ? 70 : 42;
   const right = W - futurePad;
 
@@ -2812,30 +2817,30 @@ function drawGame(frozen=false){
 
   // World 1 keeps its channel. World 2 shows only the level being taught.
   ctx.lineCap = "butt";
-  ctx.shadowColor = "rgba(255,255,255,.28)";
-  ctx.shadowBlur = 5;
-
   ctx.setLineDash([]);
-  ctx.lineWidth = 3.1;
-  ctx.strokeStyle = "rgba(255,255,255,.92)";
-  if(isWorld2){
-    ctx.beginPath(); ctx.moveTo(30,mapY(run.teachingLevel)); ctx.lineTo(W-30,mapY(run.teachingLevel)); ctx.stroke();
-  } else {
-    ctx.beginPath(); ctx.moveTo(30,mapY(hi)); ctx.lineTo(W-30,mapY(hi)); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(30,mapY(lo)); ctx.lineTo(W-30,mapY(lo)); ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,.92)";
+  const drawCrispLevel = value => {
+    const y = Math.round(mapY(value));
+    ctx.fillRect(30, y - 1, W - 60, 2);
+  };
+  if(hasTeachingLevel){
+    drawCrispLevel(run.teachingLevel);
+  } else if(!isWorld2) {
+    drawCrispLevel(hi);
+    drawCrispLevel(lo);
     ctx.setLineDash([10,8]);
-    ctx.lineWidth = 2.2;
+    ctx.lineWidth = 2;
     ctx.strokeStyle = "rgba(255,255,255,.72)";
-    ctx.beginPath(); ctx.moveTo(30,mapY(mid)); ctx.lineTo(W-30,mapY(mid)); ctx.stroke();
+    const midY = Math.round(mapY(mid));
+    ctx.beginPath(); ctx.moveTo(30,midY); ctx.lineTo(W-30,midY); ctx.stroke();
   }
   ctx.setLineDash([]);
-  ctx.shadowBlur = 0;
 
   // Level labels
-  if(isWorld2){
+  if(hasTeachingLevel){
     const label = run.levelType === "support" ? "Support (Floor)" : "Resistance (Ceiling)";
-    drawLevelLabel(ctx,label,36,mapY(run.teachingLevel)-18,"rgba(255,255,255,.92)");
-  } else {
+    drawLevelLabel(ctx,label,36,Math.round(mapY(run.teachingLevel))-18,"rgba(255,255,255,.92)");
+  } else if(!isWorld2) {
     drawLevelLabel(ctx,"Range High",36,mapY(hi)-18,"rgba(255,255,255,.92)");
     drawLevelLabel(ctx,"Channel Mean",36,mapY(mid)-18,"rgba(255,255,255,.72)");
     drawLevelLabel(ctx,"Range Low",36,mapY(lo)+8,"rgba(255,255,255,.92)");

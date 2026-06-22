@@ -1,7 +1,7 @@
 # Candle Quest Reborn
 
-**Current build:** `v28.0 - World 2 Playable Prototype`
-**Build marker:** `v28_0_world_2_playable_prototype`
+**Current build:** `v28.0.1 - Replay Window Identity Pass`
+**Build marker:** `v28_0_1_replay_window_identity_pass`
 **Base:** `v26.2.3 · Result Flow Stepper`  
 **Status:** World 1 locked/stable; World 2 playable as an early Support & Resistance prototype
 
@@ -75,6 +75,16 @@ Players learn by:
 - preserves the bold result hero header, including PERFECT RUN, 10/10, and CORRECT READS
 - makes no gameplay or scoring logic changes and preserves all v27.8 study progress systems
 
+### v28.0.1 Replay Window Identity Pass
+
+- refines the dark rounded replay/chart window as Candle Quest's persistent training arena
+- removes the old World 2 parallel channel/range stack so World 2 shows only one relevant support or resistance line
+- standardises Quest Moment language to `READ THE CANDLE` in World 1 and `READ THE LEVEL` in World 2
+- reduces replay-to-Quest-Moment movement by keeping the chart stage width fixed through freeze
+- sharpens candle, wick, grid, and teaching-line geometry and slightly tightens chart framing
+- intentionally leaves the surrounding HUD, answer dock, Lesson Map, results, Pattern Library, shop, Mochi UI, footer, and app-wide theme unchanged
+- preserves World 1 and World 2 generators, answer pools, timers, scoring, XP, streaks, and 10-question flows
+
 ### v28.0 World 2 Playable Prototype
 
 - makes World 2 playable from the Lesson Map as a 10-question Support & Resistance run
@@ -101,7 +111,7 @@ Players learn by:
 - dashed Channel Mean line
 - solid Range Low line
 - no opaque setup-zone or Quest-zone guide boxes
-- Quest Moment banner: `QUEST MOMENT · READ THE CHANNEL`
+- Quest Moment banner: `QUEST MOMENT · READ THE CANDLE`
 - cleaned tiny-body/doji candle rendering from v26.1.1
 
 ### v26.2.4 Mobile Result Polish

@@ -1,5 +1,22 @@
 # Candle Quest Reborn — Changelog
 
+## v28.0.1 - Replay Window Identity Pass
+
+### Changed
+
+- Refined the dark rounded replay/chart window as Candle Quest's persistent training arena while leaving the surrounding interface unchanged.
+- Removed the World 2 parallel channel/range fallback; World 2 now renders only its one relevant support or resistance teaching line.
+- Standardised the chart badge to `QUEST MOMENT · READ THE CANDLE` for World 1 and `QUEST MOMENT · READ THE LEVEL` for World 2.
+- Kept the replay stage width fixed through Quest Moment to reduce horizontal candle jumping.
+- Sharpened candle, wick, grid, and level geometry with snapped coordinates and crisp teaching lines.
+- Tightened internal price padding slightly while retaining mobile and desktop headroom.
+- Updated the build marker to `v28_0_1_replay_window_identity_pass` and badge to `v28.0.1 - Replay Window Identity Pass`.
+
+### Preserved
+
+- World 1 and World 2 generators, exact answer pools, 10-question runs, 7-second timer, result flow, XP, score, streaks, Mochi, shop, tempo unlocks, Dev Tools, Pattern Library, Candle Lens, Study Progress, and mobile answer dock are unchanged.
+- No future World 2 concepts or app-wide visual redesign were introduced.
+
 ## v28.0 - World 2 Playable Prototype
 
 ### Added
