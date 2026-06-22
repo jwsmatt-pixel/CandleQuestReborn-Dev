@@ -1,5 +1,21 @@
 # Candle Quest Reborn — Changelog
 
+## v28.0.2 - W2 Level Stability + Label Readability
+
+### Changed
+
+- Fixed one support or resistance teaching level for each World 2 question instance.
+- Positioned support in a consistent low/floor region and resistance in a consistent high/ceiling region.
+- Replayed each World 2 scenario against its precomputed level and locked viewport, reducing replay-to-Quest-Moment line and candle jumping.
+- Replaced the previous teaching line when the next question starts so only one relevant World 2 level is visible.
+- Enlarged only the World 2 `SUPPORT` and `RESISTANCE` labels to make them readable on mobile.
+- Updated the build marker to `v28_0_2_w2_level_stability_label_readability` and badge to `v28.0.2 - W2 Level Stability + Label Readability`.
+
+### Preserved
+
+- World 1 and World 2 gameplay, exact answer pools, 10-question runs, 7-second timer, result flow, XP, score, streaks, Mochi, shop, tempo unlocks, Dev Tools, Pattern Library, Candle Lens, Study Progress, and mobile answer dock are unchanged.
+- World 2 still shows one teaching line and introduces no advanced support/resistance concepts.
+
 ## v28.0.1 - Replay Window Identity Pass
 
 ### Changed

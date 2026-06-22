@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_0_1_replay_window_identity_pass";
+const CANDLE_QUEST_BUILD = "v28_0_2_w2_level_stability_label_readability";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.0.1 - Replay Window Identity Pass";
+    b.textContent = "v28.0.2 - W2 Level Stability + Label Readability";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1280,6 +1280,7 @@ function beginRun(worldId=activeWorld){
   // Mobile: fewer initial candles for clarity
   const initCandles = isMobile() ? 18 : 26;
   for(let i=0;i<initCandles;i++) addCandle();
+  if(world.id === 2) prepareWorld2Question();
   $("runMode").textContent = `${world.title} - ${tempo.label}`;
   $("runHint").textContent = "Watch the candles move. Timer starts at Quest Moment.";
   $("scoreText").textContent = "0";
@@ -2029,6 +2030,16 @@ function _pickDiversePattern(pool, history){
 function addCandle(forced=null){
   if(!run) return;
 
+  if(!forced && run.world.id === 2 && run.w2ScenarioQueue?.length){
+    const candle = run.w2ScenarioQueue.shift();
+    run.candles.push(candle);
+    run.price = candle[3];
+    run.setupSteps = run.w2ScenarioQueue.length;
+    const maxCandles = isMobile() ? 22 : 38;
+    while(run.candles.length > maxCandles) run.candles.shift();
+    return;
+  }
+
   let prev = run.candles.length ? run.candles[run.candles.length-1][3] : run.price;
   let o = prev, c, h, l;
 
@@ -2469,17 +2480,26 @@ function finishQuestMoment(){
   run.setupPhase = null;
   run.setupPulse = 0;
   run.setupStory = null;
-  run.nextFreeze = 5 + Math.floor(Math.random()*5);
+  if(run.world.id === 2) prepareWorld2Question();
+  else run.nextFreeze = 5 + Math.floor(Math.random()*5);
   $("freezeBanner").classList.add("hidden");
   renderAnswerDock("waiting");
   $("timeText").textContent = "—";
-  $("runHint").textContent = `Quest ${run.questCount}/${run.maxQuests} complete. Watch the channel for the next setup.`;
+  $("runHint").textContent = run.world.id === 2
+    ? `Quest ${run.questCount}/${run.maxQuests} complete. Watch price approach the next level.`
+    : `Quest ${run.questCount}/${run.maxQuests} complete. Watch the channel for the next setup.`;
 }
 
 
 // ─── FREEZE / QUEST MOMENT ────────────────────────────────────────────────────
-function buildWorld2Scenario(pattern){
+function prepareWorld2Question(){
   if(!run || run.world.id !== 2) return;
+  const pool = run.world.patterns || [];
+  if(!run.patternHistory) run.patternHistory = [];
+  const pattern = _pickDiversePattern(pool, run.patternHistory);
+  run.patternHistory.push(pattern);
+  if(run.patternHistory.length > 8) run.patternHistory.shift();
+
   const previousClose = run.candles.length ? run.candles[run.candles.length-1][3] : run.price;
   const isSupport = pattern.startsWith("Support");
   const isBreak = pattern.endsWith("Breaks");
@@ -2492,6 +2512,7 @@ function buildWorld2Scenario(pattern){
     : (isBreak ? [level+1.05, level+1.65, level+2.15] : [level-0.55, level-1.35, level-2.15]);
   const closes = [...approach, ...reaction];
   let open = previousClose;
+  const scenario = [];
 
   closes.forEach((close,index)=>{
     const signalIndex = approach.length;
@@ -2503,15 +2524,20 @@ function buildWorld2Scenario(pattern){
       if(isSupport) low = level - 0.22;
       else high = level + 0.22;
     }
-    run.candles.push([open, high, low, close]);
+    scenario.push([open, high, low, close]);
     open = close;
   });
 
-  const maxCandles = isMobile() ? 22 : 38;
-  while(run.candles.length > maxCandles) run.candles.shift();
-  run.price = closes[closes.length-1];
   run.teachingLevel = level;
   run.levelType = isSupport ? "support" : "resistance";
+  run.w2Viewport = isSupport
+    ? {min:previousClose - 7, max:previousClose + 3}
+    : {min:previousClose - 3, max:previousClose + 7};
+  run.w2ScenarioQueue = scenario;
+  run.setupPattern = pattern;
+  run.setupSteps = scenario.length;
+  run.nextFreeze = scenario.length;
+  run.setupPhase = "forming";
   run.momentum = 0;
 }
 
@@ -2531,20 +2557,6 @@ function freezeScenario(){
     run.patternHistory.push(chosen);
     if(run.patternHistory.length > 8) run.patternHistory.shift();
 
-    if(run.world.id === 2){
-      buildWorld2Scenario(chosen);
-      run.paused = true;
-      run.current = chosen;
-      run.setupPhase = "quest";
-      $("freezeBanner").classList.remove("hidden");
-      $("freezeBanner").textContent = "QUEST MOMENT · READ THE LEVEL";
-      $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
-      renderAnswerDock("quest", shuffle(pool));
-      drawGame(true);
-      startQuestTimer();
-      return;
-    }
-
     run.setupPattern = chosen;
     run.setupStory = _createW1SetupStory(chosen);
     run.setupTarget = getSetupTarget(run.setupPattern);
@@ -2560,6 +2572,22 @@ function freezeScenario(){
   }
 
   const answer = run.setupPattern;
+  if(run.world.id === 2){
+    run.paused = true;
+    run.current = answer;
+    run.setupPattern = null;
+    run.setupSteps = 0;
+    run.w2ScenarioQueue = [];
+    run.setupPhase = "quest";
+    $("freezeBanner").classList.remove("hidden");
+    $("freezeBanner").textContent = "QUEST MOMENT · READ THE LEVEL";
+    $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
+    renderAnswerDock("quest", shuffle(pool));
+    drawGame(true);
+    startQuestTimer();
+    return;
+  }
+
   addCandle(answer);
   run.paused = true;
   run.current = answer;
@@ -2752,6 +2780,27 @@ function drawLevelLabel(ctx, text, x, y, color){
   ctx.restore();
 }
 
+function drawWorld2LevelLabel(ctx, text, x, y, color){
+  ctx.save();
+  ctx.font="900 55px system-ui";
+  const paddingX = 18;
+  const w = ctx.measureText(text).width + paddingX * 2;
+  const h = 68;
+  const top = Math.max(10, Math.min(ctx.canvas.height - h - 10, y));
+  ctx.fillStyle="rgba(7,12,9,.9)";
+  ctx.strokeStyle=color;
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  if(ctx.roundRect) ctx.roundRect(x,top,w,h,10);
+  else ctx.rect(x,top,w,h);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle="#ffffff";
+  ctx.textBaseline="middle";
+  ctx.fillText(text,x+paddingX,top+h/2+1);
+  ctx.restore();
+}
+
 function drawGame(frozen=false){
   const canvas = $("gameCanvas"), ctx = canvas.getContext("2d"), W=canvas.width, H=canvas.height;
   ctx.clearRect(0,0,W,H);
@@ -2781,8 +2830,8 @@ function drawGame(frozen=false){
     : mobile
       ? Math.max(0.85, (run.resistance - run.support) * 0.105)
       : Math.max(1.2, (run.resistance - run.support) * 0.16);
-  const min = visibleMin - pad;
-  const max = visibleMax + pad;
+  const min = isWorld2 && run.w2Viewport ? run.w2Viewport.min : visibleMin - pad;
+  const max = isWorld2 && run.w2Viewport ? run.w2Viewport.max : visibleMax + pad;
   const mapY = v => H - 54 - ((v - min) / (max - min)) * (H - 100);
 
   // Keep the replay and Quest Moment stage identical so freezing cannot shift candles.
@@ -2838,8 +2887,8 @@ function drawGame(frozen=false){
 
   // Level labels
   if(hasTeachingLevel){
-    const label = run.levelType === "support" ? "Support (Floor)" : "Resistance (Ceiling)";
-    drawLevelLabel(ctx,label,36,Math.round(mapY(run.teachingLevel))-18,"rgba(255,255,255,.92)");
+    const label = run.levelType === "support" ? "SUPPORT" : "RESISTANCE";
+    drawWorld2LevelLabel(ctx,label,36,Math.round(mapY(run.teachingLevel))-78,"rgba(255,255,255,.92)");
   } else if(!isWorld2) {
     drawLevelLabel(ctx,"Range High",36,mapY(hi)-18,"rgba(255,255,255,.92)");
     drawLevelLabel(ctx,"Channel Mean",36,mapY(mid)-18,"rgba(255,255,255,.72)");

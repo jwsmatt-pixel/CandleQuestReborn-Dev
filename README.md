@@ -1,7 +1,7 @@
 # Candle Quest Reborn
 
-**Current build:** `v28.0.1 - Replay Window Identity Pass`
-**Build marker:** `v28_0_1_replay_window_identity_pass`
+**Current build:** `v28.0.2 - W2 Level Stability + Label Readability`
+**Build marker:** `v28_0_2_w2_level_stability_label_readability`
 **Base:** `v26.2.3 · Result Flow Stepper`  
 **Status:** World 1 locked/stable; World 2 playable as an early Support & Resistance prototype
 
@@ -84,6 +84,15 @@ Players learn by:
 - sharpens candle, wick, grid, and teaching-line geometry and slightly tightens chart framing
 - intentionally leaves the surrounding HUD, answer dock, Lesson Map, results, Pattern Library, shop, Mochi UI, footer, and app-wide theme unchanged
 - preserves World 1 and World 2 generators, answer pools, timers, scoring, XP, streaks, and 10-question flows
+
+### v28.0.2 W2 Level Stability + Label Readability
+
+- fixes one support or resistance value for each World 2 question instance
+- places support as a predictable low/floor line and resistance as a predictable high/ceiling line
+- replays World 2 candles against a locked per-question viewport so the line and candles do not rescale at Quest Moment
+- swaps the single teaching line cleanly when the next question starts
+- enlarges only the World 2 `SUPPORT` and `RESISTANCE` chart labels for mobile readability
+- preserves World 1 and World 2 gameplay, exact answer pools, timers, scoring, XP, streaks, and 10-question flows
 
 ### v28.0 World 2 Playable Prototype
 
@@ -543,6 +552,6 @@ icons/
 Use a cache-busting URL after uploading a new build, for example:
 
 ```text
-https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2790
-https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2790&dev=1
+https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2802
+https://jwsmatt-pixel.github.io/CandleQuestReborn-Dev/?fresh=2802&dev=1
 ```

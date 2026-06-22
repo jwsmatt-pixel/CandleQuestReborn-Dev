@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.0.1 Checkpoint Summary
+# Candle Quest Reborn - v28.0.2 Checkpoint Summary
 
 ## Current build
 
-**v28.0.1 - Replay Window Identity Pass**
-Build marker: `v28_0_1_replay_window_identity_pass`
+**v28.0.2 - W2 Level Stability + Label Readability**
+Build marker: `v28_0_2_w2_level_stability_label_readability`
 
 ## Base build
 
@@ -12,7 +12,17 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 remains the locked/stable playable baseline. World 2 remains a playable early Support & Resistance prototype. The replay window now has a more stable, consistent Candle Quest identity.
+World 1 remains the locked/stable playable baseline. World 2 remains a playable early Support & Resistance prototype with a stable per-question teaching level and viewport.
+
+## What changed in v28.0.2
+
+- World 2 now fixes one support or resistance value for the whole question instance.
+- Support appears as a predictable low/floor teaching line; resistance appears as a predictable high/ceiling teaching line.
+- Each World 2 scenario replays against a locked per-question viewport, preserving the same line placement and candle scale at Quest Moment.
+- The previous teaching line is replaced when the next question starts, so only one relevant World 2 line is visible at a time.
+- World 2 level labels are enlarged from the previous tiny chart text to mobile-readable `SUPPORT` and `RESISTANCE` labels.
+- Replay-to-Quest-Moment line jumping is reduced without changing the answer dock, HUD, Lesson Map, result screen, Pattern Library, shop, Mochi UI, or app-wide theme.
+- World 1 and World 2 gameplay, exact answer pools, 10-question runs, 7-second timer, scoring, XP, streaks, and supporting systems remain preserved.
 
 ## What changed in v28.0.1
 
