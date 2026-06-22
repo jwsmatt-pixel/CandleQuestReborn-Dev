@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_0_2_w2_level_stability_label_readability";
+const CANDLE_QUEST_BUILD = "v28_0_3_w2_label_size_tuning";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.0.2 - W2 Level Stability + Label Readability";
+    b.textContent = "v28.0.3 - W2 Label Size Tuning";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -2782,10 +2782,10 @@ function drawLevelLabel(ctx, text, x, y, color){
 
 function drawWorld2LevelLabel(ctx, text, x, y, color){
   ctx.save();
-  ctx.font="900 55px system-ui";
-  const paddingX = 18;
+  ctx.font="900 22px system-ui";
+  const paddingX = 10;
   const w = ctx.measureText(text).width + paddingX * 2;
-  const h = 68;
+  const h = 34;
   const top = Math.max(10, Math.min(ctx.canvas.height - h - 10, y));
   ctx.fillStyle="rgba(7,12,9,.9)";
   ctx.strokeStyle=color;
@@ -2888,7 +2888,7 @@ function drawGame(frozen=false){
   // Level labels
   if(hasTeachingLevel){
     const label = run.levelType === "support" ? "SUPPORT" : "RESISTANCE";
-    drawWorld2LevelLabel(ctx,label,36,Math.round(mapY(run.teachingLevel))-78,"rgba(255,255,255,.92)");
+    drawWorld2LevelLabel(ctx,label,36,Math.round(mapY(run.teachingLevel))-44,"rgba(255,255,255,.92)");
   } else if(!isWorld2) {
     drawLevelLabel(ctx,"Range High",36,mapY(hi)-18,"rgba(255,255,255,.92)");
     drawLevelLabel(ctx,"Channel Mean",36,mapY(mid)-18,"rgba(255,255,255,.72)");

@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.0.2 Checkpoint Summary
+# Candle Quest Reborn - v28.0.3 Checkpoint Summary
 
 ## Current build
 
-**v28.0.2 - W2 Level Stability + Label Readability**
-Build marker: `v28_0_2_w2_level_stability_label_readability`
+**v28.0.3 - W2 Label Size Tuning**
+Build marker: `v28_0_3_w2_label_size_tuning`
 
 ## Base build
 
@@ -13,6 +13,12 @@ Build marker: `v26_3_0_chart_viewport_unification`
 ## Current status
 
 World 1 remains the locked/stable playable baseline. World 2 remains a playable early Support & Resistance prototype with a stable per-question teaching level and viewport.
+
+## What changed in v28.0.3
+
+- Reduced only the World 2 replay/chart `SUPPORT` and `RESISTANCE` labels from the oversized v28.0.2 treatment to a balanced, mobile-readable `22px`.
+- Scaled the W2 label box and offset with the text while preserving its clearance from the teaching line.
+- Left teaching-level placement, the World 2 generator, chart scaling, the locked viewport, and World 1 unchanged.
 
 ## What changed in v28.0.2
 

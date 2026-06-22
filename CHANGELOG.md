@@ -1,5 +1,18 @@
 # Candle Quest Reborn — Changelog
 
+## v28.0.3 - W2 Label Size Tuning
+
+### Changed
+
+- Reduced only the World 2 replay/chart `SUPPORT` and `RESISTANCE` labels to `22px` with a proportionally smaller label box.
+- Kept the smaller label readable on mobile without letting it dominate the chart.
+- Updated the build marker to `v28_0_3_w2_label_size_tuning` and badge to `v28.0.3 - W2 Label Size Tuning`.
+
+### Preserved
+
+- World 2 teaching-level placement, generator, chart scaling, locked viewport, and one-visible-line behavior are unchanged.
+- World 1 and World 2 gameplay, exact answer pools, 10-question runs, 7-second timer, result flow, XP, score, streaks, Mochi, shop, tempo unlocks, Dev Tools, Pattern Library, Candle Lens, Study Progress, and mobile answer dock are unchanged.
+
 ## v28.0.2 - W2 Level Stability + Label Readability
 
 ### Changed

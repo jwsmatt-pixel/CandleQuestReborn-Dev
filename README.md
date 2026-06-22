@@ -1,7 +1,7 @@
 # Candle Quest Reborn
 
-**Current build:** `v28.0.2 - W2 Level Stability + Label Readability`
-**Build marker:** `v28_0_2_w2_level_stability_label_readability`
+**Current build:** `v28.0.3 - W2 Label Size Tuning`
+**Build marker:** `v28_0_3_w2_label_size_tuning`
 **Base:** `v26.2.3 · Result Flow Stepper`  
 **Status:** World 1 locked/stable; World 2 playable as an early Support & Resistance prototype
 
@@ -84,6 +84,12 @@ Players learn by:
 - sharpens candle, wick, grid, and teaching-line geometry and slightly tightens chart framing
 - intentionally leaves the surrounding HUD, answer dock, Lesson Map, results, Pattern Library, shop, Mochi UI, footer, and app-wide theme unchanged
 - preserves World 1 and World 2 generators, answer pools, timers, scoring, XP, streaks, and 10-question flows
+
+### v28.0.3 W2 Label Size Tuning
+
+- reduces only the World 2 replay/chart `SUPPORT` and `RESISTANCE` labels to a balanced `22px`
+- keeps the labels readable on mobile without dominating the chart
+- preserves teaching-level placement, the World 2 generator, chart scaling, the locked viewport, and World 1
 
 ### v28.0.2 W2 Level Stability + Label Readability
 
