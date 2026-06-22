@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_2_world_2_fairness_pass";
+const CANDLE_QUEST_BUILD = "v28_2_1_w2_replay_stability_ios_compact_framing";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.2 - World 2 Fairness Pass";
+    b.textContent = "v28.2.1 - W2 Replay Stability + iOS Compact Framing";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -643,6 +643,12 @@ function openScreen(id){
   document.body.dataset.screen = id;
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   $(id).classList.add("active");
+  if(id === "game"){
+    // iOS can retain the previous document offset while the game screen was hidden.
+    // Reset before the next paint so replay and Quest Moment share one visual anchor.
+    window.scrollTo(0,0);
+    requestAnimationFrame(()=>window.scrollTo(0,0));
+  }
   updateDevPreviewBadge(id);
   if(id==="map") renderMap();
   if(id==="shop") renderShop();
@@ -2533,9 +2539,22 @@ function prepareWorld2Question(){
 
   run.teachingLevel = level;
   run.levelType = isSupport ? "support" : "resistance";
-  run.w2Viewport = isSupport
-    ? {min:previousClose - 7, max:previousClose + 3}
-    : {min:previousClose - 3, max:previousClose + 7};
+  // Lock one padded camera for the whole question. Include the historical candles
+  // that can remain on stage plus the complete scenario, so no wick can enter the
+  // replay clipped and the camera cannot change when Quest Moment freezes.
+  const viewportCandles = [
+    ...run.candles.slice(-14),
+    ...scenario
+  ];
+  const viewportValues = [level, ...viewportCandles.flat()];
+  const viewportLow = Math.min(...viewportValues);
+  const viewportHigh = Math.max(...viewportValues);
+  const viewportRange = Math.max(1, viewportHigh - viewportLow);
+  const viewportPad = Math.max(0.9, viewportRange * 0.12);
+  run.w2Viewport = {
+    min:viewportLow - viewportPad,
+    max:viewportHigh + viewportPad
+  };
   run.w2ScenarioQueue = scenario;
   run.setupPattern = pattern;
   run.setupSteps = scenario.length;

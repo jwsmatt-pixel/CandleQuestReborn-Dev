@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.2 Checkpoint Summary
+# Candle Quest Reborn - v28.2.1 Checkpoint Summary
 
 ## Current build
 
-**v28.2 - World 2 Fairness Pass**
-Build marker: `v28_2_world_2_fairness_pass`
+**v28.2.1 - W2 Replay Stability + iOS Compact Framing Pass**
+Build marker: `v28_2_1_w2_replay_stability_ios_compact_framing`
 
 ## Base build
 
@@ -12,7 +12,16 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 remains the locked/stable playable baseline. World 2 now uses clearer beginner-defensible hold, rejection, and break scenarios while retaining its stable per-question teaching level and viewport.
+World 1 remains the locked/stable playable baseline. World 2 now keeps every replay wick inside one stable padded camera, and mobile gameplay returns to a compact contained layout with stable scroll positioning.
+
+## What changed in v28.2.1
+
+- World 2 calculates one padded viewport from all historical and scenario candles that can appear during the question.
+- Replay and Quest Moment reuse that viewport, keeping candle scale and the teaching line stable without clipping wick extremes.
+- Mobile cockpit, chart height, shell spacing, and answer-dock gaps are compacted toward the v27.9 proportions without shrinking answer tap targets.
+- Mobile Exit now occupies a small cockpit control instead of a full-width footer row.
+- Entering the game resets retained iOS document scroll before paint, preventing the exit-area-first view and Quest Moment snap.
+- Desktop layout and all gameplay content and progression systems remain unchanged.
 
 ## What changed in v28.2
 

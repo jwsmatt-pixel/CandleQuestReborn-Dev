@@ -1,5 +1,18 @@
 # Candle Quest Reborn — Changelog
 
+## v28.2.1 - W2 Replay Stability + iOS Compact Framing Pass
+
+### Changed
+
+- Locked each World 2 question to a padded viewport containing every historical and scenario candle that can appear, preventing clipped bodies or wicks while keeping replay and Quest Moment framing identical.
+- Restored a compact mobile cockpit and chart aspect, tightened vertical spacing, and retained `52px` answer targets.
+- Moved the mobile Exit control into the cockpit and removed the large bottom exit section.
+- Reset the document scroll position when entering a run so the chart remains the mobile visual anchor.
+
+### Preserved
+
+- Exact World 1 and World 2 answer pools, generators, Pattern Bible logic, W2 scenario fairness, one stable teaching line, scoring, XP, streaks, timer, run length, and desktop layout remain unchanged.
+
 ## v28.2 - World 2 Fairness Pass
 
 ### Changed
