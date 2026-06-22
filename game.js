@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v27_9_world_2_rules_bible";
+const CANDLE_QUEST_BUILD = "v27_9_1_conflict_marker_cleanup";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -127,7 +127,6 @@ const WORLD_2_RULES_BIBLE = Object.freeze({
   theme:"Support & Resistance",
   learningFocus:"Location + Context",
   teachingQuestion:"Did the level hold, or did it break?",
-<<<<<<< HEAD
   answerPool:Object.freeze(["Support Holds","Resistance Rejects","Support Breaks","Resistance Breaks"]),
   concepts:Object.freeze({
     "Support Holds":Object.freeze({
@@ -178,50 +177,6 @@ const WORLD_2_RULES_BIBLE = Object.freeze({
   futureGenerator:Object.freeze({
     require:Object.freeze(["Clear support or resistance line.","Visible approach into the level.","Decisive hold or break behaviour.","Enough pre-signal candles for context.","No ambiguous fakeouts unless intentionally taught later.","Chart remains clean and mobile-readable."]),
     defer:Object.freeze(["Liquidity sweeps.","Fakeouts.","Support/resistance flips.","Break and retest.","Trendline breaks.","Volume profile concepts.","Order-flow concepts.","Advanced market structure."])
-=======
-  answerPool:Object.freeze(["Support Hold","Resistance Rejection","Support Break","Resistance Break"]),
-  concepts:Object.freeze({
-    "Support Hold":Object.freeze({
-      coreMeaning:"Price tests a lower support area and holds above it. Buyers defend the level.",
-      mustHave:Object.freeze(["Price approaches or taps a clear lower support level.","Price does not close decisively below support.","A reaction upward appears after the test.","The level acts like a floor.","The player can visually see support was respected."]),
-      invalidIf:Object.freeze(["Price breaks clearly below support.","The reaction is too weak to show a hold.","The level is not visually obvious.","The candle action is ambiguous between hold and break.","Price never meaningfully tests the level."]),
-      visualCue:"Price comes down into support, rejects lower prices, and lifts away.",
-      commonConfusions:Object.freeze(["Support Break","Hammer","Bullish Engulfing"]),
-      coachWording:"Support Hold means price tested the floor and buyers defended it.",
-      generatorNotes:"Show a clear approach and test at support, followed by an obvious upward reaction without a decisive close below the level."
-    }),
-    "Resistance Rejection":Object.freeze({
-      coreMeaning:"Price tests an upper resistance area and fails to break above it. Sellers defend the level.",
-      mustHave:Object.freeze(["Price approaches or taps a clear upper resistance level.","Price does not close decisively above resistance.","A reaction downward appears after the test.","The level acts like a ceiling.","The player can visually see resistance was respected."]),
-      invalidIf:Object.freeze(["Price breaks clearly above resistance.","The reaction is too weak to show rejection.","The level is not visually obvious.","The candle action is ambiguous between rejection and break.","Price never meaningfully tests the level."]),
-      visualCue:"Price pushes into resistance, fails, and turns down.",
-      commonConfusions:Object.freeze(["Resistance Break","Shooting Star","Bearish Engulfing"]),
-      coachWording:"Resistance Rejection means price tested the ceiling and sellers defended it.",
-      generatorNotes:"Show a clear approach and test at resistance, followed by an obvious downward reaction without a decisive close above the level."
-    }),
-    "Support Break":Object.freeze({
-      coreMeaning:"Price breaks down through a clear support level. The floor fails.",
-      mustHave:Object.freeze(["Price approaches a clear support level.","Price closes decisively below support.","The break is visually obvious.","The move shows continuation or acceptance below the level.","The player can see the floor failed."]),
-      invalidIf:Object.freeze(["Price only wicks below support but closes back above.","The move immediately reverses and looks like a hold.","The support level is not visually clear.","The break candle is too small or ambiguous.","There is no clear level interaction."]),
-      visualCue:"Price loses support and accepts below the level.",
-      commonConfusions:Object.freeze(["Support Hold","Bearish Engulfing","Range Low reaction"]),
-      coachWording:"Support Break means the floor failed and price moved through it.",
-      generatorNotes:"Require a decisive close below clear support plus continuation or visible acceptance below it; a wick through the line is not enough."
-    }),
-    "Resistance Break":Object.freeze({
-      coreMeaning:"Price breaks up through a clear resistance level. The ceiling fails.",
-      mustHave:Object.freeze(["Price approaches a clear resistance level.","Price closes decisively above resistance.","The break is visually obvious.","The move shows continuation or acceptance above the level.","The player can see the ceiling failed."]),
-      invalidIf:Object.freeze(["Price only wicks above resistance but closes back below.","The move immediately reverses and looks like rejection.","The resistance level is not visually clear.","The break candle is too small or ambiguous.","There is no clear level interaction."]),
-      visualCue:"Price clears resistance and accepts above the level.",
-      commonConfusions:Object.freeze(["Resistance Rejection","Bullish Engulfing","Range High reaction"]),
-      coachWording:"Resistance Break means the ceiling failed and price moved through it.",
-      generatorNotes:"Require a decisive close above clear resistance plus continuation or visible acceptance above it; a wick through the line is not enough."
-    })
-  }),
-  futureGenerator:Object.freeze({
-    require:Object.freeze(["Clear support or resistance line.","Visible approach into the level.","Decisive hold or break behaviour.","Enough pre-signal candles for context.","No ambiguous fakeouts unless intentionally taught later."]),
-    defer:Object.freeze(["Complex multi-level market structure.","Liquidity sweeps.","Retests after breakout.","Trendline breaks.","Volume profile concepts.","Advanced order-flow concepts."])
->>>>>>> 87b47d3c15811310db955f0a5cddddb8c7cd4a4b
   })
 });
 
@@ -335,11 +290,7 @@ const patternDefinitions = {
       location:concept.visualCue,
       must:concept.mustHave.join(" "),
       invalid:concept.invalidIf.join(" "),
-<<<<<<< HEAD
       cue:concept.candleLensCue
-=======
-      cue:concept.coachWording
->>>>>>> 87b47d3c15811310db955f0a5cddddb8c7cd4a4b
     };
   }),
   "Breakouts": [
