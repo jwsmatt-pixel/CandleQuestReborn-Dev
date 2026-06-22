@@ -1,9 +1,9 @@
 # Candle Quest Reborn
 
-**Current build:** `v27.9 - World 2 Rules Bible`
-**Build marker:** `v27_9_world_2_rules_bible`
+**Current build:** `v28.0 - World 2 Playable Prototype`
+**Build marker:** `v28_0_world_2_playable_prototype`
 **Base:** `v26.2.3 · Result Flow Stepper`  
-**Status:** World 1 locked/stable; World 2 doctrine defined but gameplay not yet active
+**Status:** World 1 locked/stable; World 2 playable as an early Support & Resistance prototype
 
 ---
 
@@ -75,13 +75,14 @@ Players learn by:
 - preserves the bold result hero header, including PERFECT RUN, 10/10, and CORRECT READS
 - makes no gameplay or scoring logic changes and preserves all v27.8 study progress systems
 
-### v27.9 World 2 Rules Bible
+### v28.0 World 2 Playable Prototype
 
-- defines World 2 as Support & Resistance, focused on Location + Context
-- establishes the future answer pool: Support Holds, Resistance Rejects, Support Breaks, and Resistance Breaks
-- adds formal must-have, invalid, visual cue, confusion, coach, and generator guidance for each concept
-- marks World 2 as Coming Soon on the Lesson Map and prevents it from starting gameplay
-- leaves the World 1 generator, Pattern Bible, and five-answer pool unchanged
+- makes World 2 playable from the Lesson Map as a 10-question Support & Resistance run
+- activates exactly four answers: Support Holds, Resistance Rejects, Support Breaks, and Resistance Breaks
+- adds clean prototype scenarios with a visible floor or ceiling, an approach, and an obvious hold or break
+- exposes the four World 2 Rules Bible entries in the Pattern Library
+- preserves the World 1 generator, Pattern Bible, Candle Lens, study stats, and five-answer pool
+- intentionally defers fakeouts, retests, sweeps, flips, and advanced support/resistance concepts
 
 ### v27.8 Study Progress Foundations
 
@@ -220,11 +221,11 @@ v26.1 keeps Bullish/Bearish Engulfing as active gameplay patterns while using do
 
 ### World 2 — Support & Resistance
 
-Status: **Coming Soon.** The Rules Bible is defined, but World 2 is not playable and has no active generator.
+Status: **Playable prototype.** World 2 uses clean level-interaction scenarios and the existing 10-question result flow.
 
 Learning focus: **Location + Context**. The beginner question is: **Did the level hold, or did it break?** Use simple language such as floor, ceiling, hold, break, rejection, buyers defended, and sellers defended.
 
-Locked World 2 answer pool:
+Active World 2 answer pool:
 
 - Support Holds
 - Resistance Rejects

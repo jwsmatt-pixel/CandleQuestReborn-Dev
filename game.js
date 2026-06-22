@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v27_9_1_conflict_marker_cleanup";
+const CANDLE_QUEST_BUILD = "v28_0_world_2_playable_prototype";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v27.9 - World 2 Rules Bible";
+    b.textContent = "v28.0 - World 2 Playable Prototype";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -189,7 +189,7 @@ const worlds = [
     patterns:["Bullish Engulfing","Bearish Engulfing","Hammer","Shooting Star","Doji"]
   },
   {
-    id:2, icon:"Ⅱ", title:"Support & Resistance", unlock:Infinity, comingSoon:true,
+    id:2, icon:"Ⅱ", title:"Support & Resistance", unlock:0,
     short:"Learn how price reacts to floors and ceilings.",
     lesson:"World 2 teaches level interaction: did the floor or ceiling hold, or did it break?",
     rules:["Support acts like a floor.","Resistance acts like a ceiling.","Read the approach, test, and reaction at the level."],
@@ -407,18 +407,32 @@ const patternDefinitions = {
 };
 
 function renderLibrary(category="Candle Basics"){
-  const tabs = ["Candle Basics"];
+  const tabs = ["Candle Basics", "Levels"];
   const tabsEl = $("libraryTabs");
   const grid = $("definitionGrid");
   if(!tabsEl || !grid) return;
 
   category = tabs.includes(category) ? category : "Candle Basics";
-  tabsEl.innerHTML = `<button class="active" type="button" aria-current="true">World 1: Candle Basics</button>`;
+  tabsEl.innerHTML = tabs.map(tab=>{
+    const active = tab === category;
+    const label = tab === "Candle Basics" ? "World 1: Candle Basics" : "World 2: Support & Resistance";
+    return `<button class="${active ? "active" : ""}" type="button" ${active ? 'aria-current="true"' : ""} onclick="renderLibrary('${tab}')">${label}</button>`;
+  }).join("");
+
+  const isWorld1 = category === "Candle Basics";
+  const intro = document.querySelector(".library-intro");
+  const locationKey = document.querySelector(".library-location-key");
+  if(intro) intro.textContent = isWorld1
+    ? "Study the five active World 1 patterns. Look at the candle shape first, then use Range High, Channel Mean, and Range Low as context."
+    : "Study the four active World 2 level interactions. Look at the level first, then decide whether it held or broke.";
+  if(locationKey) locationKey.textContent = isWorld1
+    ? "Range High = upper area / resistance. Channel Mean = middle / balance. Range Low = lower area / support."
+    : "Support = floor. Resistance = ceiling. A wick through a level is not the same as a decisive close beyond it.";
 
   grid.innerHTML = patternDefinitions[category].map((d,i)=>{
     const progress = getPatternProgress(d.name);
-    const patternKey = STUDY_PATTERN_BY_NAME.get(d.name)?.key || "";
-    const progressMarkup = progress.seen === 0
+    const patternKey = patternCardKey(d.name);
+    const progressMarkup = !isWorld1 ? "" : progress.seen === 0
       ? `<div class="pattern-progress pattern-progress--empty"><b>Seen 0</b><span class="pattern-status status-new">New</span><small>Complete runs to build this stat.</small></div>`
       : `<div class="pattern-progress"><span><b>${progress.seen}</b><small>Seen</small></span><span><b>${progress.correct}</b><small>Correct</small></span><span><b>${progress.accuracy}%</b><small>Accuracy</small></span><span class="pattern-status status-${progress.status.toLowerCase()}">${progress.status}</span></div>`;
     return `
@@ -436,7 +450,8 @@ function renderLibrary(category="Candle Basics"){
       <p class="definition-cue"><b>Quest cue:</b> ${d.cue}</p>
     </article>
   `}).join("");
-  renderStudyFocus();
+  if(isWorld1) renderStudyFocus();
+  else if($("studyFocus")) $("studyFocus").innerHTML = `<div><b>World 2 question</b><p>What happened at the level? Decide whether the floor or ceiling held or broke.</p></div>`;
 }
 
 function renderStudyFocus(){
@@ -454,11 +469,12 @@ function renderStudyFocus(){
 }
 
 function focusPatternCard(patternName){
-  const pattern = STUDY_PATTERN_BY_NAME.get(patternName);
-  if(!pattern) return;
+  const category = WORLD_2_RULES_BIBLE.answerPool.includes(patternName) ? "Levels" : "Candle Basics";
+  if(!patternDefinitions[category]?.some(item=>item.name === patternName)) return;
   openScreen("library");
+  renderLibrary(category);
   requestAnimationFrame(()=>{
-    const card = $(`pattern-${pattern.key}`);
+    const card = $(`pattern-${patternCardKey(patternName)}`);
     if(!card) return;
     card.scrollIntoView({behavior:"smooth", block:"center"});
     card.classList.add("study-highlight");
@@ -840,6 +856,22 @@ const missedReadCoach = {
     level:"Channel Mean / key zone",
     cue:"Tiny body, balanced wicks, indecision.",
     tag:"Indecision"
+  },
+  "Support Holds": {
+    visual:"generic", shape:"Test and bounce", level:"Support / floor",
+    cue:WORLD_2_RULES_BIBLE.concepts["Support Holds"].candleLensCue, tag:"Floor holds"
+  },
+  "Resistance Rejects": {
+    visual:"generic", shape:"Test and rejection", level:"Resistance / ceiling",
+    cue:WORLD_2_RULES_BIBLE.concepts["Resistance Rejects"].candleLensCue, tag:"Ceiling holds"
+  },
+  "Support Breaks": {
+    visual:"generic", shape:"Close and acceptance below", level:"Support / floor",
+    cue:WORLD_2_RULES_BIBLE.concepts["Support Breaks"].candleLensCue, tag:"Floor breaks"
+  },
+  "Resistance Breaks": {
+    visual:"generic", shape:"Close and acceptance above", level:"Resistance / ceiling",
+    cue:WORLD_2_RULES_BIBLE.concepts["Resistance Breaks"].candleLensCue, tag:"Ceiling breaks"
   }
 };
 
@@ -1257,7 +1289,7 @@ function beginRun(worldId=activeWorld){
   openScreen("game");
   drawGame();
   updateStreakHud();
-  showFirstRunOnboardingHelper();
+  if(world.id === 1) showFirstRunOnboardingHelper();
   run.timer = null;
   run.tick = setInterval(()=>{
     if(!run || run.paused) return;
@@ -2446,6 +2478,47 @@ function finishQuestMoment(){
 
 
 // ─── FREEZE / QUEST MOMENT ────────────────────────────────────────────────────
+function buildWorld2Scenario(pattern){
+  if(!run || run.world.id !== 2) return;
+  const previousClose = run.candles.length ? run.candles[run.candles.length-1][3] : run.price;
+  const isSupport = pattern.startsWith("Support");
+  const isBreak = pattern.endsWith("Breaks");
+  const level = previousClose + (isSupport ? -4.2 : 4.2);
+  const approach = isSupport
+    ? [previousClose-0.55, previousClose-1.15, previousClose-1.85, previousClose-2.55, level+0.75]
+    : [previousClose+0.55, previousClose+1.15, previousClose+1.85, previousClose+2.55, level-0.75];
+  const reaction = isSupport
+    ? (isBreak ? [level-1.05, level-1.65, level-2.15] : [level+0.55, level+1.35, level+2.15])
+    : (isBreak ? [level+1.05, level+1.65, level+2.15] : [level-0.55, level-1.35, level-2.15]);
+  const closes = [...approach, ...reaction];
+  let open = previousClose;
+
+  closes.forEach((close,index)=>{
+    const signalIndex = approach.length;
+    const decisiveBreak = isBreak && index === signalIndex;
+    const holdTest = !isBreak && index === signalIndex;
+    let high = Math.max(open, close) + (decisiveBreak ? 0.18 : 0.28);
+    let low = Math.min(open, close) - (decisiveBreak ? 0.18 : 0.28);
+    if(holdTest){
+      if(isSupport) low = level - 0.22;
+      else high = level + 0.22;
+    }
+    run.candles.push([open, high, low, close]);
+    open = close;
+  });
+
+  const maxCandles = isMobile() ? 22 : 38;
+  while(run.candles.length > maxCandles) run.candles.shift();
+  run.price = closes[closes.length-1];
+  run.teachingLevel = level;
+  run.levelType = isSupport ? "support" : "resistance";
+  run.momentum = 0;
+}
+
+function patternCardKey(patternName){
+  return STUDY_PATTERN_BY_NAME.get(patternName)?.key || String(patternName).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+}
+
 function freezeScenario(){
   const pool = run.world.id === 1
     ? W1_ACTIVE_PATTERNS
@@ -2457,6 +2530,20 @@ function freezeScenario(){
     const chosen = _pickDiversePattern(pool, run.patternHistory);
     run.patternHistory.push(chosen);
     if(run.patternHistory.length > 8) run.patternHistory.shift();
+
+    if(run.world.id === 2){
+      buildWorld2Scenario(chosen);
+      run.paused = true;
+      run.current = chosen;
+      run.setupPhase = "quest";
+      $("freezeBanner").classList.remove("hidden");
+      $("freezeBanner").textContent = "QUEST MOMENT · READ THE LEVEL";
+      $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
+      renderAnswerDock("quest", shuffle(pool));
+      drawGame(true);
+      startQuestTimer();
+      return;
+    }
 
     run.setupPattern = chosen;
     run.setupStory = _createW1SetupStory(chosen);
@@ -2484,6 +2571,7 @@ function freezeScenario(){
   run.setupPhase = "quest";
 
   $("freezeBanner").classList.remove("hidden");
+  $("freezeBanner").textContent = "QUEST MOMENT · READ THE CHANNEL";
   $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
   const options = shuffle([answer,...shuffle(pool.filter(x=>x!==answer)).slice(0,3)]);
   renderAnswerDock("quest", options);
@@ -2683,8 +2771,9 @@ function drawGame(frozen=false){
   const visibleCandles = run.candles.slice(run.candles.length - visibleCount);
 
   const candleVals = visibleCandles.flat();
-  const visibleMin = Math.min(run.support, ...candleVals);
-  const visibleMax = Math.max(run.resistance, ...candleVals);
+  const isWorld2 = run.world.id === 2 && Number.isFinite(run.teachingLevel);
+  const visibleMin = isWorld2 ? Math.min(run.teachingLevel, ...candleVals) : Math.min(run.support, ...candleVals);
+  const visibleMax = isWorld2 ? Math.max(run.teachingLevel, ...candleVals) : Math.max(run.resistance, ...candleVals);
   const pad = mobile
     ? Math.max(0.85, (run.resistance - run.support) * 0.105)
     : Math.max(1.25, (run.resistance - run.support) * 0.18);
@@ -2721,7 +2810,7 @@ function drawGame(frozen=false){
   const lo = run.support;
   const mid = run.midpoint;
 
-  // Channel lines: solid Range High/Low, dashed Channel Mean
+  // World 1 keeps its channel. World 2 shows only the level being taught.
   ctx.lineCap = "butt";
   ctx.shadowColor = "rgba(255,255,255,.28)";
   ctx.shadowBlur = 5;
@@ -2729,20 +2818,28 @@ function drawGame(frozen=false){
   ctx.setLineDash([]);
   ctx.lineWidth = 3.1;
   ctx.strokeStyle = "rgba(255,255,255,.92)";
-  ctx.beginPath(); ctx.moveTo(30,mapY(hi)); ctx.lineTo(W-30,mapY(hi)); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(30,mapY(lo)); ctx.lineTo(W-30,mapY(lo)); ctx.stroke();
-
-  ctx.setLineDash([10,8]);
-  ctx.lineWidth = 2.2;
-  ctx.strokeStyle = "rgba(255,255,255,.72)";
-  ctx.beginPath(); ctx.moveTo(30,mapY(mid)); ctx.lineTo(W-30,mapY(mid)); ctx.stroke();
+  if(isWorld2){
+    ctx.beginPath(); ctx.moveTo(30,mapY(run.teachingLevel)); ctx.lineTo(W-30,mapY(run.teachingLevel)); ctx.stroke();
+  } else {
+    ctx.beginPath(); ctx.moveTo(30,mapY(hi)); ctx.lineTo(W-30,mapY(hi)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(30,mapY(lo)); ctx.lineTo(W-30,mapY(lo)); ctx.stroke();
+    ctx.setLineDash([10,8]);
+    ctx.lineWidth = 2.2;
+    ctx.strokeStyle = "rgba(255,255,255,.72)";
+    ctx.beginPath(); ctx.moveTo(30,mapY(mid)); ctx.lineTo(W-30,mapY(mid)); ctx.stroke();
+  }
   ctx.setLineDash([]);
   ctx.shadowBlur = 0;
 
   // Level labels
-  drawLevelLabel(ctx,"Range High",36,mapY(hi)-18,"rgba(255,255,255,.92)");
-  drawLevelLabel(ctx,"Channel Mean",36,mapY(mid)-18,"rgba(255,255,255,.72)");
-  drawLevelLabel(ctx,"Range Low",36,mapY(lo)+8,"rgba(255,255,255,.92)");
+  if(isWorld2){
+    const label = run.levelType === "support" ? "Support (Floor)" : "Resistance (Ceiling)";
+    drawLevelLabel(ctx,label,36,mapY(run.teachingLevel)-18,"rgba(255,255,255,.92)");
+  } else {
+    drawLevelLabel(ctx,"Range High",36,mapY(hi)-18,"rgba(255,255,255,.92)");
+    drawLevelLabel(ctx,"Channel Mean",36,mapY(mid)-18,"rgba(255,255,255,.72)");
+    drawLevelLabel(ctx,"Range Low",36,mapY(lo)+8,"rgba(255,255,255,.92)");
+  }
 
   // Draw candles
   visibleCandles.forEach((c,i)=>{

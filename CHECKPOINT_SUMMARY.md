@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v27.9.1 Checkpoint Summary
+# Candle Quest Reborn - v28.0 Checkpoint Summary
 
 ## Current build
 
-**v27.9.1 - Conflict Marker Cleanup**
-Build marker: `v27_9_1_conflict_marker_cleanup`
+**v28.0 - World 2 Playable Prototype**
+Build marker: `v28_0_world_2_playable_prototype`
 
 ## Base build
 
@@ -12,7 +12,20 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 remains the locked/stable playable baseline. World 2 now has a formal Support & Resistance Rules Bible and a non-playable Lesson Map placeholder.
+World 1 remains the locked/stable playable baseline. World 2 is now a playable early Support & Resistance prototype.
+
+## What changed in v28.0
+
+- World 2 can be entered from the Lesson Map and completed as a 10-question run through the existing score, XP, streak, missed-read, and result flow.
+- The active World 2 pool is exactly Support Holds, Resistance Rejects, Support Breaks, and Resistance Breaks.
+- A dedicated prototype generator shows a clear support floor or resistance ceiling, a readable approach, and an obvious hold, rejection, or decisive break with continuation.
+- World 2 charts show one labeled teaching line without opaque or debug overlays.
+- The Pattern Library exposes all four World 2 Rules Bible entries with simple cues.
+- World 1 generation, its five-answer pool, Pattern Bible, Candle Lens, and Study Progress remain isolated and unchanged.
+
+## Known limitations
+
+World 2 intentionally does not yet generate fakeouts, retests, liquidity sweeps, support/resistance flips, order-flow concepts, volume profile, or advanced market structure.
 
 ## What changed in v27.9.1
 

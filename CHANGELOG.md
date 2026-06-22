@@ -1,5 +1,32 @@
 # Candle Quest Reborn — Changelog
 
+## v28.0 - World 2 Playable Prototype
+
+### Added
+
+- Made World 2 playable from the Lesson Map as a 10-question Support & Resistance run.
+- Activated exactly four World 2 answers: Support Holds, Resistance Rejects, Support Breaks, and Resistance Breaks.
+- Added a small dedicated generator for clear floor/ceiling approaches, holds, rejections, and decisive breaks with continuation.
+- Added a single labeled support or resistance teaching line to World 2 charts and exposed all four Rules Bible entries in the Pattern Library.
+- Added simple World 2 missed-read cues using the existing result review flow.
+
+### Changed
+
+- Updated the build marker to `v28_0_world_2_playable_prototype` and badge to `v28.0 - World 2 Playable Prototype`.
+
+### Preserved
+
+- World 1 remains exactly Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, and Doji.
+- World 1 generation, Pattern Bible, location tuning, replay tempo, Mochi, Dev Tools, Candle Lens, Study Progress, 7-second timer, scoring, XP, streaks, answer dock, and result flow are unchanged.
+
+### Known limitations
+
+- World 2 deliberately excludes fakeouts, retests, liquidity sweeps, support/resistance flips, order flow, volume profile, and advanced market structure.
+
+### Testing required
+
+- Verify complete World 1 and World 2 runs at phone and desktop sizes, exact answer pools, timer, results, Pattern Library tabs, shop/XP/streak behavior, Mochi, and `?dev=1` tools.
+
 ## v27.9.1 - Conflict Marker Cleanup
 
 ### Fixed
