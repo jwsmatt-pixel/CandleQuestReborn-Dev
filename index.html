@@ -96,6 +96,7 @@
     </main>
 
     <main id="game" class="screen">
+      <button class="mobile-game-exit" type="button" onclick="quitRun()" aria-label="Exit run" title="Exit run">&#8592;</button>
       <section class="game-shell">
         <div class="game-hud">
           <button class="ghost desktop-exit" onclick="quitRun()">← Exit</button>
@@ -103,7 +104,6 @@
           <div class="hud-stats"><span id="scoreText">0</span><small>score</small></div>
           <div class="hud-stats"><span id="timeText">—</span><small>sec</small></div>
           <div class="game-wallet-mini"><span id="gameXpText">0 XP</span><button onclick="openScreen('shop')">Shop</button></div>
-          <button class="ghost compact-exit" onclick="quitRun()" aria-label="Exit run">Exit</button>
         </div>
 
         <div class="chart-wrap">

@@ -1,5 +1,18 @@
 # Candle Quest Reborn — Changelog
 
+## v28.2.2 - Mobile Exit Control Polish
+
+### Changed
+
+- Replaced the mobile cockpit `Exit` word button with a compact back-arrow control at the top-left of the game shell.
+- Kept a full `44px` tap target while reducing the visual weight of the control.
+- Positioned the control beside, rather than inside, the mobile cockpit grid so it does not add vertical height or cover status content.
+
+### Preserved
+
+- The v28.2.1 compact mobile chart framing and iOS scroll-reset behavior remain unchanged.
+- Desktop Exit styling, gameplay logic, exact World 1 and World 2 answer pools, generators, Pattern Bible logic, scoring, XP, streaks, timer, run length, and progression systems remain unchanged.
+
 ## v28.2.1 - W2 Replay Stability + iOS Compact Framing Pass
 
 ### Changed

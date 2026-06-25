@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.2.1 Checkpoint Summary
+# Candle Quest Reborn - v28.2.2 Checkpoint Summary
 
 ## Current build
 
-**v28.2.1 - W2 Replay Stability + iOS Compact Framing Pass**
-Build marker: `v28_2_1_w2_replay_stability_ios_compact_framing`
+**v28.2.2 - Mobile Exit Control Polish**
+Build marker: `v28_2_2_mobile_exit_control_polish`
 
 ## Base build
 
@@ -12,7 +12,15 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 remains the locked/stable playable baseline. World 2 now keeps every replay wick inside one stable padded camera, and mobile gameplay returns to a compact contained layout with stable scroll positioning.
+World 1 remains the locked/stable playable baseline. World 2 keeps every replay wick inside one stable padded camera, while mobile gameplay retains its compact framing with a lighter app-style exit control.
+
+## What changed in v28.2.2
+
+- The mobile `Exit` word button has been replaced by a compact back-arrow control.
+- The arrow sits at the top-left beside the cockpit panel, outside its status grid.
+- The control retains a `44px` tap target without adding a new row or changing the chart and answer-dock vertical flow.
+- Desktop keeps its existing `← Exit` button.
+- Gameplay, answer pools, generators, Pattern Bible logic, scoring, progression, and iOS scroll-reset behavior are unchanged.
 
 ## What changed in v28.2.1
 
