@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.6 Checkpoint Summary
+# Candle Quest Reborn - v28.3.7 Checkpoint Summary
 
 ## Current build
 
-**v28.3.6 - Fixed Bottom Coach Tray Repair**
-Build marker: `v28_3_6_fixed_bottom_coach_tray_repair`
+**v28.3.7 - Fast Correct Flow + Wrong Answer Coach**
+Build marker: `v28_3_7_fast_correct_flow_wrong_answer_coach`
 
 ## Base build
 
@@ -12,7 +12,15 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. Lightweight pre-answer help and post-answer coaching stay outside the chart/answer flow. Answer explanations and `Next` appear in a fixed bottom Coach Tray without moving the replay anchor.
+World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. Correct reads confirm immediately and auto-advance after 850ms without opening the Coach Tray. Wrong and timed-out reads pause in the fixed bottom Coach Tray for correction and require `Next`.
+
+## What changed in v28.3.7
+
+- Correct W1/W2 answers retain the answer highlight and chart-rim pulse, do not open the full Coach Tray, and auto-advance after an 850ms feedback pause.
+- Wrong and timed-out answers continue to show the correct-answer explanation in the fixed bottom Coach Tray and require `Next`.
+- `Need help?` remains an optional, non-answer-revealing overlay before answering and hides after any answer.
+- Final-question auto-advance still ends at the existing results flow; it does not skip the results screen.
+- W1/W2 answer pools, generators, Pattern Bible logic, scoring, timer behavior, chart rendering, W2 level-line stability, Q progress, iPhone cockpit, desktop layout, and dev mode remain unchanged.
 
 ## What changed in v28.3.6
 

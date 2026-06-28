@@ -1,5 +1,18 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.7 - Fast Correct Flow + Wrong Answer Coach
+
+### Changed
+
+- Correct W1/W2 answers now keep the existing button/chart-rim confirmation, skip the full Coach Tray, and auto-advance after an 850ms feedback pause.
+- Wrong and timed-out answers continue to open the fixed bottom Coach Tray and require `Next`.
+- `Need help?` remains optional before answering and is hidden after an answer.
+- Updated the build marker to `v28_3_7_fast_correct_flow_wrong_answer_coach` and the visible badge to `v28.3.7`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, Pattern Bible logic, scoring, timer behavior, final results, chart rendering, fixed tray architecture, W2 level-line stability, Q progress, iPhone cockpit, desktop layout, and dev mode.
+
 ## v28.3.6 - Fixed Bottom Coach Tray Repair
 
 ### Changed
