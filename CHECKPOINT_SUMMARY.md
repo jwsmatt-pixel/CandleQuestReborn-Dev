@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.3 Checkpoint Summary
+# Candle Quest Reborn - v28.3.4 Checkpoint Summary
 
 ## Current build
 
-**v28.3.3 - iPhone HUD Text Cleanup + Coach Suppression**
-Build marker: `v28_3_3_iphone_hud_cleanup_coach_suppression`
+**v28.3.4 - Coach Manual Reopen + Larger Q Progress**
+Build marker: `v28_3_4_coach_manual_reopen_larger_q_progress`
 
 ## Base build
 
@@ -12,7 +12,16 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 now use a cleaner compact mobile cockpit showing only readable `Qn/10` progress in its top-left status area. The fixed Coach Box provides a run-scoped `Don't show again` control for experienced players while preserving manual guidance.
+World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. The fixed Coach Box keeps automatic suppression run-scoped while preserving independent manual guidance access.
+
+## What changed in v28.3.4
+
+- `Don't show again` suppresses only automatic full coaching for the rest of the current run.
+- Compact `Show coach` now uses an explicit manual-open path that remains available after suppression.
+- Manually opened guidance does not re-enable automatic coaching or force a `Next` step while suppression is active.
+- New W1/W2 runs still start with automatic coaching available.
+- Compact iPhone `Qn/10` progress is now a responsive 30–38px HUD anchor with enough room for `Q10/10`.
+- Desktop HUD layout and all W1/W2 gameplay, scoring, chart, content, and progression rules remain unchanged.
 
 ## What changed in v28.3.3
 

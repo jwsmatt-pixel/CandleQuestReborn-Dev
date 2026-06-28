@@ -2882,7 +2882,7 @@ body[data-screen="result"] .topbar{
   body[data-screen="game"] .game-hud{
     width:100%!important;
     margin-left:0!important;
-    grid-template-columns:minmax(74px,1fr) 46px 46px 78px 44px!important;
+    grid-template-columns:minmax(96px,1fr) 46px 46px 78px 44px!important;
     gap:5px!important;
   }
   body[data-screen="game"] .run-copy{
@@ -2899,7 +2899,7 @@ body[data-screen="result"] .topbar{
     display:block!important;
     margin:0;
     color:var(--green-dark);
-    font-size:15px!important;
+    font-size:clamp(30px, 9vw, 38px)!important;
     line-height:1!important;
     font-weight:950;
     letter-spacing:.01em;
@@ -2919,7 +2919,7 @@ body[data-screen="result"] .topbar{
 
 @media(max-width:390px){
   body[data-screen="game"] .game-hud{
-    grid-template-columns:minmax(66px,1fr) 43px 43px 72px 44px!important;
+    grid-template-columns:minmax(88px,1fr) 43px 43px minmax(66px,72px) 44px!important;
     gap:4px!important;
   }
   body[data-screen="game"] .hud-stats span{font-size:16px!important}

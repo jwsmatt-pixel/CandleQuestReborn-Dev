@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.4 - Coach Manual Reopen + Larger Q Progress
+
+### Changed
+
+- Separated manual Coach Box reopening from automatic coach suppression so `Show coach` remains available after `Don't show again`.
+- Kept automatic coaching suppressed only for the current run; manually opened guidance no longer restores automatic interruptions or adds a forced `Next` step while suppression is active.
+- Increased compact iPhone `Qn/10` progress to a responsive 30–38px HUD anchor and widened its cockpit column to fit `Q10/10`.
+- Updated the build marker to `v28_3_4_coach_manual_reopen_larger_q_progress`.
+
+### Preserved
+
+- Automatic coach suppression still resets on every new W1/W2 run.
+- Answer highlighting, chart-rim feedback, scoring, timer, streaks, answer pools, generators, World 2 levels, shop, Mochi, and desktop layout are unchanged.
+
 ## v28.3.3 - iPhone HUD Text Cleanup + Coach Suppression
 
 ### Changed

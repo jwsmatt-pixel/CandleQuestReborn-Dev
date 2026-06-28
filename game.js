@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_3_iphone_hud_cleanup_coach_suppression";
+const CANDLE_QUEST_BUILD = "v28_3_4_coach_manual_reopen_larger_q_progress";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -510,7 +510,7 @@ function renderCoachBox({answer=null, full=false, correct=false, awaitingContinu
   if(!full || !content){
     const message = correct ? "Correct read. Keep the chart moving." : "Guidance is ready when you need it.";
     host.innerHTML = `
-      <div class="coach-box-head"><b>${label}</b><button class="coach-box-toggle" type="button" onclick="toggleCoachBox()" aria-label="Show coach guidance">Show coach</button></div>
+      <div class="coach-box-head"><b>${label}</b><button class="coach-box-toggle" type="button" onclick="openCoachManually()" aria-label="Show coach guidance">Show coach</button></div>
       <p class="coach-box-status">${message}</p>`;
     return;
   }
@@ -536,6 +536,21 @@ function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContin
   renderCoachBox({answer, full:showFull, correct, awaitingContinue:run.coachAwaitingContinue});
 }
 
+function openCoachManually(){
+  if(!run || !run.coachAnswer) return;
+  if(run.reviewTimer){
+    clearTimeout(run.reviewTimer);
+    run.reviewTimer = null;
+  }
+  run.coachAwaitingContinue = !run.coachSuppressed;
+  renderCoachBox({
+    answer:run.coachAnswer,
+    full:true,
+    correct:run.coachCorrect,
+    awaitingContinue:run.coachAwaitingContinue
+  });
+}
+
 function toggleCoachBox(){
   const host = $("levelCoach");
   if(!host || !run || !run.coachAnswer) return;
@@ -545,16 +560,7 @@ function toggleCoachBox(){
     run.reviewTimer = setTimeout(()=>finishQuestMoment(), 500);
     return;
   }
-  if(run.reviewTimer){
-    clearTimeout(run.reviewTimer);
-    run.reviewTimer = null;
-  }
-  renderCoachBox({
-    answer:run.coachAnswer,
-    full:true,
-    correct:run.coachCorrect,
-    awaitingContinue:true
-  });
+  openCoachManually();
 }
 
 function suppressAutomaticCoach(){
