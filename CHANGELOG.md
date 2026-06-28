@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.4.3 - Coach State Reliability Repair
+
+### Changed
+
+- Centralised W1/W2 Coach Box rendering so manual `Show coach` resolves guidance from the active world, question, and matching answer result each time.
+- Separated temporary Coach Box visibility, run-scoped automatic suppression, and per-question result context.
+- Made `Hide coach` collapse guidance without deleting result context, and made manual reopen work after repeated toggles and after `Don't show again`.
+- Reset per-question Coach state on transitions and added a safe non-blank ready fallback before an answer.
+- Updated the build marker to `v28_3_4_3_coach_state_reliability_repair` and the visible badge to `v28.3.4.3`.
+
+### Preserved
+
+- W1/W2 answer pools, generators, Pattern Bible logic, level behavior, scoring, timer, streaks, 10-question flow, cockpit/chart styling, Mochi, shop, tempo, Pattern Library, and Study Progress.
+
 ## v28.3.4.2 - Show Coach Current Lesson Repair
 
 ### Changed

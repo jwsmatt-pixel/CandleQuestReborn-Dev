@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.4.2 Checkpoint Summary
+# Candle Quest Reborn - v28.3.4.3 Checkpoint Summary
 
 ## Current build
 
-**v28.3.4.2 - Show Coach Current Lesson Repair**
-Build marker: `v28_3_4_2_show_coach_current_lesson_repair`
+**v28.3.4.3 - Coach State Reliability Repair**
+Build marker: `v28_3_4_3_coach_state_reliability_repair`
 
 ## Base build
 
@@ -13,6 +13,14 @@ Build marker: `v26_3_0_chart_viewport_unification`
 ## Current status
 
 World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. The fixed Coach Box keeps temporary visual hiding separate from run-scoped automatic suppression and restores manual guidance from the current question/result.
+
+## What changed in v28.3.4.3
+
+- Manual `Show coach` rebuilds W1/W2 guidance from the active question and its matching current result instead of relying on hidden Coach Box content.
+- Coach visibility, automatic suppression, and per-question result context are independent states.
+- Repeated Hide/Show cycles and manual reopening after `Don't show again` retain relevant current guidance.
+- Each question transition clears temporary Coach state so prior-question and prior-world guidance cannot carry forward.
+- Pre-answer manual coaching renders a neutral current-world ready state rather than a blank box.
 
 ## What changed in v28.3.4.2
 

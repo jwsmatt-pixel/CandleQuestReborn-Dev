@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_4_2_show_coach_current_lesson_repair";
+const CANDLE_QUEST_BUILD = "v28_3_4_3_coach_state_reliability_repair";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.4.2 - Show Coach Current Lesson Repair";
+    b.textContent = "v28.3.4.3 - Coach State Reliability Repair";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -499,6 +499,22 @@ function getWorld2CoachContent(answer){
   };
 }
 
+function getCurrentCoachState(){
+  if(!run || ![1,2].includes(run.world?.id)) return null;
+  const question = run.current || null;
+  const result = run.coachResult?.question === question ? run.coachResult : null;
+  return {
+    worldId:run.world.id,
+    question,
+    correctAnswer:question,
+    selectedAnswer:result?.selectedAnswer || null,
+    answered:Boolean(result),
+    correct:Boolean(result?.correct),
+    resultState:result?.resultState || "ready",
+    lessonType:run.world.id === 1 ? "candle-pattern" : "support-resistance"
+  };
+}
+
 function renderCoachBox({answer=null, full=false, correct=false, awaitingContinue=false}={}){
   const host = $("levelCoach");
   if(!host || !run || ![1,2].includes(run.world.id)) return;
@@ -549,44 +565,58 @@ function renderCoachBox({answer=null, full=false, correct=false, awaitingContinu
     </div>`;
 }
 
-function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContinue=false}={}){
-  if(!run || ![1,2].includes(run.world.id)) return;
-  run.coachAnswer = answer;
-  run.coachCorrect = correct;
-  const showFull = forceFull && !run.coachSuppressed;
-  run.coachAwaitingContinue = showFull && awaitingContinue;
-  renderCoachBox({answer, full:showFull, correct, awaitingContinue:run.coachAwaitingContinue});
-}
-
-function openCoachManually(){
-  if(!run) return;
-  const currentAnswer = run.coachAnswer && run.coachAnswer === run.current
-    ? run.current
-    : null;
-  if(currentAnswer && !run.coachSuppressed && run.reviewTimer){
-    clearTimeout(run.reviewTimer);
-    run.reviewTimer = null;
-  }
-  if(!currentAnswer){
-    run.coachAwaitingContinue = false;
-    renderCoachBox({full:true});
+function renderCurrentCoachContent({manual=false}={}){
+  const state = getCurrentCoachState();
+  if(!state){
+    const host = $("levelCoach");
+    if(host){
+      host.classList.add("is-quiet");
+      host.innerHTML = `<div class="coach-box-head"><b>Coach</b></div><p class="coach-box-status">Guidance will be ready when the next lesson starts.</p>`;
+    }
+    if(DEV_PREVIEW_MODE) console.warn("Coach content unavailable: no active W1/W2 question.");
     return;
   }
-  run.coachAwaitingContinue = !run.coachSuppressed;
+  if(manual){
+    run.coachVisible = true;
+    if(state.answered && run.reviewTimer){
+      clearTimeout(run.reviewTimer);
+      run.reviewTimer = null;
+    }
+  }
+  const full = Boolean(run.coachVisible);
+  run.coachAwaitingContinue = full && state.answered && (manual || state.resultState !== "correct");
   renderCoachBox({
-    answer:currentAnswer,
-    full:true,
-    correct:run.coachCorrect,
+    answer:state.answered ? state.correctAnswer : null,
+    full,
+    correct:state.correct,
     awaitingContinue:run.coachAwaitingContinue
   });
 }
 
+function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContinue=false, selectedAnswer=null, resultState=null}={}){
+  if(!run || ![1,2].includes(run.world.id)) return;
+  run.coachResult = {
+    question:answer,
+    selectedAnswer,
+    correct,
+    resultState:resultState || (correct ? "correct" : "wrong")
+  };
+  run.coachVisible = forceFull && !run.coachSuppressed;
+  run.coachAwaitingContinue = run.coachVisible && awaitingContinue;
+  renderCurrentCoachContent();
+}
+
+function openCoachManually(){
+  if(!run) return;
+  renderCurrentCoachContent({manual:true});
+}
+
 function toggleCoachBox(){
-  const host = $("levelCoach");
-  if(!host || !run) return;
-  const isFull = !host.classList.contains("is-quiet");
-  if(isFull){
-    renderCoachBox({answer:run.coachAnswer, full:false, correct:run.coachCorrect});
+  if(!$("levelCoach") || !run) return;
+  if(run.coachVisible){
+    run.coachVisible = false;
+    run.coachAwaitingContinue = false;
+    renderCurrentCoachContent();
     return;
   }
   openCoachManually();
@@ -595,8 +625,9 @@ function toggleCoachBox(){
 function suppressAutomaticCoach(){
   if(!run) return;
   run.coachSuppressed = true;
+  run.coachVisible = false;
   run.coachAwaitingContinue = false;
-  renderCoachBox({answer:run.coachAnswer, full:false, correct:run.coachCorrect});
+  renderCurrentCoachContent();
   if(run.current){
     if(run.reviewTimer) clearTimeout(run.reviewTimer);
     run.reviewTimer = setTimeout(()=>finishQuestMoment(), 500);
@@ -617,11 +648,11 @@ function clearCoachBox(){
   if(!host) return;
   host.classList.remove("is-dimmed");
   if(run){
-    run.coachAnswer = null;
-    run.coachCorrect = false;
+    run.coachResult = null;
+    run.coachVisible = false;
     run.coachAwaitingContinue = false;
   }
-  renderCoachBox();
+  renderCurrentCoachContent();
 }
 
 function renderStudyFocus(){
@@ -1475,8 +1506,8 @@ function beginRun(worldId=activeWorld){
     questLeft:7,
     questTimer:null,
     reviewTimer:null,
-    coachAnswer:null,
-    coachCorrect:false,
+    coachResult:null,
+    coachVisible:false,
     coachAwaitingContinue:false,
     coachSuppressed:false
   };
@@ -2665,7 +2696,12 @@ function timeoutQuestMoment(){
   recordMissedRead(run.current, "Timeout");
   recordPatternAttempt(run.current, false);
   $("runHint").textContent = `Time up — answer was ${run.current}.`;
-  showAnswerCoach(run.current, {forceFull:true, awaitingContinue:true});
+  showAnswerCoach(run.current, {
+    forceFull:true,
+    awaitingContinue:true,
+    selectedAnswer:"Timeout",
+    resultState:"timeout"
+  });
   document.querySelectorAll("#answerPad button").forEach(b=>{
     b.disabled = true;
     if(b.textContent === run.current) b.classList.add("correct");
@@ -2916,7 +2952,9 @@ function answer(label){
   showAnswerCoach(run.current, {
     correct:ok,
     forceFull:!ok,
-    awaitingContinue:!ok
+    awaitingContinue:!ok,
+    selectedAnswer:label,
+    resultState:ok ? "correct" : "wrong"
   });
   document.querySelectorAll("#answerPad button").forEach(b=>{
     b.disabled = true;
