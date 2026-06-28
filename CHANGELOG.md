@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.4.4 - Coach Tips Simple Manual Button
+
+### Changed
+
+- Replaced the fragile `Show coach` / `Hide coach` loop with a consistently available `Coach tips` action and a visual-only `Close tips` action.
+- Added one fresh guidance resolver that reads the active W1/W2 world, question, and matching result every time `Coach tips` is pressed.
+- Added neutral world-specific tips before an answer and explicit correct, incorrect, and timeout guidance after an answer.
+- Kept `Don't show again` limited to automatic coaching; manual tips continue to rebuild after suppression and after closing the panel.
+- Updated the build marker to `v28_3_4_4_coach_tips_simple_manual_button` and the visible badge to `v28.3.4.4`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, Pattern Bible logic, support/resistance behavior, scoring, timer, streaks, 10-question flow, large Q progress, iPhone cockpit, and chart-rim feedback.
+
 ## v28.3.4.3 - Coach State Reliability Repair
 
 ### Changed

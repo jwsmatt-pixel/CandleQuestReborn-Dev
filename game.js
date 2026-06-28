@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_4_3_coach_state_reliability_repair";
+const CANDLE_QUEST_BUILD = "v28_3_4_4_coach_tips_simple_manual_button";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.4.3 - Coach State Reliability Repair";
+    b.textContent = "v28.3.4.4 - Coach Tips Simple Manual Button";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -515,59 +515,84 @@ function getCurrentCoachState(){
   };
 }
 
-function renderCoachBox({answer=null, full=false, correct=false, awaitingContinue=false}={}){
+function resolveCurrentCoachGuidance(){
+  const state = getCurrentCoachState();
+  if(!state) return null;
+  const label = state.worldId === 1 ? "Candle Coach" : "Level Coach";
+  const neutral = state.worldId === 1
+    ? {
+        title:"Current candle read",
+        explanation:"Read the current chart first. Compare the candle bodies and wicks, then check where the setup formed before choosing the pattern.",
+        tags:["compare bodies","check the wicks","check the location"]
+      }
+    : {
+        title:"Current level read",
+        explanation:"Find the marked support or resistance level. Check whether price closes back on the original side or accepts beyond the line.",
+        tags:["find the level","check the close","hold or break"]
+      };
+  if(!state.answered || !state.correctAnswer){
+    return {...neutral, label, state, status:"Lesson tip"};
+  }
+  const content = state.worldId === 1
+    ? getWorld1CoachContent(state.correctAnswer)
+    : getWorld2CoachContent(state.correctAnswer);
+  if(!content) return {...neutral, label, state, status:"Lesson tip"};
+  const status = state.correct
+    ? "Correct read"
+    : state.resultState === "timeout" ? "Time expired" : "Correction";
+  const resultLead = state.correct
+    ? `You identified ${state.correctAnswer}.`
+    : state.resultState === "timeout"
+      ? `The answer was ${state.correctAnswer}.`
+      : `The correct read was ${state.correctAnswer}, not ${state.selectedAnswer || "the selected answer"}.`;
+  return {
+    ...content,
+    state,
+    status,
+    explanation:`${resultLead} ${content.explanation}`
+  };
+}
+
+function renderCoachBox({guidance=null, expanded=false, awaitingContinue=false}={}){
   const host = $("levelCoach");
   if(!host || !run || ![1,2].includes(run.world.id)) return;
   const label = run.world.id === 1 ? "Candle Coach" : "Level Coach";
-  const content = answer && (run.world.id === 1 ? getWorld1CoachContent(answer) : getWorld2CoachContent(answer));
-  host.classList.toggle("is-quiet", !full);
+  host.classList.toggle("is-quiet", !expanded);
   host.classList.remove("is-dimmed");
 
-  if(full && !content){
-    const readyCopy = run.world.id === 1
-      ? "Read the current chart first, then choose the answer that best matches the candle structure and its location."
-      : "Read how price behaves at the marked level, then choose the hold, rejection, or break that best matches the chart.";
-    const readyTags = run.world.id === 1
-      ? ["watch the setup","check the location","make your read"]
-      : ["find the level","check the close","make your read"];
+  if(!expanded || !guidance){
+    const message = guidance?.state.correct ? "Correct read. Tips are available while this result is active." : "Get fresh guidance for the current lesson.";
     host.innerHTML = `
       <div class="coach-box-head">
-        <b>${label} · Ready</b>
-        <button class="coach-box-toggle" type="button" onclick="toggleCoachBox()" aria-label="Hide coach guidance">Hide coach</button>
+        <b>${label}</b>
+        <button class="coach-box-toggle coach-tips-button" type="button" onclick="manualCoachTipsClick()" aria-label="Show fresh coach tips">Coach tips</button>
       </div>
-      <p class="coach-box-copy">${readyCopy}</p>
       <div class="coach-box-footer">
-        <div class="level-coach-tags">${readyTags.map(tag=>`<span>${tag}</span>`).join("")}</div>
+        <p class="coach-box-status">${message}</p>
+        ${awaitingContinue ? `<button class="coach-box-next" type="button" onclick="continueFromCoach()">Next</button>` : ""}
       </div>`;
-    return;
-  }
-
-  if(!full || !content){
-    const message = correct ? "Correct read. Keep the chart moving." : "Guidance is ready when you need it.";
-    host.innerHTML = `
-      <div class="coach-box-head"><b>${label}</b><button class="coach-box-toggle" type="button" onclick="openCoachManually()" aria-label="Show coach guidance">Show coach</button></div>
-      <p class="coach-box-status">${message}</p>`;
     return;
   }
 
   host.innerHTML = `
     <div class="coach-box-head">
-      <b>${content.label} · ${content.title}</b>
+      <b>${guidance.label} · ${guidance.status}: ${guidance.title}</b>
       <div class="coach-box-actions">
         ${run.coachSuppressed ? "" : `<button class="coach-box-toggle" type="button" onclick="suppressAutomaticCoach()" aria-label="Do not show automatic coach guidance again this run">Don&rsquo;t show again</button>`}
-        <button class="coach-box-toggle" type="button" onclick="toggleCoachBox()" aria-label="Hide coach guidance">Hide coach</button>
+        <button class="coach-box-toggle coach-tips-button" type="button" onclick="manualCoachTipsClick()" aria-label="Refresh coach tips">Coach tips</button>
+        <button class="coach-box-toggle" type="button" onclick="closeCoachTips()" aria-label="Close coach tips">Close tips</button>
       </div>
     </div>
-    <p class="coach-box-copy">${content.explanation}</p>
+    <p class="coach-box-copy">${guidance.explanation}</p>
     <div class="coach-box-footer">
-      <div class="level-coach-tags">${content.tags.map(tag=>`<span>${tag}</span>`).join("")}</div>
+      <div class="level-coach-tags">${guidance.tags.map(tag=>`<span>${tag}</span>`).join("")}</div>
       ${awaitingContinue ? `<button class="coach-box-next" type="button" onclick="continueFromCoach()">Next</button>` : ""}
     </div>`;
 }
 
-function renderCurrentCoachContent({manual=false}={}){
-  const state = getCurrentCoachState();
-  if(!state){
+function renderCurrentCoachContent(){
+  const guidance = resolveCurrentCoachGuidance();
+  if(!guidance){
     const host = $("levelCoach");
     if(host){
       host.classList.add("is-quiet");
@@ -576,19 +601,9 @@ function renderCurrentCoachContent({manual=false}={}){
     if(DEV_PREVIEW_MODE) console.warn("Coach content unavailable: no active W1/W2 question.");
     return;
   }
-  if(manual){
-    run.coachVisible = true;
-    if(state.answered && run.reviewTimer){
-      clearTimeout(run.reviewTimer);
-      run.reviewTimer = null;
-    }
-  }
-  const full = Boolean(run.coachVisible);
-  run.coachAwaitingContinue = full && state.answered && (manual || state.resultState !== "correct");
   renderCoachBox({
-    answer:state.answered ? state.correctAnswer : null,
-    full,
-    correct:state.correct,
+    guidance,
+    expanded:Boolean(run.coachVisible),
     awaitingContinue:run.coachAwaitingContinue
   });
 }
@@ -606,27 +621,29 @@ function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContin
   renderCurrentCoachContent();
 }
 
-function openCoachManually(){
+function manualCoachTipsClick(){
   if(!run) return;
-  renderCurrentCoachContent({manual:true});
+  const guidance = resolveCurrentCoachGuidance();
+  if(!guidance) return;
+  if(guidance.state.answered && run.reviewTimer){
+    clearTimeout(run.reviewTimer);
+    run.reviewTimer = null;
+  }
+  run.coachVisible = true;
+  run.coachAwaitingContinue = guidance.state.answered;
+  renderCoachBox({guidance, expanded:true, awaitingContinue:run.coachAwaitingContinue});
 }
 
-function toggleCoachBox(){
-  if(!$("levelCoach") || !run) return;
-  if(run.coachVisible){
-    run.coachVisible = false;
-    run.coachAwaitingContinue = false;
-    renderCurrentCoachContent();
-    return;
-  }
-  openCoachManually();
+function closeCoachTips(){
+  if(!run) return;
+  run.coachVisible = false;
+  renderCurrentCoachContent();
 }
 
 function suppressAutomaticCoach(){
   if(!run) return;
   run.coachSuppressed = true;
   run.coachVisible = false;
-  run.coachAwaitingContinue = false;
   renderCurrentCoachContent();
   if(run.current){
     if(run.reviewTimer) clearTimeout(run.reviewTimer);

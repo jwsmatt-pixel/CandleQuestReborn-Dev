@@ -75,10 +75,11 @@ h2{font-size:clamp(42px,8vw,76px);line-height:.88;letter-spacing:-.075em;margin:
 .coach-box.is-quiet{background:#f8fcf6}
 .coach-box-head,.coach-box-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .coach-box-head b{font-size:13px}
-.coach-box-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.coach-box-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
 .coach-box-status,.coach-box-copy{margin:0;font-weight:800;line-height:1.35}
 .coach-box-status{color:var(--muted)}
-.coach-box-toggle{border:1px solid #b8dfad;background:#fff;color:#416049;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:900;line-height:1.2;cursor:pointer}
+.coach-box-toggle{border:1px solid #b8dfad;background:#fff;color:#416049;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:900;line-height:1.2;white-space:nowrap;cursor:pointer}
+.coach-tips-button{border-color:#8fcb7f;background:#edffe7;color:#2f6d35}
 .coach-box-next{flex:0 0 auto;min-height:40px;border:0;border-radius:13px;padding:8px 16px;background:var(--green);color:#fff;font-weight:950;cursor:pointer}
 .level-coach-tags{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
 .level-coach-tags span{padding:5px 8px;border-radius:999px;background:#fff;border:1px solid #b8dfad;font-size:11px;font-weight:900;white-space:nowrap}
