@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.4.6 Checkpoint Summary
+# Candle Quest Reborn - v28.3.6 Checkpoint Summary
 
 ## Current build
 
-**v28.3.4.6 - Stable Need Help Hint Overlay**
-Build marker: `v28_3_4_6_stable_need_help_hint_overlay`
+**v28.3.6 - Fixed Bottom Coach Tray Repair**
+Build marker: `v28_3_6_fixed_bottom_coach_tray_repair`
 
 ## Base build
 
@@ -12,7 +12,15 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. Every active unanswered question has stable lightweight help outside the Coach Box; answered questions show the relevant Coach Box explanation and `Next`.
+World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. Lightweight pre-answer help and post-answer coaching stay outside the chart/answer flow. Answer explanations and `Next` appear in a fixed bottom Coach Tray without moving the replay anchor.
+
+## What changed in v28.3.6
+
+- Moved the W1/W2 answer-led Coach Box out of `.game-shell` and into a fixed bottom Coach Tray.
+- Kept the tray out of normal layout so showing, clearing, or scrolling coaching cannot resize or move the chart and answer dock.
+- Kept `Need help?` compact and out of flow before an answer, and retained clean reset on `Next`.
+- Preserved the v28.3.5 W2 support/resistance viewport and level-line stability work.
+- W1/W2 answer pools, generators, checking, scoring, timer, streaks, chart feedback, dev mode, and 10-question flow remain unchanged.
 
 ## What changed in v28.3.4.6
 

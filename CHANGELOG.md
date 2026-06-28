@@ -1,5 +1,18 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.6 - Fixed Bottom Coach Tray Repair
+
+### Changed
+
+- Moved W1/W2 post-answer explanations and `Next` out of the game shell into a fixed bottom Coach Tray.
+- Kept the replay/chart and answer layout unchanged when result coaching appears or clears.
+- Preserved the compact out-of-flow `Need help?` hint and clean per-question coach reset.
+- Updated the build marker to `v28_3_6_fixed_bottom_coach_tray_repair` and the visible badge to `v28.3.6`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, checking, scoring, timer, streaks, 10-question flow, chart-rim feedback, Q progress, iPhone cockpit, dev mode, and v28.3.5 W2 level-line stability.
+
 ## v28.3.4.6 - Stable Need Help Hint Overlay
 
 ### Changed
