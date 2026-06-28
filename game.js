@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_4_6_stable_need_help_hint_overlay";
+const CANDLE_QUEST_BUILD = "v28_3_5_w2_level_line_stability_polish";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.4.6 - Stable Need Help Hint Overlay";
+    b.textContent = "v28.3.5";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -559,13 +559,52 @@ function renderNeedHelp(guidance){
   const hint = $("needHelpHint");
   if(!layer || !button || !hint) return;
   const unanswered = Boolean(guidance?.state.question && !guidance.state.answered);
+  const ready = unanswered && Boolean(run?.coachHelpReady);
   layer.hidden = !guidance?.state.question;
-  button.hidden = !unanswered;
-  button.setAttribute("aria-expanded", String(unanswered && Boolean(run?.coachHelpOpen)));
-  hint.hidden = !unanswered || !run?.coachHelpOpen;
-  hint.innerHTML = unanswered && run.coachHelpOpen
+  button.hidden = !ready;
+  button.setAttribute("aria-expanded", String(ready && Boolean(run?.coachHelpOpen)));
+  hint.hidden = !ready || !run?.coachHelpOpen;
+  hint.innerHTML = ready && run.coachHelpOpen
     ? `<b>${guidance.title}</b><p>${guidance.explanation}</p>`
     : "";
+  if(ready) requestAnimationFrame(positionNeedHelpOverlay);
+}
+
+function positionNeedHelpOverlay(){
+  const layer = $("needHelpLayer");
+  const button = $("needHelpButton");
+  const hint = $("needHelpHint");
+  const anchor = $("answerPad");
+  if(!layer || !button || !anchor || layer.hidden || button.hidden) return;
+  const safe = 10;
+  const anchorRect = anchor.getBoundingClientRect();
+  const buttonRect = button.getBoundingClientRect();
+  const left = Math.max(safe, Math.min(window.innerWidth - buttonRect.width - safe, anchorRect.right - buttonRect.width - 6));
+  const top = Math.max(safe, Math.min(window.innerHeight - buttonRect.height - safe, anchorRect.top - buttonRect.height - 6));
+  layer.style.setProperty("--need-help-left", `${Math.round(left)}px`);
+  layer.style.setProperty("--need-help-top", `${Math.round(top)}px`);
+  if(hint && !hint.hidden){
+    const hintRect = hint.getBoundingClientRect();
+    const hintLeft = Math.max(safe, Math.min(window.innerWidth - hintRect.width - safe, left + buttonRect.width - hintRect.width));
+    const above = top - hintRect.height - 8;
+    const hintTop = above >= safe
+      ? above
+      : Math.min(window.innerHeight - hintRect.height - safe, top + buttonRect.height + 8);
+    layer.style.setProperty("--need-hint-left", `${Math.round(hintLeft)}px`);
+    layer.style.setProperty("--need-hint-top", `${Math.round(Math.max(safe, hintTop))}px`);
+  }
+}
+
+function markNeedHelpReady(){
+  if(!run || !run.current || !run.paused) return;
+  const token = (run.coachHelpReadyToken || 0) + 1;
+  run.coachHelpReadyToken = token;
+  run.coachHelpReady = false;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(!run || run.coachHelpReadyToken !== token || !run.current || !run.paused) return;
+    run.coachHelpReady = true;
+    renderCurrentCoachContent();
+  }));
 }
 
 function renderCoachBox({guidance=null, answered=false}={}){
@@ -624,7 +663,7 @@ function showAnswerCoach(answer, {correct=false, selectedAnswer=null, resultStat
 function showNeedHelp(){
   if(!run) return;
   const guidance = resolveCurrentCoachGuidance();
-  if(!guidance || guidance.state.answered || !guidance.state.question) return;
+  if(!run.coachHelpReady || !guidance || guidance.state.answered || !guidance.state.question) return;
   run.coachHelpOpen = !run.coachHelpOpen;
   renderNeedHelp(guidance);
 }
@@ -645,9 +684,19 @@ function clearCoachBox(){
   if(run){
     run.coachResult = null;
     run.coachHelpOpen = false;
+    run.coachHelpReady = false;
+    run.coachHelpReadyToken = (run.coachHelpReadyToken || 0) + 1;
   }
   renderCurrentCoachContent();
 }
+
+document.addEventListener("pointerdown", event=>{
+  if(!run?.coachHelpOpen || event.target.closest("#needHelpLayer")) return;
+  run.coachHelpOpen = false;
+  renderCurrentCoachContent();
+});
+window.addEventListener("resize", positionNeedHelpOverlay);
+window.addEventListener("scroll", positionNeedHelpOverlay, {passive:true});
 
 function renderStudyFocus(){
   const host = $("studyFocus");
@@ -1501,7 +1550,9 @@ function beginRun(worldId=activeWorld){
     questTimer:null,
     reviewTimer:null,
     coachResult:null,
-    coachHelpOpen:false
+    coachHelpOpen:false,
+    coachHelpReady:false,
+    coachHelpReadyToken:0
   };
   clearCoachBox();
   // Mobile: fewer initial candles for clarity
@@ -2778,14 +2829,24 @@ function prepareWorld2Question(){
     ...run.candles.slice(-14),
     ...scenario
   ];
-  const viewportValues = [level, ...viewportCandles.flat()];
-  const viewportLow = Math.min(...viewportValues);
-  const viewportHigh = Math.max(...viewportValues);
-  const viewportRange = Math.max(1, viewportHigh - viewportLow);
-  const viewportPad = Math.max(0.9, viewportRange * 0.12);
+  const viewportValues = viewportCandles.flat();
+  const viewportLow = Math.min(level, ...viewportValues);
+  const viewportHigh = Math.max(level, ...viewportValues);
+  const rawRange = Math.max(1, viewportHigh - viewportLow);
+  const viewportPad = Math.max(0.9, rawRange * 0.12);
+  const belowLevel = level - viewportLow + viewportPad;
+  const aboveLevel = viewportHigh - level + viewportPad;
+  // Keep the teaching line in one stable training zone while expanding the
+  // opposite side as needed so every candle and wick remains visible.
+  const levelFraction = isSupport ? 0.3 : 0.7;
+  const viewportRange = Math.max(
+    belowLevel / levelFraction,
+    aboveLevel / (1 - levelFraction),
+    1
+  );
   run.w2Viewport = {
-    min:viewportLow - viewportPad,
-    max:viewportHigh + viewportPad
+    min:level - viewportRange * levelFraction,
+    max:level + viewportRange * (1 - levelFraction)
   };
   run.w2ScenarioQueue = scenario;
   run.setupPattern = pattern;
@@ -2827,6 +2888,7 @@ function freezeScenario(){
 
   const answer = run.setupPattern;
   if(run.world.id === 2){
+    run.coachHelpReady = false;
     run.paused = true;
     run.current = answer;
     run.setupPattern = null;
@@ -2839,11 +2901,13 @@ function freezeScenario(){
     clearCoachBox();
     renderAnswerDock("quest", shuffle(pool));
     drawGame(true);
+    markNeedHelpReady();
     startQuestTimer();
     return;
   }
 
   addCandle(answer);
+  run.coachHelpReady = false;
   run.paused = true;
   run.current = answer;
   run.setupZone = getSetupZone(answer);
@@ -2860,6 +2924,7 @@ function freezeScenario(){
   const options = shuffle([answer,...shuffle(pool.filter(x=>x!==answer)).slice(0,3)]);
   renderAnswerDock("quest", options);
   drawGame(true);
+  markNeedHelpReady();
   startQuestTimer();
 }
 
