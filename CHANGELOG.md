@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.4.6 - Stable Need Help Hint Overlay
+
+### Changed
+
+- Separated pre-answer help from the Coach Box into a compact, reserved-height control with an anchored hint overlay.
+- Kept `Need help?` available on every active unanswered W1/W2 question and reset its hint on each transition.
+- Kept the hint and button out of page-flow changes, so opening or closing help does not move the chart or answer buttons.
+- Kept the full Coach Box answer-led: it remains empty before an answer and shows result guidance plus `Next` afterward.
+- Updated the build marker to `v28_3_4_6_stable_need_help_hint_overlay` and the visible badge to `v28.3.4.6`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, answer checking, scoring, timer, streaks, 10-question flow, chart rendering, chart-rim feedback, Q progress, iPhone cockpit, desktop layout, and dev mode.
+
 ## v28.3.4.5 - Coach Box Answer-Only + Need Help Button
 
 ### Changed

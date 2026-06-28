@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_4_5_coach_box_answer_only_need_help_button";
+const CANDLE_QUEST_BUILD = "v28_3_4_6_stable_need_help_hint_overlay";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.4.5 - Coach Box Answer-Only + Need Help Button";
+    b.textContent = "v28.3.4.6 - Stable Need Help Hint Overlay";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -521,14 +521,14 @@ function resolveCurrentCoachGuidance(){
   const label = state.worldId === 1 ? "Candle Coach" : "Level Coach";
   const neutral = state.worldId === 1
     ? {
-        title:"Current candle read",
-        explanation:"Read the current chart first. Compare the candle bodies and wicks, then check where the setup formed before choosing the pattern.",
-        tags:["compare bodies","check the wicks","check the location"]
+        title:"Candle clue",
+        explanation:"Inspect the candle body, wick size, and overall pattern shape.",
+        tags:[]
       }
     : {
-        title:"Current level read",
-        explanation:"Find the marked support or resistance level. Check whether price closes back on the original side or accepts beyond the line.",
-        tags:["find the level","check the close","hold or break"]
+        title:"Level clue",
+        explanation:"Watch price at the level. Did it hold, reject, or break?",
+        tags:[]
       };
   if(!state.answered || !state.correctAnswer){
     return {...neutral, label, state, status:"Lesson tip"};
@@ -553,29 +553,29 @@ function resolveCurrentCoachGuidance(){
   };
 }
 
-function renderCoachBox({guidance=null, helpOpen=false, answered=false}={}){
+function renderNeedHelp(guidance){
+  const layer = $("needHelpLayer");
+  const button = $("needHelpButton");
+  const hint = $("needHelpHint");
+  if(!layer || !button || !hint) return;
+  const unanswered = Boolean(guidance?.state.question && !guidance.state.answered);
+  layer.hidden = !guidance?.state.question;
+  button.hidden = !unanswered;
+  button.setAttribute("aria-expanded", String(unanswered && Boolean(run?.coachHelpOpen)));
+  hint.hidden = !unanswered || !run?.coachHelpOpen;
+  hint.innerHTML = unanswered && run.coachHelpOpen
+    ? `<b>${guidance.title}</b><p>${guidance.explanation}</p>`
+    : "";
+}
+
+function renderCoachBox({guidance=null, answered=false}={}){
   const host = $("levelCoach");
   if(!host || !run || ![1,2].includes(run.world.id)) return;
-  host.classList.remove("is-idle", "is-help", "is-answer", "is-dimmed");
+  host.classList.remove("is-idle", "is-answer", "is-dimmed");
 
-  if(!guidance?.state.question){
+  if(!guidance?.state.question || !answered){
     host.classList.add("is-idle");
     host.innerHTML = "";
-    return;
-  }
-
-  if(!answered){
-    host.classList.add(helpOpen ? "is-help" : "is-quiet");
-    host.innerHTML = `
-      <button class="need-help-button" type="button" onclick="showNeedHelp()" aria-expanded="${helpOpen}" aria-controls="coachHint">
-        <span class="need-help-icon" aria-hidden="true"><span>?</span></span>
-        <span>Need help?</span>
-      </button>
-      ${helpOpen ? `
-        <div id="coachHint" class="coach-hint">
-          <b>${guidance.title}</b>
-          <p>${guidance.explanation}</p>
-        </div>` : ""}`;
     return;
   }
 
@@ -593,18 +593,18 @@ function renderCoachBox({guidance=null, helpOpen=false, answered=false}={}){
 
 function renderCurrentCoachContent(){
   const guidance = resolveCurrentCoachGuidance();
+  renderNeedHelp(guidance);
   if(!guidance){
     const host = $("levelCoach");
     if(host){
-      host.classList.add("is-quiet");
-      host.innerHTML = `<div class="coach-box-head"><b>Coach</b></div><p class="coach-box-status">Guidance will be ready when the next lesson starts.</p>`;
+      host.classList.add("is-idle");
+      host.innerHTML = "";
     }
     if(DEV_PREVIEW_MODE) console.warn("Coach content unavailable: no active W1/W2 question.");
     return;
   }
   renderCoachBox({
     guidance,
-    helpOpen:Boolean(run.coachHelpOpen),
     answered:Boolean(guidance.state.answered)
   });
 }
@@ -625,8 +625,8 @@ function showNeedHelp(){
   if(!run) return;
   const guidance = resolveCurrentCoachGuidance();
   if(!guidance || guidance.state.answered || !guidance.state.question) return;
-  run.coachHelpOpen = true;
-  renderCoachBox({guidance, helpOpen:true, answered:false});
+  run.coachHelpOpen = !run.coachHelpOpen;
+  renderNeedHelp(guidance);
 }
 
 function continueFromCoach(){
