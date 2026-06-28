@@ -3017,3 +3017,144 @@ body[data-screen="game"] .coach-tray.is-answer{
     width:100%;
   }
 }
+
+/* v28.3.8 - W1/W2 final mobile polish pass.
+   Keep the replay as the fixed visual anchor and reserve one compact help lane. */
+@media(max-width:850px){
+  body[data-screen="game"]{
+    overscroll-behavior-y:none;
+  }
+  body[data-screen="game"] #app{
+    padding-bottom:max(12px,env(safe-area-inset-bottom))!important;
+  }
+  body[data-screen="game"] .game-shell{
+    gap:6px!important;
+  }
+  body[data-screen="game"] .game-hud{
+    min-height:56px;
+    padding:5px!important;
+  }
+  body[data-screen="game"] #runProgress{
+    font-variant-numeric:tabular-nums;
+  }
+  body[data-screen="game"] .chart-wrap{
+    contain:layout;
+  }
+  body[data-screen="game"] #gameCanvas{
+    contain:layout paint;
+  }
+  body[data-screen="game"] .answer-pad{
+    margin-top:38px!important;
+    gap:8px!important;
+    padding:8px!important;
+  }
+  body[data-screen="game"] .answer-pad button{
+    min-height:56px!important;
+    padding:9px 8px!important;
+    border-width:2px;
+    box-shadow:0 2px 0 rgba(20,60,30,.08);
+    -webkit-tap-highlight-color:transparent;
+  }
+  body[data-screen="game"] .answer-pad button.correct{
+    border-color:#3db500;
+    background:#e8ffdc;
+    box-shadow:inset 0 0 0 1px rgba(61,181,0,.2);
+  }
+  body[data-screen="game"] .answer-pad button.wrong{
+    border-color:#e23d3d;
+    background:#fff0f0;
+    box-shadow:inset 0 0 0 1px rgba(226,61,61,.15);
+  }
+  body[data-screen="game"] .need-help-button{
+    min-height:34px;
+    padding:7px 11px;
+    border-width:2px;
+    background:rgba(248,255,245,.98);
+    box-shadow:0 4px 12px rgba(20,60,30,.14);
+    font-size:11.5px;
+    touch-action:manipulation;
+  }
+  body[data-screen="game"] .need-help-icon{
+    width:21px;
+    height:17px;
+  }
+  body[data-screen="game"] .need-help-hint{
+    width:min(280px,calc(100vw - 20px));
+    max-height:min(150px,28dvh);
+    padding:10px 12px;
+    border-width:2px;
+    box-shadow:0 7px 20px rgba(20,60,30,.2);
+  }
+  body[data-screen="game"] .need-help-hint p{
+    font-size:12px;
+    line-height:1.4;
+  }
+  body[data-screen="game"] .coach-tray{
+    bottom:max(8px,calc(env(safe-area-inset-bottom) + 6px));
+    width:min(calc(100vw - 16px),620px);
+    max-height:min(206px,42dvh);
+    padding:11px 12px;
+    gap:7px;
+    border-radius:18px;
+    -webkit-overflow-scrolling:touch;
+  }
+  body[data-screen="game"] .coach-tray .coach-box-head b{
+    display:block;
+    font-size:12px;
+    line-height:1.25;
+  }
+  body[data-screen="game"] .coach-tray .coach-box-copy{
+    font-size:12.5px;
+    line-height:1.38;
+  }
+  body[data-screen="game"] .coach-tray .coach-box-footer{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:8px;
+  }
+  body[data-screen="game"] .coach-tray .level-coach-tags{
+    max-height:none;
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+  }
+  body[data-screen="game"] .coach-tray .level-coach-tags::-webkit-scrollbar{
+    display:none;
+  }
+  body[data-screen="game"] .coach-tray .coach-box-next{
+    min-width:84px;
+    min-height:46px;
+    padding:9px 18px;
+    touch-action:manipulation;
+  }
+  body[data-screen="game"] #buildBadge{
+    right:max(8px,env(safe-area-inset-right))!important;
+    bottom:max(8px,env(safe-area-inset-bottom))!important;
+    padding:5px 8px!important;
+    font-size:10px!important;
+  }
+}
+
+@media(max-width:390px){
+  body[data-screen="game"] .answer-pad{
+    margin-top:36px!important;
+  }
+  body[data-screen="game"] .answer-pad button{
+    min-height:54px!important;
+    font-size:13px!important;
+  }
+  body[data-screen="game"] .coach-tray .coach-box-footer{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 82px;
+    align-items:center;
+  }
+  body[data-screen="game"] .coach-tray .level-coach-tags{
+    display:flex;
+  }
+  body[data-screen="game"] .coach-tray .coach-box-next{
+    width:auto;
+    min-width:82px;
+  }
+}

@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.7 Checkpoint Summary
+# Candle Quest Reborn - v28.3.8 Checkpoint Summary
 
 ## Current build
 
-**v28.3.7 - Guided/Normal Mode Flow Split**
-Build marker: `v28_3_7_guided_normal_mode_flow_split`
+**v28.3.8 - W1/W2 Final Mobile Polish Pass**
+Build marker: `v28_3_8_w1_w2_final_mobile_polish_pass`
 
 ## Base build
 
@@ -12,7 +12,15 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 now separate teaching from fast reps. Guided Mode explains every answer in the fixed Coach Tray and waits for `Next`. Normal Mode auto-advances correct reads after 850ms while wrong and timed-out reads pause for correction.
+World 1 and World 2 retain the accepted teaching/rep split with a cleaner, stable iPhone gameplay layout. The replay remains the visual anchor, optional help occupies a compact reserved lane, and the fixed Coach Tray respects mobile safe areas.
+
+## What changed in v28.3.8
+
+- Reserved a compact, stable help lane between the chart and answer dock so toggling help does not shift either surface.
+- Refined iPhone cockpit spacing, answer button tap targets, answer-state contrast, and page safe-area padding.
+- Improved Coach Tray wrapping, horizontally scrollable chips, `Next` placement, maximum height, and home-indicator clearance.
+- Added iOS visual-viewport repositioning for the fixed help control and hint.
+- Preserved Guided/Normal behavior, Normal-only Speedrun, exact answer pools, generators, scoring, W1 candle readability, W2 level-line stability, desktop layout, and dev mode.
 
 ## What changed in v28.3.7
 

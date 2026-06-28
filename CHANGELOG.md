@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.8 - W1/W2 Final Mobile Polish Pass
+
+### Changed
+
+- Added a stable compact lane between the replay and answer dock for the optional `Need help?` control.
+- Refined iPhone cockpit spacing, answer tap targets, result highlighting, and safe-area padding without changing the chart viewport.
+- Improved the fixed Coach Tray's mobile wrapping, chip scrolling, `Next` placement, maximum height, and home-indicator clearance.
+- Repositioned help overlays when the iOS visual viewport changes, reducing stale placement after browser-bar movement.
+- Updated the build marker to `v28_3_8_w1_w2_final_mobile_polish_pass` and the visible badge to `v28.3.8`.
+
+### Preserved
+
+- Guided/Normal flow rules, Speedrun eligibility, exact W1/W2 answer pools, generators, Pattern Bible wording, scoring, progression, W2 level-line stability, W1 candle readability, and desktop behavior.
+
 ## v28.3.7 - Guided/Normal Mode Flow Split
 
 ### Changed

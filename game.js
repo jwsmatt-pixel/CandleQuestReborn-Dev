@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_7_guided_normal_mode_flow_split";
+const CANDLE_QUEST_BUILD = "v28_3_8_w1_w2_final_mobile_polish_pass";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const RUN_FLOW_CONFIG = Object.freeze({
   guided:Object.freeze({label:"Guided Mode", description:"Coach explanations and Next after every answer."}),
@@ -11,7 +11,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.7";
+    b.textContent = "v28.3.8";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -702,6 +702,8 @@ document.addEventListener("pointerdown", event=>{
 });
 window.addEventListener("resize", positionNeedHelpOverlay);
 window.addEventListener("scroll", positionNeedHelpOverlay, {passive:true});
+window.visualViewport?.addEventListener("resize", positionNeedHelpOverlay);
+window.visualViewport?.addEventListener("scroll", positionNeedHelpOverlay);
 
 function renderStudyFocus(){
   const host = $("studyFocus");
