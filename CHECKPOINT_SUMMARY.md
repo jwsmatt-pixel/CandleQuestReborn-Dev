@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.2 Checkpoint Summary
+# Candle Quest Reborn - v28.3.3 Checkpoint Summary
 
 ## Current build
 
-**v28.3.2 - iPhone Cockpit Simplification + Chart Rim Feedback**
-Build marker: `v28_3_2_iphone_cockpit_chart_rim_feedback`
+**v28.3.3 - iPhone HUD Text Cleanup**
+Build marker: `v28_3_3_iphone_hud_text_cleanup`
 
 ## Base build
 
@@ -12,7 +12,14 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 now use a cleaner compact mobile cockpit, with static progress above the chart, temporary answer feedback on the chart rim, and the fixed Coach Box preserved below the answer dock.
+World 1 and World 2 now use a cleaner compact mobile cockpit showing only readable `Qn/10` progress in its top-left status area, with temporary answer feedback on the chart rim and the fixed Coach Box preserved below the answer dock.
+
+## What changed in v28.3.3
+
+- The redundant world title is hidden in the compact mobile W1/W2 gameplay cockpit, eliminating truncated title text.
+- The mobile `Qn/10` label is larger and vertically aligned within the cockpit status cell.
+- Desktop keeps the full world title and detailed status copy.
+- The v28.3.2 cockpit controls and chart-rim feedback, the fixed Coach Box, and all W1/W2 gameplay rules remain unchanged.
 
 ## What changed in v28.3.2
 

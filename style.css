@@ -2889,18 +2889,21 @@ body[data-screen="result"] .topbar{
   body[data-screen="game"] .run-copy{
     grid-column:1 / 2!important;
     min-width:0;
+    display:flex;
+    align-items:center;
   }
   body[data-screen="game"] #runMode{
-    font-size:clamp(11px,3.2vw,13px)!important;
+    display:none!important;
   }
   body[data-screen="game"] #runHint{display:none!important}
   body[data-screen="game"] #runProgress{
     display:block!important;
-    margin-top:3px;
+    margin:0;
     color:var(--green-dark);
-    font-size:12px!important;
+    font-size:15px!important;
     line-height:1!important;
     font-weight:950;
+    letter-spacing:.01em;
   }
   body[data-screen="game"] .game-wallet-mini{grid-column:4 / 5!important}
   body[data-screen="game"] .mobile-game-exit{

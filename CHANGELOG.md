@@ -1,5 +1,18 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.3 - iPhone HUD Text Cleanup
+
+### Changed
+
+- Removed the redundant world title from the compact mobile W1/W2 gameplay cockpit, leaving only `Qn/10` progress in the top-left status area.
+- Increased and vertically aligned the mobile Q label so it reads as an intentional peer to the score, timer, XP/Shop, and Exit controls.
+- Updated the build marker to `v28_3_3_iphone_hud_text_cleanup`.
+
+### Preserved
+
+- Desktop retains the full world title and detailed status copy.
+- The v28.3.2 cockpit layout, chart-rim feedback, fixed Coach Box, exact W1/W2 answer pools, generators, Pattern Bible rules, scoring, progression, and 10-question flow are unchanged.
+
 ## v28.3.2 - iPhone Cockpit Simplification + Chart Rim Feedback
 
 ### Changed

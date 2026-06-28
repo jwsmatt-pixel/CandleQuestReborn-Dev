@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_2_iphone_cockpit_chart_rim_feedback";
+const CANDLE_QUEST_BUILD = "v28_3_3_iphone_hud_text_cleanup";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
