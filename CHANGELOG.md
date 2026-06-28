@@ -1,5 +1,23 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3 - World 2 Coach / Library Polish + Future Shelf
+
+### Changed
+
+- Added short answer-specific World 2 Level Coach feedback for correct, incorrect, and timed-out reads.
+- Added three beginner teaching tags for each World 2 answer and kept the chart as the primary learning object.
+- Reworked all four World 2 Pattern Library cards into beginner translation, Look for, Invalid if, Common confusion, and Memory phrase sections.
+- Made the existing World 2 Study Focus direction actionable without adding World 2 stat tracking or a new progression system.
+- Added `docs/FUTURE_UPDATE_SHELF_v28.md` to preserve the current roadmap, locked pools, design constraints, URLs, and testing reminders.
+- Updated the build marker to `v28_3_world_2_coach_library_polish` and badge to `v28.3 - World 2 Coach / Library Polish`.
+
+### Preserved
+
+- World 1 logic and exact answer pool are unchanged.
+- World 2 generator fairness, line stability, label sizing, replay framing, compact iOS layout, and exact answer wording are unchanged.
+- The 7-second timer, 10-question flow, scoring, XP, streaks, Mochi, shop, tempo unlocks, Dev Tools, Candle Lens, mobile answer dock, and mobile exit control are unchanged.
+- No fakeouts, sweeps, flips, retests, order blocks, volume concepts, order flow, or advanced market structure were introduced.
+
 ## v28.2.2 - Mobile Exit Control Polish
 
 ### Changed

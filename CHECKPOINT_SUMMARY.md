@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.2.2 Checkpoint Summary
+# Candle Quest Reborn - v28.3 Checkpoint Summary
 
 ## Current build
 
-**v28.2.2 - Mobile Exit Control Polish**
-Build marker: `v28_2_2_mobile_exit_control_polish`
+**v28.3 - World 2 Coach / Library Polish + Future Shelf**
+Build marker: `v28_3_world_2_coach_library_polish`
 
 ## Base build
 
@@ -12,7 +12,16 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 remains the locked/stable playable baseline. World 2 keeps every replay wick inside one stable padded camera, while mobile gameplay retains its compact framing with a lighter app-style exit control.
+World 1 remains the locked/stable playable baseline. World 2 now explains each correct level read with short coaching and teaching tags while preserving its generator, replay identity, stable line, and compact mobile framing.
+
+## What changed in v28.3
+
+- Correct, incorrect, and timed-out World 2 reads show the correct beginner explanation in a compact `Level Coach` panel.
+- Each explanation includes three plain-language cues tied to the exact answer.
+- The four World 2 Library cards now include a beginner translation, Look for list, Invalid if list, common confusion, and memory phrase.
+- World 2 Study Focus now directs players to defended levels for holds and strong closes beyond levels for breaks.
+- `docs/FUTURE_UPDATE_SHELF_v28.md` preserves the roadmap and project constraints outside chat.
+- World 1, both locked answer pools, both generators, World 2 line behavior and labels, replay framing, timer, run length, scoring, progression, mobile answer dock, and mobile exit control remain unchanged.
 
 ## What changed in v28.2.2
 
