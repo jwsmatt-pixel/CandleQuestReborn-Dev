@@ -1,5 +1,22 @@
 # Candle Quest Reborn — Changelog
 
+## v28.5.2 - W3 Flow Regime Variety + Fairness Pass
+
+### Changed
+
+- Added four beginner-readable visual variants for each locked World 3 answer: Accepting Higher, Accepting Lower, Rotating Sideways, and Regime Change.
+- Added bounded variation in candle bodies, wicks, pauses, push strength, range width, and scenario length without changing World 3 terminology.
+- Added a lightweight balanced World 3 answer queue and per-answer variant history to prevent immediate answer and template repetition.
+- Reduced swing-path and dot prominence in Fast Reps; Guided Training retains a short, local Regime Change guide.
+- Updated the build marker to `v28_5_2_w3_flow_regime_variety_fairness` and visible badge to `v28.5.2`.
+
+### Preserved
+
+- World 1 and World 2 answer pools, generators, level lines, and gameplay behavior.
+- Guided Training/Fast Reps naming, coaching visibility, Speedrun eligibility, replay behavior, and 10-question run flow.
+- World 3 title, subtitle, teaching question, and exact four-answer pool.
+- World 4 remains unchanged and no replay-development prototype was added.
+
 ## v28.5.1 - World 3 Flow Regime Foundation
 
 ### Changed

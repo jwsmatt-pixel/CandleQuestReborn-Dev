@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_5_1_world_3_flow_regime_foundation";
+const CANDLE_QUEST_BUILD = "v28_5_2_w3_flow_regime_variety_fairness";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.5.1";
+    b.textContent = "v28.5.2";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -206,6 +206,33 @@ const WORLD_3_CONTEXT = Object.freeze({
     "Rotating Sideways":Object.freeze({title:"Price is rotating sideways.",explanation:"Price is moving between a similar upper and lower area. Neither side is clearly accepting higher or lower.",beginnerTranslation:"Price is moving back and forth inside the same rough zone.",tags:Object.freeze(["similar upper area","similar lower area"])}),
     "Regime Change":Object.freeze({title:"The regime changed.",explanation:"The previous behaviour failed. Price stopped accepting the same way and broke the rhythm of the prior regime.",beginnerTranslation:"The old behaviour changed. Price stopped accepting the same way and broke into a new condition.",tags:Object.freeze(["prior behaviour failed","new condition"])})
   })
+});
+
+const WORLD_3_VARIANTS = Object.freeze({
+  "Accepting Higher":Object.freeze([
+    Object.freeze({id:"clean-up", offsets:[0,1.2,2.7,2.1,4.1,5.5,4.8,6.8,8.1,7.5,9.6], swings:[0,2,3,5,6,8,9,10], wick:"normal"}),
+    Object.freeze({id:"choppy-up", offsets:[0,1.1,0.8,2.4,3.6,3.1,3.4,5.1,4.5,6.3,6.0,7.8,8.7], swings:[0,3,5,7,8,9,11,12], wick:"mixed"}),
+    Object.freeze({id:"push-hold-up", offsets:[0,0.8,1.5,4.7,5.4,4.5,4.1,5.1,7.0,8.2], swings:[0,2,4,6,8,9], wick:"push", push:[3]}),
+    Object.freeze({id:"grind-up", offsets:[0,0.6,1.2,1.0,1.8,2.7,2.4,3.3,4.1,3.8,4.8,5.6,6.4,7.1], swings:[0,2,3,5,6,8,9,11,13], wick:"short"})
+  ]),
+  "Accepting Lower":Object.freeze([
+    Object.freeze({id:"clean-down", offsets:[0,-1.2,-2.7,-2.1,-4.1,-5.5,-4.8,-6.8,-8.1,-7.5,-9.6], swings:[0,2,3,5,6,8,9,10], wick:"normal"}),
+    Object.freeze({id:"choppy-down", offsets:[0,-1.1,-0.8,-2.4,-3.6,-3.1,-3.4,-5.1,-4.5,-6.3,-6.0,-7.8,-8.7], swings:[0,3,5,7,8,9,11,12], wick:"mixed"}),
+    Object.freeze({id:"drop-fail-down", offsets:[0,-0.8,-1.5,-4.7,-5.4,-4.5,-4.1,-5.1,-7.0,-8.2], swings:[0,2,4,6,8,9], wick:"push", push:[3]}),
+    Object.freeze({id:"grind-down", offsets:[0,-0.6,-1.2,-1.0,-1.8,-2.7,-2.4,-3.3,-4.1,-3.8,-4.8,-5.6,-6.4,-7.1], swings:[0,2,3,5,6,8,9,11,13], wick:"short"})
+  ]),
+  "Rotating Sideways":Object.freeze([
+    Object.freeze({id:"clean-box", offsets:[0,1.8,3.5,2.0,0.1,-1.7,0.0,2.1,3.4,1.6,-1.5,0.2], swings:[0,2,5,8,10,11], wick:"normal"}),
+    Object.freeze({id:"wide-rotation", offsets:[0,2.8,5.0,2.4,-1.0,-4.5,-1.8,2.3,4.7,1.6,-4.1,-1.2,2.0], swings:[0,2,5,8,10,12], wick:"mixed"}),
+    Object.freeze({id:"tight-compression", offsets:[0,0.8,1.4,0.5,-0.9,-1.3,-0.4,0.9,1.2,0.3,-1.0,-0.7,0.4,0.1], swings:[0,2,5,8,10,13], wick:"compression"}),
+    Object.freeze({id:"edge-returns", offsets:[0,1.6,3.7,4.2,2.0,-0.6,-3.5,-3.9,-1.5,1.2,3.5,1.4,-1.2,0.2], swings:[0,3,7,10,12,13], wick:"edge"})
+  ]),
+  "Regime Change":Object.freeze([
+    Object.freeze({id:"higher-fails", offsets:[0,1.2,2.8,2.1,4.4,5.7,4.9,6.8,4.5,2.7,1.0,-0.4], swings:[0,2,3,5,6,7,9,11], wick:"change", breakIndex:8, breakValue:4.9}),
+    Object.freeze({id:"lower-fails", offsets:[0,-1.2,-2.8,-2.1,-4.4,-5.7,-4.9,-6.8,-4.5,-2.7,-1.0,0.4], swings:[0,2,3,5,6,7,9,11], wick:"change", breakIndex:8, breakValue:-4.9}),
+    Object.freeze({id:"range-to-direction", offsets:[0,2.4,4.0,1.6,-2.4,-3.8,-1.2,2.5,4.1,5.8,7.3,8.6], swings:[0,2,5,8,10,11], wick:"change", breakIndex:9, breakValue:4.1, mirrorable:true}),
+    Object.freeze({id:"direction-to-rotation", offsets:[0,1.2,2.8,2.2,4.2,5.6,5.0,6.8,5.5,6.7,5.3,6.5,5.6], swings:[0,2,3,5,6,7,8,9,10,11,12], wick:"mixed", breakIndex:8, breakValue:5.0, mirrorable:true})
+  ])
 });
 
 const worlds = [
@@ -2968,8 +2995,9 @@ function prepareWorld2Question(){
 function prepareWorld3Question(){
   if(!run || run.world.id !== 3) return;
   const pool = WORLD_3_CONTEXT.answerPool;
+  if(!run.w3AnswerQueue?.length) run.w3AnswerQueue = _buildWorld3AnswerQueue(pool, run.patternHistory || []);
+  const pattern = run.w3AnswerQueue.shift();
   if(!run.patternHistory) run.patternHistory = [];
-  const pattern = _pickDiversePattern(pool, run.patternHistory);
   run.patternHistory.push(pattern);
   if(run.patternHistory.length > 8) run.patternHistory.shift();
 
@@ -2977,44 +3005,66 @@ function prepareWorld3Question(){
   // Each W3 question owns one clean replay path. Keep a single continuous seed
   // candle so prior-question movement cannot muddy the next context read.
   run.candles = [[start,start+0.15,start-0.15,start]];
-  const changeFromHigher = Math.random() < 0.5;
-  const templates = {
-    "Accepting Higher":[0,1.5,3.8,2.5,5.5,4.2,7.5,6.0,9.0],
-    "Accepting Lower":[0,-1.5,-3.8,-2.5,-5.5,-4.2,-7.5,-6.0,-9.0],
-    "Rotating Sideways":[0,2.0,4.2,2.1,-0.2,1.8,4.0,2.0,0.1],
-    "Regime Change":changeFromHigher
-      ? [0,1.5,3.9,2.6,5.6,4.3,7.4,3.0,0.8]
-      : [0,-1.5,-3.9,-2.6,-5.6,-4.3,-7.4,-3.0,-0.8]
-  };
-  const offsets = templates[pattern];
-  const closes = [];
-  offsets.forEach((offset,index)=>{
-    if(index === 0) return;
-    const from = offsets[index-1];
-    closes.push(start + from + (offset-from)*0.48, start + offset);
+  if(!run.w3VariantHistory) run.w3VariantHistory = {};
+  const variants = WORLD_3_VARIANTS[pattern];
+  const recentVariants = run.w3VariantHistory[pattern] || [];
+  const variant = _pickDiversePattern(variants, recentVariants);
+  recentVariants.push(variant);
+  if(recentVariants.length > 3) recentVariants.shift();
+  run.w3VariantHistory[pattern] = recentVariants;
+
+  const direction = variant.mirrorable && Math.random() < 0.5 ? -1 : 1;
+  const scale = 0.94 + Math.random() * 0.12;
+  const offsets = variant.offsets.map((offset,index)=>{
+    if(index === 0) return 0;
+    const jitterLimit = variant.wick === "compression" ? 0.035 : 0.07;
+    return offset * direction * scale + (Math.random() - 0.5) * jitterLimit;
   });
   const scenario = [];
   let open = start;
-  closes.forEach((close,index)=>{
-    const bodyNudge = [0.08,-0.04,0.12,-0.07,0.03][index%5];
-    const organicClose = close + bodyNudge;
-    const wickUp = [0.22,0.38,0.18,0.31][index%4];
-    const wickDown = [0.34,0.19,0.29,0.16][index%4];
-    scenario.push([open,Math.max(open,organicClose)+wickUp,Math.min(open,organicClose)-wickDown,organicClose]);
-    open = organicClose;
+  offsets.slice(1).forEach((offset,index)=>{
+    const close = start + offset;
+    const isPush = variant.push?.includes(index + 1);
+    const wickBase = variant.wick === "short" ? 0.13
+      : variant.wick === "compression" ? 0.16
+        : isPush ? 0.14 : 0.2;
+    const wickRange = variant.wick === "mixed" || variant.wick === "edge" ? 0.28 : 0.16;
+    const upperWick = wickBase + Math.random() * wickRange;
+    const lowerWick = wickBase + Math.random() * wickRange;
+    scenario.push([open,Math.max(open,close)+upperWick,Math.min(open,close)-lowerWick,close]);
+    open = close;
   });
-  const anchors = (pattern === "Rotating Sideways" ? [2,4,6,8] : [2,3,4,5,6,7,8]).map(index=>index*2-1);
-  run.w3SwingPoints = anchors.map(index=>({candle:scenario[index],value:scenario[index][3]}));
+  run.w3SwingPoints = variant.swings
+    .filter(index=>index > 0 && scenario[index-1])
+    .map(index=>({candle:scenario[index-1],value:scenario[index-1][3]}));
   const values = scenario.flat();
   const pad = Math.max(1.1,(Math.max(...values)-Math.min(...values))*0.12);
   run.w3Viewport = {min:Math.min(...values)-pad,max:Math.max(...values)+pad};
-  run.w3BrokenSwing = pattern === "Regime Change" ? start + (changeFromHigher ? 4.3 : -4.3) : null;
+  run.w3Variant = variant.id;
+  run.w3ChangeMarker = pattern === "Regime Change" && variant.breakIndex
+    ? {candle:scenario[variant.breakIndex-1], value:start + variant.breakValue * direction * scale}
+    : null;
   run.w3ScenarioQueue = scenario;
   run.setupPattern = pattern;
   run.setupSteps = scenario.length;
   run.nextFreeze = scenario.length;
   run.setupPhase = "forming";
   run.momentum = 0;
+}
+
+function _buildWorld3AnswerQueue(pool, history){
+  const queue = [];
+  let previous = history[history.length - 1];
+  for(let round=0;round<Math.ceil(10 / pool.length);round++){
+    const group = shuffle(pool);
+    if(group[0] === previous && group.length > 1){
+      const swapIndex = group.findIndex(item=>item !== previous);
+      [group[0],group[swapIndex]] = [group[swapIndex],group[0]];
+    }
+    queue.push(...group);
+    previous = group[group.length - 1];
+  }
+  return queue.slice(0,10);
 }
 
 function patternCardKey(patternName){
@@ -3419,25 +3469,28 @@ function drawGame(frozen=false){
       .map(item=>({...item,x:drawLeft+item.index*gap,y:mapY(item.point.value)}));
     if(points.length > 1){
       ctx.save();
-      ctx.strokeStyle="rgba(255,255,255,.38)";
-      ctx.lineWidth=2;
+      const guided = run.flowMode === "guided";
+      ctx.strokeStyle=guided ? "rgba(255,255,255,.34)" : "rgba(255,255,255,.2)";
+      ctx.lineWidth=guided ? 2 : 1.5;
       ctx.setLineDash([6,6]);
       ctx.beginPath();
       points.forEach((point,index)=>index ? ctx.lineTo(point.x,point.y) : ctx.moveTo(point.x,point.y));
       ctx.stroke();
       ctx.setLineDash([]);
       points.forEach(point=>{
-        ctx.fillStyle="#ffd84d";
+        ctx.fillStyle=guided ? "rgba(255,216,77,.88)" : "rgba(255,216,77,.56)";
         ctx.beginPath();
-        ctx.arc(point.x,point.y,5,0,Math.PI*2);
+        ctx.arc(point.x,point.y,guided ? 4.5 : 3.5,0,Math.PI*2);
         ctx.fill();
       });
-      if(Number.isFinite(run.w3BrokenSwing)){
-        const y=Math.round(mapY(run.w3BrokenSwing));
-        ctx.strokeStyle="rgba(255,216,77,.72)";
+      const changeIndex = run.w3ChangeMarker ? visibleCandles.indexOf(run.w3ChangeMarker.candle) : -1;
+      if(guided && changeIndex >= 0){
+        const x = drawLeft + changeIndex * gap;
+        const y=Math.round(mapY(run.w3ChangeMarker.value));
+        ctx.strokeStyle="rgba(255,216,77,.62)";
         ctx.lineWidth=2;
         ctx.setLineDash([8,7]);
-        ctx.beginPath();ctx.moveTo(drawLeft,y);ctx.lineTo(drawRight,y);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(Math.max(drawLeft,x-gap*1.2),y);ctx.lineTo(Math.min(drawRight,x+gap*1.2),y);ctx.stroke();
       }
       ctx.restore();
     }

@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.5.1 Checkpoint Summary
+# Candle Quest Reborn - v28.5.2 Checkpoint Summary
 
 ## Current build
 
-**v28.5.1 - World 3 Flow Regime Foundation**
-Build marker: `v28_5_1_world_3_flow_regime_foundation`
+**v28.5.2 - W3 Flow Regime Variety + Fairness Pass**
+Build marker: `v28_5_2_w3_flow_regime_variety_fairness`
 
 ## Base build
 
@@ -12,7 +12,16 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 3 is playable through the existing training arena and teaches only flow regime: accepting higher, accepting lower, rotating sideways, or changing regime. World 1 and World 2 remain on their accepted behavior. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+World 3 now presents four controlled visual variants for each locked flow regime, with balanced answer scheduling and variant anti-repeat logic across each 10-question run. World 1 and World 2 remain on their accepted behavior. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.5.2
+
+- Added clean, choppy, strong-push, and slow-grind variations for higher/lower acceptance.
+- Added clean-box, wide-range, compression, and failed-edge rotation variations.
+- Added four clear prior-regime-to-new-regime change stories.
+- Added bounded candle/wick variation plus balanced answer and template repetition control.
+- Kept W3 visual aids subtle, with the local change guide reserved for Guided Training.
+- Preserved all W1/W2 behavior and left World 4 untouched.
 
 ## What changed in v28.5.1
 
