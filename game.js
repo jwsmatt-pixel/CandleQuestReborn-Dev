@@ -1,5 +1,9 @@
-const CANDLE_QUEST_BUILD = "v28_3_7_fast_correct_flow_wrong_answer_coach";
+const CANDLE_QUEST_BUILD = "v28_3_7_guided_normal_mode_flow_split";
 const CORRECT_AUTO_ADVANCE_MS = 850;
+const RUN_FLOW_CONFIG = Object.freeze({
+  guided:Object.freeze({label:"Guided Mode", description:"Coach explanations and Next after every answer."}),
+  normal:Object.freeze({label:"Normal Mode", description:"Correct reads keep moving; misses pause for coaching."})
+});
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -608,12 +612,12 @@ function markNeedHelpReady(){
   }));
 }
 
-function renderCoachBox({guidance=null, showCorrection=false}={}){
+function renderCoachBox({guidance=null, showResult=false}={}){
   const host = $("levelCoach");
   if(!host || !run || ![1,2].includes(run.world.id)) return;
   host.classList.remove("is-idle", "is-answer", "is-dimmed");
 
-  if(!guidance?.state.question || !showCorrection){
+  if(!guidance?.state.question || !showResult){
     host.classList.add("is-idle");
     host.innerHTML = "";
     return;
@@ -645,7 +649,7 @@ function renderCurrentCoachContent(){
   }
   renderCoachBox({
     guidance,
-    showCorrection:Boolean(guidance.state.answered && !guidance.state.correct)
+    showResult:Boolean(guidance.state.answered && (run.flowMode === "guided" || !guidance.state.correct))
   });
 }
 
@@ -731,15 +735,17 @@ function loadState(){
   try{
     const raw = localStorage.getItem("candleQuestRebornV1");
     if(raw){
-      const loaded = Object.assign({xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner",patternStats:emptyPatternStats()}, JSON.parse(raw));
+      const loaded = Object.assign({xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner",selectedFlowMode:"normal",patternStats:emptyPatternStats()}, JSON.parse(raw));
       loaded.tempoRuns = Object.assign({...DEFAULT_TEMPO_RUNS}, loaded.tempoRuns || {});
       loaded.patternStats = normalizePatternStats(loaded.patternStats);
       if(!loaded.mochiOwned) loaded.equippedFamiliar = null;
       if(!isTempoUnlockedByProgress(loaded.selectedTempo, loaded.tempoRuns)) loaded.selectedTempo = "beginner";
+      if(!RUN_FLOW_CONFIG[loaded.selectedFlowMode]) loaded.selectedFlowMode = "normal";
+      if(loaded.selectedFlowMode === "guided" && loaded.selectedTempo === "speedrun") loaded.selectedTempo = "normal";
       return loaded;
     }
   }catch(e){}
-  return {xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner",patternStats:emptyPatternStats()};
+  return {xp:0,best:0,skin:"classic",owned:["classic"],mochiOwned:false,equippedFamiliar:null,tempoRuns:{...DEFAULT_TEMPO_RUNS},selectedTempo:"beginner",selectedFlowMode:"normal",patternStats:emptyPatternStats()};
 }
 function saveState(){
   try{
@@ -795,6 +801,9 @@ function getTempoLockMessage(tempoId){
 
 function selectTempo(tempoId){
   const message = $("tempoMessage");
+  if(tempoId === "speedrun" && state.selectedFlowMode === "guided"){
+    state.selectedFlowMode = "normal";
+  }
   if(!isTempoUnlocked(tempoId)){
     if(message) message.textContent = getTempoLockMessage(tempoId);
     return;
@@ -802,14 +811,37 @@ function selectTempo(tempoId){
   state.selectedTempo = tempoId;
   if(isTempoUnlockedByProgress(tempoId)) persistedTempoSelection = tempoId;
   saveState();
+  renderFlowSelector();
   renderTempoSelector();
+}
+
+function selectFlowMode(flowMode){
+  if(!RUN_FLOW_CONFIG[flowMode]) return;
+  state.selectedFlowMode = flowMode;
+  if(flowMode === "guided" && state.selectedTempo === "speedrun"){
+    state.selectedTempo = isTempoUnlocked("normal") ? "normal" : "beginner";
+    persistedTempoSelection = isTempoUnlockedByProgress(state.selectedTempo) ? state.selectedTempo : "beginner";
+  }
+  saveState();
+  renderFlowSelector();
+  renderTempoSelector();
+}
+
+function renderFlowSelector(){
+  const options = $("flowOptions");
+  if(!options) return;
+  if(!RUN_FLOW_CONFIG[state.selectedFlowMode]) state.selectedFlowMode = "normal";
+  options.innerHTML = Object.entries(RUN_FLOW_CONFIG).map(([id, config])=>`
+    <button type="button" class="flow-option ${state.selectedFlowMode === id ? "selected" : ""}" aria-pressed="${state.selectedFlowMode === id}" onclick="selectFlowMode('${id}')">
+      <b>${config.label}</b><small>${config.description}</small>
+    </button>`).join("") + `<p class="flow-speedrun-note">Speedrun is available in Normal Mode.</p>`;
 }
 
 function renderTempoSelector(){
   const options = $("tempoOptions");
   if(!options) return;
   if(!isTempoUnlocked(state.selectedTempo)) state.selectedTempo = "beginner";
-  options.innerHTML = Object.entries(TEMPO_CONFIG).map(([id, config])=>{
+  options.innerHTML = Object.entries(TEMPO_CONFIG).filter(([id])=>state.selectedFlowMode === "normal" || id !== "speedrun").map(([id, config])=>{
     const unlocked = isTempoUnlocked(id);
     const selected = state.selectedTempo === id;
     return `<button type="button" class="tempo-option ${selected ? "selected" : ""} ${unlocked ? "" : "locked"}" aria-pressed="${selected}" onclick="selectTempo('${id}')">
@@ -898,7 +930,7 @@ function openScreen(id){
   if(id==="map") renderMap();
   if(id==="shop") renderShop();
   if(id==="library") renderLibrary();
-  if(id==="home"){ renderDevTools(); drawMini(); renderTempoSelector(); renderHomeFamiliar(); }
+  if(id==="home"){ renderDevTools(); drawMini(); renderFlowSelector(); renderTempoSelector(); renderHomeFamiliar(); }
 }
 function renderMap(){
   $("worldGrid").innerHTML = worlds.map(w=>{
@@ -1500,10 +1532,13 @@ function beginRun(worldId=activeWorld){
   clearCoachBox();
   activeWorld = worldId;
   const startPrice = 100;
-  const tempoId = isTempoUnlocked(state.selectedTempo) ? state.selectedTempo : "beginner";
+  const flowMode = [1,2].includes(world.id) && RUN_FLOW_CONFIG[state.selectedFlowMode] ? state.selectedFlowMode : "normal";
+  const requestedTempoId = flowMode === "guided" && state.selectedTempo === "speedrun" ? "normal" : state.selectedTempo;
+  const tempoId = isTempoUnlocked(requestedTempoId) ? requestedTempoId : "beginner";
   const tempo = TEMPO_CONFIG[tempoId];
   run = {
     world,
+    flowMode:tempoId === "speedrun" ? "normal" : flowMode,
     tempoId,
     tempo,
     tempoPreviewOnly:DEV_PREVIEW_MODE && !isTempoUnlockedByProgress(tempoId),
@@ -1560,7 +1595,7 @@ function beginRun(worldId=activeWorld){
   const initCandles = isMobile() ? 18 : 26;
   for(let i=0;i<initCandles;i++) addCandle();
   if(world.id === 2) prepareWorld2Question();
-  $("runMode").textContent = `${world.title} - ${tempo.label}`;
+  $("runMode").textContent = `${world.title} - ${RUN_FLOW_CONFIG[run.flowMode].label} - ${tempo.label}`;
   $("runHint").textContent = "Watch the candles move. Timer starts at Quest Moment.";
   $("scoreText").textContent = "0";
   $("timeText").textContent = "—";
@@ -3014,6 +3049,7 @@ function answer(label){
     else if(b.textContent === label) b.classList.add("wrong");
   });
   if(ok){
+    if(run.flowMode === "guided") return;
     const answeredQuestion = run.current;
     run.reviewTimer = setTimeout(()=>{
       if(!run || run.current !== answeredQuestion || !run.paused) return;
@@ -3269,6 +3305,7 @@ setInterval(()=>{ if($("home").classList.contains("active")) drawMini(); },1800)
 
 updateDevPreviewBadge("home");
 saveState();
+renderFlowSelector();
 renderTempoSelector();
 renderMap();
 renderShop();

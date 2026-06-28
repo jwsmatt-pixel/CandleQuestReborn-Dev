@@ -2,8 +2,8 @@
 
 ## Current build
 
-**v28.3.7 - Fast Correct Flow + Wrong Answer Coach**
-Build marker: `v28_3_7_fast_correct_flow_wrong_answer_coach`
+**v28.3.7 - Guided/Normal Mode Flow Split**
+Build marker: `v28_3_7_guided_normal_mode_flow_split`
 
 ## Base build
 
@@ -12,12 +12,15 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. Correct reads confirm immediately and auto-advance after 850ms without opening the Coach Tray. Wrong and timed-out reads pause in the fixed bottom Coach Tray for correction and require `Next`.
+World 1 and World 2 now separate teaching from fast reps. Guided Mode explains every answer in the fixed Coach Tray and waits for `Next`. Normal Mode auto-advances correct reads after 850ms while wrong and timed-out reads pause for correction.
 
 ## What changed in v28.3.7
 
-- Correct W1/W2 answers retain the answer highlight and chart-rim pulse, do not open the full Coach Tray, and auto-advance after an 850ms feedback pause.
-- Wrong and timed-out answers continue to show the correct-answer explanation in the fixed bottom Coach Tray and require `Next`.
+- Added a simple W1/W2 Guided Mode / Normal Mode selector.
+- Guided Mode shows the correct-answer explanation and `Next` after correct, wrong, and timed-out reads.
+- Normal Mode retains the answer highlight and chart-rim pulse, skips the full tray on correct reads, and auto-advances after 850ms.
+- Wrong and timed-out answers in both modes show correction in the fixed bottom Coach Tray and require `Next`.
+- Speedrun is limited to Normal Mode; Guided clears an active Speedrun selection and Speedrun always uses Normal flow.
 - `Need help?` remains an optional, non-answer-revealing overlay before answering and hides after any answer.
 - Final-question auto-advance still ends at the existing results flow; it does not skip the results screen.
 - W1/W2 answer pools, generators, Pattern Bible logic, scoring, timer behavior, chart rendering, W2 level-line stability, Q progress, iPhone cockpit, desktop layout, and dev mode remain unchanged.

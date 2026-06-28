@@ -34,7 +34,16 @@ h1{margin:0;font-size:28px;letter-spacing:-.05em}
 h2{font-size:clamp(42px,8vw,76px);line-height:.88;letter-spacing:-.075em;margin:0}
 .hero-copy{font-size:18px;line-height:1.45;color:var(--muted);font-weight:800;max-width:620px}
 .hero-note{font-size:14px;line-height:1.35;color:#36533d;font-weight:900;max-width:600px;margin:10px 0 0}
-.tempo-picker{margin-top:16px;max-width:650px}
+.flow-picker,.tempo-picker{margin-top:16px;max-width:650px}
+.flow-picker-head,.tempo-picker-head{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-bottom:8px}
+.flow-picker-head b,.tempo-picker-head b{display:block;font-size:15px}
+.flow-picker-head span,.tempo-picker-head span{display:block;color:var(--muted);font-size:11px;font-weight:850}
+.flow-options{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.flow-option{min-width:0;text-align:left;border:2px solid var(--line);border-radius:16px;padding:10px;background:#fbfffc;color:var(--ink);cursor:pointer}
+.flow-option.selected{border-color:var(--green);background:#f1ffe8;box-shadow:0 3px 0 #bdeca9}
+.flow-option b,.flow-option small{display:block}
+.flow-option small{margin-top:4px;color:var(--muted);font-size:10px;line-height:1.25}
+.flow-speedrun-note{grid-column:1/-1;margin:0 2px;color:var(--muted);font-size:10px;font-weight:850}
 .tempo-picker-head{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-bottom:8px}
 .tempo-picker-head b{display:block;font-size:15px}
 .tempo-picker-head span{display:block;color:var(--muted);font-size:11px;font-weight:850}
@@ -154,6 +163,7 @@ body[data-skin="gold"]{--bg:#13110c;--card:#1c1810;--ink:#fff8df;--muted:#c9b982
   #app{padding:10px}
   .topbar{align-items:flex-start;flex-direction:column}
   .hero{grid-template-columns:1fr;padding:20px}
+  .flow-option{padding:9px 11px}
   .tempo-options{grid-template-columns:1fr}
   .tempo-option{padding:9px 11px}
   .phone-card{display:none}

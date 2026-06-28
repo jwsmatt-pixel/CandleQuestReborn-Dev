@@ -1,13 +1,15 @@
 # Candle Quest Reborn — Changelog
 
-## v28.3.7 - Fast Correct Flow + Wrong Answer Coach
+## v28.3.7 - Guided/Normal Mode Flow Split
 
 ### Changed
 
-- Correct W1/W2 answers now keep the existing button/chart-rim confirmation, skip the full Coach Tray, and auto-advance after an 850ms feedback pause.
-- Wrong and timed-out answers continue to open the fixed bottom Coach Tray and require `Next`.
+- Added a simple W1/W2 choice between Guided Mode and Normal Mode.
+- Guided Mode opens the fixed Coach Tray after every answer and requires `Next`.
+- Normal Mode keeps correct reads moving after an 850ms confirmation; wrong and timed-out reads still open the correction tray and require `Next`.
+- Speedrun is available only in Normal Mode. Selecting Guided clears Speedrun, and selecting Speedrun switches the flow to Normal.
 - `Need help?` remains optional before answering and is hidden after an answer.
-- Updated the build marker to `v28_3_7_fast_correct_flow_wrong_answer_coach` and the visible badge to `v28.3.7`.
+- Updated the build marker to `v28_3_7_guided_normal_mode_flow_split` and the visible badge to `v28.3.7`.
 
 ### Preserved
 
