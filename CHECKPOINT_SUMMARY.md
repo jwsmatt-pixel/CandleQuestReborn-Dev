@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3 Checkpoint Summary
+# Candle Quest Reborn - v28.3.1 Checkpoint Summary
 
 ## Current build
 
-**v28.3 - World 2 Coach / Library Polish + Future Shelf**
-Build marker: `v28_3_world_2_coach_library_polish`
+**v28.3.1 - W1/W2 Fixed Bottom Coach Box**
+Build marker: `v28_3_1_w1_w2_fixed_bottom_coach_box`
 
 ## Base build
 
@@ -12,7 +12,16 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 remains the locked/stable playable baseline. World 2 now explains each correct level read with short coaching and teaching tags while preserving its generator, replay identity, stable line, and compact mobile framing.
+World 1 and World 2 now share a stable bottom Coach Box beneath the answer dock. Wrong and timed-out reads remain available until the player continues, while correct reads preserve the faster run flow.
+
+## What changed in v28.3.1
+
+- The World 2 Level Coach no longer appears as a transient layout element near the chart.
+- W1 Candle Coach and W2 Level Coach guidance use one fixed-height bottom console beneath the answer buttons.
+- Wrong and timed-out reads show the correct answer, explanation, tags, and an explicit `Next` control.
+- Correct reads show compact confirmation with optional `Show coach` guidance and otherwise advance automatically.
+- `Dim` keeps the console footprint stable and resumes the run without a layout jump.
+- W1/W2 answer pools, generators, Pattern Bible logic, score/XP/streak logic, and future world layouts remain unchanged.
 
 ## What changed in v28.3
 

@@ -1,5 +1,20 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.1 - W1/W2 Fixed Bottom Coach Box
+
+### Changed
+
+- Replaced the transient World 2 feedback card with a permanently reserved Coach Box beneath the answer buttons, keeping the chart and answer dock anchored.
+- Added the same lightweight Coach Box structure to World 1 using existing Candle Lens and Pattern Bible guidance.
+- Wrong and timed-out W1/W2 reads now hold on readable guidance and require `Next`; correct reads stay compact and continue automatically unless the player opens the coach.
+- Added subtle `Show coach` and `Dim` controls without changing the Coach Box footprint or iOS safe-area foundation.
+- Updated the build marker to `v28_3_1_w1_w2_fixed_bottom_coach_box`.
+
+### Preserved
+
+- World 1 and World 2 answer pools, generators, Pattern Bible logic, World 2 chart behavior, scoring, progression, and 10-question run flow are unchanged.
+- Future world layouts remain untouched.
+
 ## v28.3 - World 2 Coach / Library Polish + Future Shelf
 
 ### Changed

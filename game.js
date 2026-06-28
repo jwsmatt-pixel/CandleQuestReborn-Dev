@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_world_2_coach_library_polish";
+const CANDLE_QUEST_BUILD = "v28_3_1_w1_w2_fixed_bottom_coach_box";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3 - World 2 Coach / Library Polish";
+    b.textContent = "v28.3.1 - W1/W2 Fixed Bottom Coach Box";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -476,19 +476,106 @@ function renderLibrary(category="Candle Basics"){
   else if($("studyFocus")) $("studyFocus").innerHTML = `<div><b>Study Focus: Level Reads</b><p>Review holds by spotting defended floors and ceilings. Review breaks by looking for strong closes beyond the level.</p></div>`;
 }
 
-function showWorld2Coach(answer){
-  const host = $("levelCoach");
-  const concept = WORLD_2_RULES_BIBLE.concepts[answer];
-  if(!host || !concept) return;
-  host.innerHTML = `<div><b>Level Coach · ${answer}</b><p>${concept.coachFeedback}</p></div><div class="level-coach-tags">${concept.coachingTags.map(tag=>`<span>${tag}</span>`).join("")}</div>`;
-  host.classList.remove("hidden");
+function getWorld1CoachContent(answer){
+  const definition = patternDefinitions["Candle Basics"].find(item=>item.name === answer);
+  const lens = CANDLE_LENS_PATTERNS.find(item=>item.name === answer);
+  if(!definition) return null;
+  return {
+    label:"Candle Coach",
+    title:answer,
+    explanation:lens?.meaning || definition.read,
+    tags:(lens?.features || [definition.cue]).slice(0,3)
+  };
 }
 
-function clearWorld2Coach(){
+function getWorld2CoachContent(answer){
+  const concept = WORLD_2_RULES_BIBLE.concepts[answer];
+  if(!concept) return null;
+  return {
+    label:"Level Coach",
+    title:answer,
+    explanation:concept.coachFeedback,
+    tags:concept.coachingTags
+  };
+}
+
+function renderCoachBox({answer=null, full=false, correct=false, awaitingContinue=false}={}){
+  const host = $("levelCoach");
+  if(!host || !run || ![1,2].includes(run.world.id)) return;
+  const label = run.world.id === 1 ? "Candle Coach" : "Level Coach";
+  const content = answer && (run.world.id === 1 ? getWorld1CoachContent(answer) : getWorld2CoachContent(answer));
+  host.classList.toggle("is-quiet", !full);
+  host.classList.remove("is-dimmed");
+
+  if(!full || !content){
+    const message = correct ? "Correct read. Keep the chart moving." : "Guidance is ready when you need it.";
+    host.innerHTML = `
+      <div class="coach-box-head"><b>${label}</b><button class="coach-box-toggle" type="button" onclick="toggleCoachBox()" aria-label="Show coach guidance">Show coach</button></div>
+      <p class="coach-box-status">${message}</p>`;
+    return;
+  }
+
+  host.innerHTML = `
+    <div class="coach-box-head">
+      <b>${content.label} · ${content.title}</b>
+      <button class="coach-box-toggle" type="button" onclick="toggleCoachBox()" aria-label="Dim coach guidance">Dim</button>
+    </div>
+    <p class="coach-box-copy">${content.explanation}</p>
+    <div class="coach-box-footer">
+      <div class="level-coach-tags">${content.tags.map(tag=>`<span>${tag}</span>`).join("")}</div>
+      ${awaitingContinue ? `<button class="coach-box-next" type="button" onclick="continueFromCoach()">Next</button>` : ""}
+    </div>`;
+}
+
+function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContinue=false}={}){
+  if(!run || ![1,2].includes(run.world.id)) return;
+  run.coachAnswer = answer;
+  run.coachCorrect = correct;
+  run.coachAwaitingContinue = awaitingContinue;
+  renderCoachBox({answer, full:forceFull, correct, awaitingContinue});
+}
+
+function toggleCoachBox(){
+  const host = $("levelCoach");
+  if(!host || !run || !run.coachAnswer) return;
+  const isFull = !host.classList.contains("is-quiet");
+  if(isFull){
+    renderCoachBox({answer:run.coachAnswer, full:false, correct:run.coachCorrect});
+    host.classList.add("is-dimmed");
+    run.reviewTimer = setTimeout(()=>finishQuestMoment(), 500);
+    return;
+  }
+  if(run.reviewTimer){
+    clearTimeout(run.reviewTimer);
+    run.reviewTimer = null;
+  }
+  renderCoachBox({
+    answer:run.coachAnswer,
+    full:true,
+    correct:run.coachCorrect,
+    awaitingContinue:true
+  });
+}
+
+function continueFromCoach(){
+  if(!run) return;
+  if(run.reviewTimer){
+    clearTimeout(run.reviewTimer);
+    run.reviewTimer = null;
+  }
+  finishQuestMoment();
+}
+
+function clearCoachBox(){
   const host = $("levelCoach");
   if(!host) return;
-  host.classList.add("hidden");
-  host.innerHTML = "";
+  host.classList.remove("is-dimmed");
+  if(run){
+    run.coachAnswer = null;
+    run.coachCorrect = false;
+    run.coachAwaitingContinue = false;
+  }
+  renderCoachBox();
 }
 
 function renderStudyFocus(){
@@ -1268,7 +1355,7 @@ function drawCandleLensCanvas(canvas, candles, focused){
 function beginRun(worldId=activeWorld){
   const world = worlds.find(w=>w.id===worldId) || worlds[0];
   if(world.comingSoon) return;
-  clearWorld2Coach();
+  clearCoachBox();
   activeWorld = worldId;
   const startPrice = 100;
   const tempoId = isTempoUnlocked(state.selectedTempo) ? state.selectedTempo : "beginner";
@@ -1319,8 +1406,13 @@ function beginRun(worldId=activeWorld){
     maxQuests:10,
     questTime:7,
     questLeft:7,
-    questTimer:null
+    questTimer:null,
+    reviewTimer:null,
+    coachAnswer:null,
+    coachCorrect:false,
+    coachAwaitingContinue:false
   };
+  clearCoachBox();
   // Mobile: fewer initial candles for clarity
   const initCandles = isMobile() ? 18 : 26;
   for(let i=0;i<initCandles;i++) addCandle();
@@ -1351,13 +1443,13 @@ function beginRun(worldId=activeWorld){
   },tempo.replayInterval);
 }
 function quitRun(){
-  if(run){clearInterval(run.timer);clearInterval(run.tick);clearInterval(run.questTimer);}
+  if(run){clearInterval(run.timer);clearInterval(run.tick);clearInterval(run.questTimer);clearTimeout(run.reviewTimer);}
   run=null;
   openScreen("home");
 }
 function endRun(){
   if(!run) return;
-  clearInterval(run.timer);clearInterval(run.tick);clearInterval(run.questTimer);
+  clearInterval(run.timer);clearInterval(run.tick);clearInterval(run.questTimer);clearTimeout(run.reviewTimer);
 
   const correct = run.correctCount || 0;
   const maxQ = run.maxQuests || 10;
@@ -2503,17 +2595,20 @@ function timeoutQuestMoment(){
   recordMissedRead(run.current, "Timeout");
   recordPatternAttempt(run.current, false);
   $("runHint").textContent = `Time up — answer was ${run.current}.`;
-  if(run.world.id === 2) showWorld2Coach(run.current);
+  showAnswerCoach(run.current, {forceFull:true, awaitingContinue:true});
   document.querySelectorAll("#answerPad button").forEach(b=>{
     b.disabled = true;
     if(b.textContent === run.current) b.classList.add("correct");
   });
-  setTimeout(()=>finishQuestMoment(),run.world.id === 2 ? 1800 : 850);
 }
 
 function finishQuestMoment(){
   if(!run) return;
   stopQuestTimer();
+  if(run.reviewTimer){
+    clearTimeout(run.reviewTimer);
+    run.reviewTimer = null;
+  }
   run.questCount = (run.questCount || 0) + 1;
   if(run.questCount >= (run.maxQuests || 10)){
     endRun();
@@ -2528,7 +2623,7 @@ function finishQuestMoment(){
   if(run.world.id === 2) prepareWorld2Question();
   else run.nextFreeze = 5 + Math.floor(Math.random()*5);
   $("freezeBanner").classList.add("hidden");
-  clearWorld2Coach();
+  clearCoachBox();
   renderAnswerDock("waiting");
   $("timeText").textContent = "—";
   $("runHint").textContent = run.world.id === 2
@@ -2644,7 +2739,7 @@ function freezeScenario(){
     $("freezeBanner").classList.remove("hidden");
     $("freezeBanner").textContent = "QUEST MOMENT · READ THE LEVEL";
     $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
-    clearWorld2Coach();
+    clearCoachBox();
     renderAnswerDock("quest", shuffle(pool));
     drawGame(true);
     startQuestTimer();
@@ -2743,13 +2838,19 @@ function answer(label){
   $("runHint").textContent = run.world.id === 2
     ? (ok ? "Correct read." : `Not this time — the answer was ${run.current}.`)
     : (ok ? "Correct read — market resumes." : `Wrong read — answer was ${run.current}.`);
-  if(run.world.id === 2) showWorld2Coach(run.current);
+  showAnswerCoach(run.current, {
+    correct:ok,
+    forceFull:!ok,
+    awaitingContinue:!ok
+  });
   document.querySelectorAll("#answerPad button").forEach(b=>{
     b.disabled = true;
     if(b.textContent === run.current) b.classList.add("correct");
     else if(b.textContent === label) b.classList.add("wrong");
   });
-  setTimeout(()=>finishQuestMoment(),run.world.id === 2 ? 1800 : 750);
+  if(ok){
+    run.reviewTimer = setTimeout(()=>finishQuestMoment(), run.world.id === 2 ? 1100 : 750);
+  }
 }
 
 function recordPatternAttempt(patternName, wasCorrect){
