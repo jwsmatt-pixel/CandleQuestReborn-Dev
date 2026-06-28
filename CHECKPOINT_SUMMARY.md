@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.4.0 Checkpoint Summary
+# Candle Quest Reborn - v28.4.1 Checkpoint Summary
 
 ## Current build
 
-**v28.4.0 - W1/W2 Layout Standard Lock**
-Build marker: `v28_4_0_w1_w2_layout_standard_lock`
+**v28.4.1 - W1/W2 Smoke Test + Cleanup Pass**
+Build marker: `v28_4_1_w1_w2_smoke_test_cleanup`
 
 ## Base build
 
@@ -13,6 +13,13 @@ Build marker: `v26_3_0_chart_viewport_unification`
 ## Current status
 
 World 1 and World 2 retain their teaching/rep split with clearer training-focused setup copy. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.4.1
+
+- Audited active W1/W2 UI and state for obsolete coach controls, duplicate help systems, and stale Fast Reps/Speedrun guidance.
+- Confirmed Guided Training retains optional non-answer-revealing help plus post-answer coaching and `Next`.
+- Confirmed Fast Reps and Speedrun hide all guidance surfaces and retain timed automatic progression.
+- Rechecked the locked replay geometry, exact W1/W2 answer pools, W2 level viewport, mobile cockpit, desktop setup, and dev-mode paths.
 
 ## What changed in v28.4.0
 

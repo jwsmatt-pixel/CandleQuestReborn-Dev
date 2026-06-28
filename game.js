@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_4_0_w1_w2_layout_standard_lock";
+const CANDLE_QUEST_BUILD = "v28_4_1_w1_w2_smoke_test_cleanup";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.4.0";
+    b.textContent = "v28.4.1";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }

@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.4.1 - W1/W2 Smoke Test + Cleanup Pass
+
+### Changed
+
+- Audited the active W1/W2 training arena for obsolete coach controls and stale pre-answer guidance; no live legacy controls remain.
+- Confirmed Guided Training owns Need Help and post-answer coaching, while Fast Reps and Speedrun hide guidance and auto-advance after feedback.
+- Confirmed the fixed help and Coach Tray layers preserve replay geometry and the locked W2 level viewport.
+- Updated the build marker to `v28_4_1_w1_w2_smoke_test_cleanup` and the visible badge to `v28.4.1`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, scoring, timers, progression, Pattern Bible wording, and World 2 support/resistance behavior.
+- Future worlds, Mochi, tutorials, shop logic, XP economy, Pattern Library, Study Progress, and unlock systems.
+
 ## v28.4.0 - W1/W2 Layout Standard Lock
 
 ### Changed

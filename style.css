@@ -3159,7 +3159,7 @@ body[data-screen="game"] .coach-tray.is-answer{
   }
 }
 
-/* v28.4.0 - W1/W2 use one locked training arena.
+/* v28.4.1 - W1/W2 locked training arena smoke-test baseline.
    Mode-specific UI remains out of flow so the replay viewport never moves. */
 body[data-screen="game"][data-training-style="normal"] .need-help-layer,
 body[data-screen="game"][data-candle-speed="speedrun"] .need-help-layer,
