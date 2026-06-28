@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.4 Checkpoint Summary
+# Candle Quest Reborn - v28.3.4.1 Checkpoint Summary
 
 ## Current build
 
-**v28.3.4 - Coach Manual Reopen + Larger Q Progress**
-Build marker: `v28_3_4_coach_manual_reopen_larger_q_progress`
+**v28.3.4.1 - Show Coach Always Available Repair**
+Build marker: `v28_3_4_1_show_coach_always_available_repair`
 
 ## Base build
 
@@ -13,6 +13,14 @@ Build marker: `v26_3_0_chart_viewport_unification`
 ## Current status
 
 World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. The fixed Coach Box keeps automatic suppression run-scoped while preserving independent manual guidance access.
+
+## What changed in v28.3.4.1
+
+- `Show coach` remains functional throughout W1/W2 runs, including after `Don't show again` suppresses automatic coaching.
+- Manual opening after an answer shows guidance for that current result without re-enabling automatic interruptions.
+- Manual opening before an answer shows a neutral ready state without revealing the answer or reusing stale result guidance.
+- Automatic suppression remains scoped to one run and resets on every new run.
+- W1/W2 gameplay, scoring, timer, answer pools, generators, chart feedback, and 10-question flow remain unchanged.
 
 ## What changed in v28.3.4
 

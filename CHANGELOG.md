@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.4.1 - Show Coach Always Available Repair
+
+### Changed
+
+- Kept `Show coach` functional after `Don't show again`; run-scoped automatic suppression no longer blocks manual result guidance.
+- Added a neutral, non-answer-revealing ready state when `Show coach` is opened before the current question has been answered.
+- Kept manual guidance tied to the current result and preserved normal automatic progression when suppressed guidance is closed.
+- Confirmed automatic coach suppression resets when a new W1 or W2 run starts.
+- Updated the build marker to `v28_3_4_1_show_coach_always_available_repair` and the visible badge to `v28.3.4.1`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, Pattern Bible logic, chart-rim feedback, scoring, timer, streaks, 10-question flow, fixed Coach Box, large Q progress, and iPhone cockpit layout.
+
 ## v28.3.4 - Coach Manual Reopen + Larger Q Progress
 
 ### Changed

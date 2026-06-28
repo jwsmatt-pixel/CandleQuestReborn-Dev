@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_4_coach_manual_reopen_larger_q_progress";
+const CANDLE_QUEST_BUILD = "v28_3_4_1_show_coach_always_available_repair";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.3 - iPhone HUD Cleanup + Coach Suppression";
+    b.textContent = "v28.3.4.1 - Show Coach Always Available Repair";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -507,6 +507,25 @@ function renderCoachBox({answer=null, full=false, correct=false, awaitingContinu
   host.classList.toggle("is-quiet", !full);
   host.classList.remove("is-dimmed");
 
+  if(full && !content){
+    const readyCopy = run.world.id === 1
+      ? "Read the current chart first, then choose the answer that best matches the candle structure and its location."
+      : "Read how price behaves at the marked level, then choose the hold, rejection, or break that best matches the chart.";
+    const readyTags = run.world.id === 1
+      ? ["watch the setup","check the location","make your read"]
+      : ["find the level","check the close","make your read"];
+    host.innerHTML = `
+      <div class="coach-box-head">
+        <b>${label} · Ready</b>
+        <button class="coach-box-toggle" type="button" onclick="toggleCoachBox()" aria-label="Hide coach guidance">Hide coach</button>
+      </div>
+      <p class="coach-box-copy">${readyCopy}</p>
+      <div class="coach-box-footer">
+        <div class="level-coach-tags">${readyTags.map(tag=>`<span>${tag}</span>`).join("")}</div>
+      </div>`;
+    return;
+  }
+
   if(!full || !content){
     const message = correct ? "Correct read. Keep the chart moving." : "Guidance is ready when you need it.";
     host.innerHTML = `
@@ -537,10 +556,15 @@ function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContin
 }
 
 function openCoachManually(){
-  if(!run || !run.coachAnswer) return;
+  if(!run) return;
   if(run.reviewTimer){
     clearTimeout(run.reviewTimer);
     run.reviewTimer = null;
+  }
+  if(!run.coachAnswer){
+    run.coachAwaitingContinue = false;
+    renderCoachBox({full:true});
+    return;
   }
   run.coachAwaitingContinue = !run.coachSuppressed;
   renderCoachBox({
@@ -553,11 +577,11 @@ function openCoachManually(){
 
 function toggleCoachBox(){
   const host = $("levelCoach");
-  if(!host || !run || !run.coachAnswer) return;
+  if(!host || !run) return;
   const isFull = !host.classList.contains("is-quiet");
   if(isFull){
     renderCoachBox({answer:run.coachAnswer, full:false, correct:run.coachCorrect});
-    run.reviewTimer = setTimeout(()=>finishQuestMoment(), 500);
+    if(run.coachAnswer) run.reviewTimer = setTimeout(()=>finishQuestMoment(), 500);
     return;
   }
   openCoachManually();
