@@ -1,8 +1,9 @@
-const CANDLE_QUEST_BUILD = "v28_3_8_w1_w2_final_mobile_polish_pass";
+const CANDLE_QUEST_BUILD = "v28_3_9_normal_mode_clean_reps";
 const CORRECT_AUTO_ADVANCE_MS = 850;
+const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
   guided:Object.freeze({label:"Guided Mode", description:"Coach explanations and Next after every answer."}),
-  normal:Object.freeze({label:"Normal Mode", description:"Correct reads keep moving; misses pause for coaching."})
+  normal:Object.freeze({label:"Normal Mode", description:"Fast reps with automatic answer feedback."})
 });
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
@@ -11,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.8";
+    b.textContent = "v28.3.9";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -563,9 +564,10 @@ function renderNeedHelp(guidance){
   const button = $("needHelpButton");
   const hint = $("needHelpHint");
   if(!layer || !button || !hint) return;
-  const unanswered = Boolean(guidance?.state.question && !guidance.state.answered);
+  const guided = run?.flowMode === "guided";
+  const unanswered = Boolean(guided && guidance?.state.question && !guidance.state.answered);
   const ready = unanswered && Boolean(run?.coachHelpReady);
-  layer.hidden = !guidance?.state.question;
+  layer.hidden = !guided || !guidance?.state.question;
   button.hidden = !ready;
   button.setAttribute("aria-expanded", String(ready && Boolean(run?.coachHelpOpen)));
   hint.hidden = !ready || !run?.coachHelpOpen;
@@ -601,12 +603,12 @@ function positionNeedHelpOverlay(){
 }
 
 function markNeedHelpReady(){
-  if(!run || !run.current || !run.paused) return;
+  if(!run || run.flowMode !== "guided" || !run.current || !run.paused) return;
   const token = (run.coachHelpReadyToken || 0) + 1;
   run.coachHelpReadyToken = token;
   run.coachHelpReady = false;
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    if(!run || run.coachHelpReadyToken !== token || !run.current || !run.paused) return;
+    if(!run || run.flowMode !== "guided" || run.coachHelpReadyToken !== token || !run.current || !run.paused) return;
     run.coachHelpReady = true;
     renderCurrentCoachContent();
   }));
@@ -638,7 +640,7 @@ function renderCoachBox({guidance=null, showResult=false}={}){
 function renderCurrentCoachContent(){
   const guidance = resolveCurrentCoachGuidance();
   renderNeedHelp(guidance);
-  if(!guidance){
+  if(!guidance || run?.flowMode !== "guided"){
     const host = $("levelCoach");
     if(host){
       host.classList.add("is-idle");
@@ -649,12 +651,18 @@ function renderCurrentCoachContent(){
   }
   renderCoachBox({
     guidance,
-    showResult:Boolean(guidance.state.answered && (run.flowMode === "guided" || !guidance.state.correct))
+    showResult:Boolean(guidance.state.answered)
   });
 }
 
 function showAnswerCoach(answer, {correct=false, selectedAnswer=null, resultState=null}={}){
   if(!run || ![1,2].includes(run.world.id)) return;
+  if(run.flowMode !== "guided"){
+    run.coachResult = null;
+    run.coachHelpOpen = false;
+    renderCurrentCoachContent();
+    return;
+  }
   run.coachResult = {
     question:answer,
     selectedAnswer,
@@ -666,7 +674,7 @@ function showAnswerCoach(answer, {correct=false, selectedAnswer=null, resultStat
 }
 
 function showNeedHelp(){
-  if(!run) return;
+  if(!run || run.flowMode !== "guided") return;
   const guidance = resolveCurrentCoachGuidance();
   if(!run.coachHelpReady || !guidance || guidance.state.answered || !guidance.state.question) return;
   run.coachHelpOpen = !run.coachHelpOpen;
@@ -823,6 +831,10 @@ function selectFlowMode(flowMode){
   if(flowMode === "guided" && state.selectedTempo === "speedrun"){
     state.selectedTempo = isTempoUnlocked("normal") ? "normal" : "beginner";
     persistedTempoSelection = isTempoUnlockedByProgress(state.selectedTempo) ? state.selectedTempo : "beginner";
+  }
+  if(run && [1,2].includes(run.world?.id)){
+    run.flowMode = flowMode;
+    clearCoachBox();
   }
   saveState();
   renderFlowSelector();
@@ -2785,6 +2797,7 @@ function timeoutQuestMoment(){
     b.disabled = true;
     if(b.textContent === run.current) b.classList.add("correct");
   });
+  if(run.flowMode === "normal") scheduleNormalAdvance(WRONG_AUTO_ADVANCE_MS);
 }
 
 function finishQuestMoment(){
@@ -3050,15 +3063,20 @@ function answer(label){
     if(b.textContent === run.current) b.classList.add("correct");
     else if(b.textContent === label) b.classList.add("wrong");
   });
-  if(ok){
-    if(run.flowMode === "guided") return;
-    const answeredQuestion = run.current;
-    run.reviewTimer = setTimeout(()=>{
-      if(!run || run.current !== answeredQuestion || !run.paused) return;
-      run.reviewTimer = null;
-      finishQuestMoment();
-    }, CORRECT_AUTO_ADVANCE_MS);
+  if(run.flowMode === "normal"){
+    scheduleNormalAdvance(ok ? CORRECT_AUTO_ADVANCE_MS : WRONG_AUTO_ADVANCE_MS);
   }
+}
+
+function scheduleNormalAdvance(delay){
+  if(!run || run.flowMode !== "normal" || !run.current || !run.paused) return;
+  if(run.reviewTimer) clearTimeout(run.reviewTimer);
+  const answeredQuestion = run.current;
+  run.reviewTimer = setTimeout(()=>{
+    if(!run || run.flowMode !== "normal" || run.current !== answeredQuestion || !run.paused) return;
+    run.reviewTimer = null;
+    finishQuestMoment();
+  }, delay);
 }
 
 function recordPatternAttempt(patternName, wasCorrect){

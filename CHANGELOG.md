@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.9 - Normal Mode Clean Reps
+
+### Changed
+
+- Limited `Need help?`, optional pre-answer hints, the post-answer Coach Tray, and `Next` to Guided Mode.
+- Normal Mode now keeps answer highlights and chart-rim feedback, then auto-advances after 850ms for correct reads or 1300ms for wrong and timed-out reads.
+- Speedrun inherits the clean Normal Mode flow with no guidance UI.
+- Mode and question transitions clear stale help and Coach Tray state.
+- Updated the build marker to `v28_3_9_normal_mode_clean_reps` and the visible badge to `v28.3.9`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, checking, scoring, timer behavior, chart rendering, W2 level-line stability, Q progress, iPhone cockpit, desktop layout, Study Progress, Pattern Library, and dev mode.
+
 ## v28.3.8 - W1/W2 Final Mobile Polish Pass
 
 ### Changed
