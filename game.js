@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_1_w1_w2_fixed_bottom_coach_box";
+const CANDLE_QUEST_BUILD = "v28_3_2_iphone_cockpit_chart_rim_feedback";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.1 - W1/W2 Fixed Bottom Coach Box";
+    b.textContent = "v28.3.2 - iPhone Cockpit + Chart Rim Feedback";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1232,6 +1232,27 @@ function showStreakLost(){
   setTimeout(()=>{ updateStreakHud(); },900);
 }
 
+function updateRunProgress(){
+  if(!run) return;
+  const progress = $("runProgress");
+  if(!progress) return;
+  const currentQuest = Math.min((run.questCount || 0) + 1, run.maxQuests || 10);
+  progress.textContent = `Q${currentQuest}/${run.maxQuests || 10}`;
+  progress.setAttribute("aria-label", `Quest ${currentQuest} of ${run.maxQuests || 10}`);
+}
+
+function pulseChartRim(result, streak=false){
+  const chart = document.querySelector(".chart-wrap");
+  if(!chart) return;
+  const className = result === "correct"
+    ? (streak ? "rim-streak" : "rim-correct")
+    : "rim-wrong";
+  chart.classList.remove("rim-correct", "rim-streak", "rim-wrong");
+  void chart.offsetWidth;
+  chart.classList.add(className);
+  setTimeout(()=>chart.classList.remove(className), 900);
+}
+
 
 // ─── MOBILE DETECTION ─────────────────────────────────────────────────────────
 function isMobile(){
@@ -1421,6 +1442,7 @@ function beginRun(worldId=activeWorld){
   $("runHint").textContent = "Watch the candles move. Timer starts at Quest Moment.";
   $("scoreText").textContent = "0";
   $("timeText").textContent = "—";
+  updateRunProgress();
   renderAnswerDock("waiting");
   $("freezeBanner").classList.add("hidden");
   openScreen("game");
@@ -2592,6 +2614,7 @@ function timeoutQuestMoment(){
   if(lostStreak) showStreakLost();
   $("scoreText").textContent = run.score;
   if(!lostStreak) updateStreakHud();
+  pulseChartRim("wrong");
   recordMissedRead(run.current, "Timeout");
   recordPatternAttempt(run.current, false);
   $("runHint").textContent = `Time up — answer was ${run.current}.`;
@@ -2610,6 +2633,7 @@ function finishQuestMoment(){
     run.reviewTimer = null;
   }
   run.questCount = (run.questCount || 0) + 1;
+  updateRunProgress();
   if(run.questCount >= (run.maxQuests || 10)){
     endRun();
     return;
@@ -2835,6 +2859,7 @@ function answer(label){
 
   $("scoreText").textContent = run.score;
   if(ok) updateStreakHud();
+  pulseChartRim(ok ? "correct" : "wrong", ok && run.combo >= 2);
   $("runHint").textContent = run.world.id === 2
     ? (ok ? "Correct read." : `Not this time — the answer was ${run.current}.`)
     : (ok ? "Correct read — market resumes." : `Wrong read — answer was ${run.current}.`);

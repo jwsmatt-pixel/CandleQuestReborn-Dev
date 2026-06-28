@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.1 Checkpoint Summary
+# Candle Quest Reborn - v28.3.2 Checkpoint Summary
 
 ## Current build
 
-**v28.3.1 - W1/W2 Fixed Bottom Coach Box**
-Build marker: `v28_3_1_w1_w2_fixed_bottom_coach_box`
+**v28.3.2 - iPhone Cockpit Simplification + Chart Rim Feedback**
+Build marker: `v28_3_2_iphone_cockpit_chart_rim_feedback`
 
 ## Base build
 
@@ -12,7 +12,16 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 now share a stable bottom Coach Box beneath the answer dock. Wrong and timed-out reads remain available until the player continues, while correct reads preserve the faster run flow.
+World 1 and World 2 now use a cleaner compact mobile cockpit, with static progress above the chart, temporary answer feedback on the chart rim, and the fixed Coach Box preserved below the answer dock.
+
+## What changed in v28.3.2
+
+- Mobile progress uses `Q1/10` through `Q10/10`; the detailed Quest Moment and timer sentence remains available on desktop only.
+- The mobile back arrow now sits inside the cockpit beside XP/Shop, reclaiming the old separate left column while preserving its 44px tap target.
+- The large mobile streak row is hidden so the cockpit prioritises title, progress, score, timer, XP/Shop, and Exit.
+- Correct and maintained-streak reads pulse the outer chart rim green; wrong reads, timeouts, and lost streaks pulse it red.
+- The rim effect stays outside the canvas content and respects reduced-motion preferences.
+- The v28.3.1 fixed bottom Coach Box and all W1/W2 gameplay, content, scoring, and chart rules remain unchanged.
 
 ## What changed in v28.3.1
 

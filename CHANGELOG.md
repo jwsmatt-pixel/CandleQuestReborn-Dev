@@ -1,5 +1,20 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.2 - iPhone Cockpit Simplification + Chart Rim Feedback
+
+### Changed
+
+- Reclaimed the separate mobile exit column and moved the 44px back-arrow control into the cockpit beside the XP/Shop wallet.
+- Replaced the long mobile Quest Moment status sentence with compact `Qn/10` progress while retaining the detailed status copy on desktop.
+- Removed the bulky permanent streak row from the mobile cockpit; desktop streak presentation and all streak scoring remain unchanged.
+- Added subtle green chart-rim pulses for correct reads and maintained streaks, plus red pulses for wrong reads, timeouts, and lost streaks.
+- Updated the build marker to `v28_3_2_iphone_cockpit_chart_rim_feedback`.
+
+### Preserved
+
+- The fixed bottom W1/W2 Coach Box, exact answer pools, generators, Pattern Bible rules, World 2 chart behavior, scoring/XP logic, shop, Mochi, tempo unlocks, and 10-question flow are unchanged.
+- Desktop retains its existing full status copy and Exit control.
+
 ## v28.3.1 - W1/W2 Fixed Bottom Coach Box
 
 ### Changed

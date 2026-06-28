@@ -96,14 +96,14 @@
     </main>
 
     <main id="game" class="screen">
-      <button class="mobile-game-exit" type="button" onclick="quitRun()" aria-label="Exit run" title="Exit run">&#8592;</button>
       <section class="game-shell">
         <div class="game-hud">
           <button class="ghost desktop-exit" onclick="quitRun()">← Exit</button>
-          <div class="run-copy"><b id="runMode">Pattern Run</b><span id="runHint">Watch the channel. Timer starts at Quest Moment.</span><small>Quest Moment = the setup you need to read.</small></div>
+          <div class="run-copy"><b id="runMode">Pattern Run</b><span id="runHint">Watch the channel. Timer starts at Quest Moment.</span><span id="runProgress" aria-label="Quest 1 of 10">Q1/10</span><small>Quest Moment = the setup you need to read.</small></div>
           <div class="hud-stats"><span id="scoreText">0</span><small>score</small></div>
           <div class="hud-stats"><span id="timeText">—</span><small>sec</small></div>
           <div class="game-wallet-mini"><span id="gameXpText">0 XP</span><button onclick="openScreen('shop')">Shop</button></div>
+          <button class="mobile-game-exit" type="button" onclick="quitRun()" aria-label="Exit run" title="Exit run">&#8592;</button>
         </div>
 
         <div class="chart-wrap">
