@@ -1,5 +1,18 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.4.2 - Show Coach Current Lesson Repair
+
+### Changed
+
+- Made `Hide coach` a visual-only collapse that preserves the active question and answered-result guidance.
+- Rehydrated manually opened W1/W2 guidance from the current active result, rejecting stale guidance from a prior question.
+- Kept `Don't show again` separate from temporary hiding: it suppresses automatic coaching for the current run while manual `Show coach` remains available.
+- Updated the build marker to `v28_3_4_2_show_coach_current_lesson_repair` and the visible badge to `v28.3.4.2`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, Pattern Bible logic, support/resistance behavior, scoring, timer, streaks, 10-question flow, large Q progress, and iPhone cockpit layout.
+
 ## v28.3.4.1 - Show Coach Always Available Repair
 
 ### Changed

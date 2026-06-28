@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_4_1_show_coach_always_available_repair";
+const CANDLE_QUEST_BUILD = "v28_3_4_2_show_coach_current_lesson_repair";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.4.1 - Show Coach Always Available Repair";
+    b.textContent = "v28.3.4.2 - Show Coach Current Lesson Repair";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -537,7 +537,10 @@ function renderCoachBox({answer=null, full=false, correct=false, awaitingContinu
   host.innerHTML = `
     <div class="coach-box-head">
       <b>${content.label} · ${content.title}</b>
-      <button class="coach-box-toggle" type="button" onclick="${run.coachSuppressed ? "toggleCoachBox()" : "suppressAutomaticCoach()"}" aria-label="${run.coachSuppressed ? "Hide coach guidance" : "Do not show automatic coach guidance again this run"}">${run.coachSuppressed ? "Hide coach" : "Don&rsquo;t show again"}</button>
+      <div class="coach-box-actions">
+        ${run.coachSuppressed ? "" : `<button class="coach-box-toggle" type="button" onclick="suppressAutomaticCoach()" aria-label="Do not show automatic coach guidance again this run">Don&rsquo;t show again</button>`}
+        <button class="coach-box-toggle" type="button" onclick="toggleCoachBox()" aria-label="Hide coach guidance">Hide coach</button>
+      </div>
     </div>
     <p class="coach-box-copy">${content.explanation}</p>
     <div class="coach-box-footer">
@@ -557,18 +560,21 @@ function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContin
 
 function openCoachManually(){
   if(!run) return;
-  if(run.reviewTimer){
+  const currentAnswer = run.coachAnswer && run.coachAnswer === run.current
+    ? run.current
+    : null;
+  if(currentAnswer && !run.coachSuppressed && run.reviewTimer){
     clearTimeout(run.reviewTimer);
     run.reviewTimer = null;
   }
-  if(!run.coachAnswer){
+  if(!currentAnswer){
     run.coachAwaitingContinue = false;
     renderCoachBox({full:true});
     return;
   }
   run.coachAwaitingContinue = !run.coachSuppressed;
   renderCoachBox({
-    answer:run.coachAnswer,
+    answer:currentAnswer,
     full:true,
     correct:run.coachCorrect,
     awaitingContinue:run.coachAwaitingContinue
@@ -581,7 +587,6 @@ function toggleCoachBox(){
   const isFull = !host.classList.contains("is-quiet");
   if(isFull){
     renderCoachBox({answer:run.coachAnswer, full:false, correct:run.coachCorrect});
-    if(run.coachAnswer) run.reviewTimer = setTimeout(()=>finishQuestMoment(), 500);
     return;
   }
   openCoachManually();

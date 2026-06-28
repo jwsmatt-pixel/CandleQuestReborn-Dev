@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.4.1 Checkpoint Summary
+# Candle Quest Reborn - v28.3.4.2 Checkpoint Summary
 
 ## Current build
 
-**v28.3.4.1 - Show Coach Always Available Repair**
-Build marker: `v28_3_4_1_show_coach_always_available_repair`
+**v28.3.4.2 - Show Coach Current Lesson Repair**
+Build marker: `v28_3_4_2_show_coach_current_lesson_repair`
 
 ## Base build
 
@@ -12,7 +12,15 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. The fixed Coach Box keeps automatic suppression run-scoped while preserving independent manual guidance access.
+World 1 and World 2 use a compact mobile cockpit with a large `Qn/10` anchor. The fixed Coach Box keeps temporary visual hiding separate from run-scoped automatic suppression and restores manual guidance from the current question/result.
+
+## What changed in v28.3.4.2
+
+- `Hide coach` now collapses the Coach Box without advancing the question or clearing its guidance state.
+- `Show coach` restores W1/W2 guidance only when the saved answered result matches the active question; otherwise it shows the neutral current-question ready state.
+- `Don't show again` remains run-scoped automatic suppression and does not block manual guidance.
+- New questions and runs clear prior guidance so previous-question and previous-world content cannot reappear.
+- W1/W2 gameplay, scoring, timer, answer pools, generators, chart feedback, and 10-question flow remain unchanged.
 
 ## What changed in v28.3.4.1
 
