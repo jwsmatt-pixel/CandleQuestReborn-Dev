@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_5_0_world_3_price_context_foundation";
+const CANDLE_QUEST_BUILD = "v28_5_1_world_3_flow_regime_foundation";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.5.0";
+    b.textContent = "v28.5.1";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -196,15 +196,15 @@ const WORLD_2_RULES_BIBLE = Object.freeze({
 
 const WORLD_3_CONTEXT = Object.freeze({
   world:"World 3",
-  theme:"Price Context",
-  subtitle:"Read the recent swing path.",
-  teachingQuestion:"What is price context showing?",
-  answerPool:Object.freeze(["Stepping Up","Stepping Down","Moving Sideways","Breaking Flow"]),
+  theme:"Flow Regime",
+  subtitle:"Read what price is accepting.",
+  teachingQuestion:"What flow regime is price showing?",
+  answerPool:Object.freeze(["Accepting Higher","Accepting Lower","Rotating Sideways","Regime Change"]),
   concepts:Object.freeze({
-    "Stepping Up":Object.freeze({title:"Price is stepping up.",explanation:"The swing highs are pushing higher and the pullbacks are holding higher. Price is making upward progress.",beginnerTranslation:"Each push reaches higher, and each pullback holds higher than before.",tags:Object.freeze(["higher pushes","higher pullbacks"])}),
-    "Stepping Down":Object.freeze({title:"Price is stepping down.",explanation:"The swing lows are pushing lower and the bounces are failing lower. Price is making downward progress.",beginnerTranslation:"Each drop reaches lower, and each bounce fails lower than before.",tags:Object.freeze(["lower drops","lower bounces"])}),
-    "Moving Sideways":Object.freeze({title:"Price is moving sideways.",explanation:"Price is rotating between a similar upper and lower area. Neither side is making clear progress.",beginnerTranslation:"Price is moving back and forth inside the same rough area.",tags:Object.freeze(["similar highs","similar lows"])}),
-    "Breaking Flow":Object.freeze({title:"Price broke the flow.",explanation:"The previous swing pattern failed. Price broke the swing that was holding the prior flow together.",beginnerTranslation:"The old pattern changed. Price broke the swing that was keeping the move intact.",tags:Object.freeze(["old pattern failed","key swing broke"])})
+    "Accepting Higher":Object.freeze({title:"Price is accepting higher.",explanation:"Price is building upward acceptance. Pullbacks are holding higher, and buyers are accepting higher prices.",beginnerTranslation:"Price keeps finding support higher than before and continues building upward.",tags:Object.freeze(["higher support","upward acceptance"])}),
+    "Accepting Lower":Object.freeze({title:"Price is accepting lower.",explanation:"Price is building downward acceptance. Bounces are failing lower, and sellers are accepting lower prices.",beginnerTranslation:"Price keeps failing below prior highs and continues building downward.",tags:Object.freeze(["lower failures","downward acceptance"])}),
+    "Rotating Sideways":Object.freeze({title:"Price is rotating sideways.",explanation:"Price is moving between a similar upper and lower area. Neither side is clearly accepting higher or lower.",beginnerTranslation:"Price is moving back and forth inside the same rough zone.",tags:Object.freeze(["similar upper area","similar lower area"])}),
+    "Regime Change":Object.freeze({title:"The regime changed.",explanation:"The previous behaviour failed. Price stopped accepting the same way and broke the rhythm of the prior regime.",beginnerTranslation:"The old behaviour changed. Price stopped accepting the same way and broke into a new condition.",tags:Object.freeze(["prior behaviour failed","new condition"])})
   })
 });
 
@@ -224,10 +224,10 @@ const worlds = [
     patterns:WORLD_2_RULES_BIBLE.answerPool
   },
   {
-    id:3, icon:"Ⅲ", title:"Price Context", unlock:0,
-    short:"Read the recent swing path.",
-    lesson:"World 3 teaches price context. Read the recent swing path and decide whether price is stepping up, stepping down, moving sideways, or breaking its previous flow.",
-    rules:["Compare recent swing highs and swing lows.","Look for clear upward progress, downward progress, or rotation in one rough area.","Breaking Flow means the old swing pattern has failed."],
+    id:3, icon:"Ⅲ", title:"Flow Regime", unlock:0,
+    short:"Read what price is accepting.",
+    lesson:"World 3 teaches flow regime. Read the recent auction behaviour and decide whether price is accepting higher, accepting lower, rotating sideways, or changing regime.",
+    rules:["Compare recent pushes and pullbacks.","Look for acceptance building higher, lower, or inside one rough zone.","Regime Change means the previous behaviour has failed."],
     patterns:WORLD_3_CONTEXT.answerPool
   },
   {
@@ -330,10 +330,10 @@ const patternDefinitions = {
     const concept = WORLD_3_CONTEXT.concepts[name];
     return {
       name,
-      type:"World 3 Price Context",
+      type:"World 3 Flow Regime",
       read:concept.explanation,
       beginnerTranslation:concept.beginnerTranslation,
-      cue:name === "Breaking Flow" ? "Find the prior flow, then find the key swing that failed." : "Compare the recent swing highs and swing lows."
+      cue:name === "Regime Change" ? "Find the prior regime, then spot where its behaviour failed." : "Compare the recent pushes, pullbacks, and acceptance areas."
     };
   }),
   "Breakouts": [
@@ -458,7 +458,7 @@ function renderLibrary(category="Candle Basics"){
   category = tabs.includes(category) ? category : "Candle Basics";
   tabsEl.innerHTML = tabs.map(tab=>{
     const active = tab === category;
-    const label = tab === "Candle Basics" ? "World 1: Candle Basics" : tab === "Levels" ? "World 2: Support & Resistance" : "World 3: Price Context";
+    const label = tab === "Candle Basics" ? "World 1: Candle Basics" : tab === "Levels" ? "World 2: Support & Resistance" : "World 3: Flow Regime";
     return `<button class="${active ? "active" : ""}" type="button" ${active ? 'aria-current="true"' : ""} onclick="renderLibrary('${tab}')">${label}</button>`;
   }).join("");
 
@@ -468,11 +468,11 @@ function renderLibrary(category="Candle Basics"){
   const locationKey = document.querySelector(".library-location-key");
   if(intro) intro.textContent = isWorld1
     ? "Study the five active World 1 patterns. Look at the candle shape first, then use Range High, Channel Mean, and Range Low as context."
-    : isWorld3 ? "Study the four active World 3 contexts. Read the recent swing path around the setup."
+    : isWorld3 ? "Study the four active World 3 regimes. Read what price is accepting across recent swings."
     : "Study the four active World 2 level interactions. Look at the level first, then decide whether it held or broke.";
   if(locationKey) locationKey.textContent = isWorld1
     ? "Range High = upper area / resistance. Channel Mean = middle / balance. Range Low = lower area / support."
-    : isWorld3 ? "Compare swing highs and swing lows: higher, lower, similar, or broken."
+    : isWorld3 ? "Compare recent swings: is acceptance building higher, lower, sideways, or changing?"
     : "Support = floor. Resistance = ceiling. A wick through a level is not the same as a decisive close beyond it.";
 
   grid.innerHTML = patternDefinitions[category].map((d,i)=>{
@@ -511,7 +511,7 @@ function renderLibrary(category="Candle Basics"){
   `}).join("");
   if(isWorld1) renderStudyFocus();
   else if($("studyFocus")) $("studyFocus").innerHTML = isWorld3
-    ? `<div><b>Study Focus: Swing Path</b><p>Compare the latest swing highs and lows. Ask whether price is progressing, rotating, or breaking its previous flow.</p></div>`
+    ? `<div><b>Study Focus: Flow Regime</b><p>Compare recent pushes and pullbacks. Ask where price is accepting and whether that behaviour has changed.</p></div>`
     : `<div><b>Study Focus: Level Reads</b><p>Review holds by spotting defended floors and ceilings. Review breaks by looking for strong closes beyond the level.</p></div>`;
 }
 
@@ -541,7 +541,7 @@ function getWorld2CoachContent(answer){
 function getWorld3CoachContent(answer){
   const concept = WORLD_3_CONTEXT.concepts[answer];
   if(!concept) return null;
-  return {label:"Context Coach",title:concept.title,explanation:concept.explanation,tags:concept.tags};
+  return {label:"Flow Coach",title:concept.title,explanation:concept.explanation,tags:concept.tags};
 }
 
 function getCurrentCoachState(){
@@ -563,7 +563,7 @@ function getCurrentCoachState(){
 function resolveCurrentCoachGuidance(){
   const state = getCurrentCoachState();
   if(!state) return null;
-  const label = state.worldId === 1 ? "Candle Coach" : state.worldId === 2 ? "Level Coach" : "Context Coach";
+  const label = state.worldId === 1 ? "Candle Coach" : state.worldId === 2 ? "Level Coach" : "Flow Coach";
   const neutral = state.worldId === 1
     ? {
         title:"Candle clue",
@@ -576,8 +576,8 @@ function resolveCurrentCoachGuidance(){
         tags:[]
       }
     : {
-        title:"Swing clue",
-        explanation:"Look at the swing highs and swing lows. Are they stepping higher, stepping lower, staying in a range, or did the flow break?",
+        title:"Flow clue",
+        explanation:"Look at what price is accepting. Is it building higher, building lower, rotating sideways, or changing regime?",
         tags:[]
       };
   if(!state.answered || !state.correctAnswer){
@@ -2884,7 +2884,7 @@ function finishQuestMoment(){
   $("runHint").textContent = run.world.id === 2
     ? `Quest ${run.questCount}/${run.maxQuests} complete. Watch price approach the next level.`
     : run.world.id === 3
-      ? `Quest ${run.questCount}/${run.maxQuests} complete. Watch the next swing path form.`
+      ? `Quest ${run.questCount}/${run.maxQuests} complete. Watch the next flow regime form.`
       : `Quest ${run.questCount}/${run.maxQuests} complete. Watch the channel for the next setup.`;
 }
 
@@ -2977,11 +2977,14 @@ function prepareWorld3Question(){
   // Each W3 question owns one clean replay path. Keep a single continuous seed
   // candle so prior-question movement cannot muddy the next context read.
   run.candles = [[start,start+0.15,start-0.15,start]];
+  const changeFromHigher = Math.random() < 0.5;
   const templates = {
-    "Stepping Up":[0,1.8,3.8,2.6,5.4,4.0,7.2,5.8,8.8],
-    "Stepping Down":[0,-1.8,-3.8,-2.6,-5.4,-4.0,-7.2,-5.8,-8.8],
-    "Moving Sideways":[0,2.1,4.0,1.9,-0.1,2.0,4.1,2.1,0.0],
-    "Breaking Flow":[0,1.8,4.0,2.7,5.6,4.2,7.1,3.0,1.2]
+    "Accepting Higher":[0,1.5,3.8,2.5,5.5,4.2,7.5,6.0,9.0],
+    "Accepting Lower":[0,-1.5,-3.8,-2.5,-5.5,-4.2,-7.5,-6.0,-9.0],
+    "Rotating Sideways":[0,2.0,4.2,2.1,-0.2,1.8,4.0,2.0,0.1],
+    "Regime Change":changeFromHigher
+      ? [0,1.5,3.9,2.6,5.6,4.3,7.4,3.0,0.8]
+      : [0,-1.5,-3.9,-2.6,-5.6,-4.3,-7.4,-3.0,-0.8]
   };
   const offsets = templates[pattern];
   const closes = [];
@@ -2993,16 +2996,19 @@ function prepareWorld3Question(){
   const scenario = [];
   let open = start;
   closes.forEach((close,index)=>{
-    const wick = index % 2 ? 0.26 : 0.2;
-    scenario.push([open,Math.max(open,close)+wick,Math.min(open,close)-wick,close]);
-    open = close;
+    const bodyNudge = [0.08,-0.04,0.12,-0.07,0.03][index%5];
+    const organicClose = close + bodyNudge;
+    const wickUp = [0.22,0.38,0.18,0.31][index%4];
+    const wickDown = [0.34,0.19,0.29,0.16][index%4];
+    scenario.push([open,Math.max(open,organicClose)+wickUp,Math.min(open,organicClose)-wickDown,organicClose]);
+    open = organicClose;
   });
-  const anchors = (pattern === "Moving Sideways" ? [2,4,6,8] : [2,3,4,5,6,7,8]).map(index=>index*2-1);
+  const anchors = (pattern === "Rotating Sideways" ? [2,4,6,8] : [2,3,4,5,6,7,8]).map(index=>index*2-1);
   run.w3SwingPoints = anchors.map(index=>({candle:scenario[index],value:scenario[index][3]}));
   const values = scenario.flat();
   const pad = Math.max(1.1,(Math.max(...values)-Math.min(...values))*0.12);
   run.w3Viewport = {min:Math.min(...values)-pad,max:Math.max(...values)+pad};
-  run.w3BrokenSwing = pattern === "Breaking Flow" ? start + 4.2 : null;
+  run.w3BrokenSwing = pattern === "Regime Change" ? start + (changeFromHigher ? 4.3 : -4.3) : null;
   run.w3ScenarioQueue = scenario;
   run.setupPattern = pattern;
   run.setupSteps = scenario.length;
@@ -3052,7 +3058,7 @@ function freezeScenario(){
     else run.w3ScenarioQueue = [];
     run.setupPhase = "quest";
     $("freezeBanner").classList.remove("hidden");
-    $("freezeBanner").textContent = run.world.id === 2 ? "QUEST MOMENT · READ THE LEVEL" : "QUEST MOMENT · READ THE SWING PATH";
+    $("freezeBanner").textContent = run.world.id === 2 ? "QUEST MOMENT · READ THE LEVEL" : "QUEST MOMENT · READ THE FLOW";
     $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
     clearCoachBox();
     renderAnswerDock("quest", shuffle(pool));
@@ -3158,7 +3164,7 @@ function answer(label){
   $("runHint").textContent = run.world.id === 2
     ? (ok ? "Correct read." : `Not this time — the answer was ${run.current}.`)
     : run.world.id === 3
-      ? (ok ? "Correct context read." : `Not this time — the answer was ${run.current}.`)
+      ? (ok ? "Correct flow read." : `Not this time — the answer was ${run.current}.`)
       : (ok ? "Correct read — market resumes." : `Wrong read — answer was ${run.current}.`);
   showAnswerCoach(run.current, {
     correct:ok,
@@ -3432,7 +3438,6 @@ function drawGame(frozen=false){
         ctx.lineWidth=2;
         ctx.setLineDash([8,7]);
         ctx.beginPath();ctx.moveTo(drawLeft,y);ctx.lineTo(drawRight,y);ctx.stroke();
-        drawLevelLabel(ctx,"FLOW HELD HERE",36,y-24,"rgba(255,216,77,.9)");
       }
       ctx.restore();
     }

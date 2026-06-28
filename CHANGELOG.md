@@ -1,5 +1,22 @@
 # Candle Quest Reborn — Changelog
 
+## v28.5.1 - World 3 Flow Regime Foundation
+
+### Changed
+
+- Renamed World 3 to Flow Regime with the exact answer pool: Accepting Higher, Accepting Lower, Rotating Sideways, and Regime Change.
+- Added clearer, more organic auction-regime examples with varied bodies and wicks, natural pauses, stable viewports, subtle swing paths, and a minimal Regime Change break guide.
+- Updated World 3 Guided Training hints, Flow Coach explanations, Study Focus, and Library references.
+
+### Preserved
+
+- World 1 and World 2 answer pools, generators, shared arena behavior, and World 2 level-line stability.
+- Need Help and explanations remain Guided Training only; Speedrun remains Fast Reps only.
+
+### Build
+
+- Updated the build marker to `v28_5_1_world_3_flow_regime_foundation` and visible badge to `v28.5.1`.
+
 ## v28.5.0 - World 3 Price Context Foundation
 
 ### Added

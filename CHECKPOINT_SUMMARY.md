@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.5.0 Checkpoint Summary
+# Candle Quest Reborn - v28.5.1 Checkpoint Summary
 
 ## Current build
 
-**v28.5.0 - World 3 Price Context Foundation**
-Build marker: `v28_5_0_world_3_price_context_foundation`
+**v28.5.1 - World 3 Flow Regime Foundation**
+Build marker: `v28_5_1_world_3_flow_regime_foundation`
 
 ## Base build
 
@@ -12,7 +12,15 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 3 is playable through the existing training arena and teaches only the recent swing path: stepping up, stepping down, moving sideways, or breaking flow. World 1 and World 2 remain on their accepted behavior. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+World 3 is playable through the existing training arena and teaches only flow regime: accepting higher, accepting lower, rotating sideways, or changing regime. World 1 and World 2 remain on their accepted behavior. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.5.1
+
+- Renamed World 3 to Flow Regime and locked its exact four-answer pool.
+- Made each regime visually clear but organic through varied candle bodies, controlled wicks, pauses, and natural swing rhythm.
+- Retained subtle swing dots/path and reduced Regime Change assistance to a minimal broken-area guide.
+- Updated Guided Training hint and Flow Coach copy plus lightweight Study Focus and Library references.
+- Preserved W1/W2 gameplay, the shared stable arena, Fast Reps behavior, and Speedrun eligibility rules.
 
 ## What changed in v28.5.0
 
