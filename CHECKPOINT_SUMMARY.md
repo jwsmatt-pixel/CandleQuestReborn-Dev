@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.9 Checkpoint Summary
+# Candle Quest Reborn - v28.3.10 Checkpoint Summary
 
 ## Current build
 
-**v28.3.9 - Normal Mode Clean Reps**
-Build marker: `v28_3_9_normal_mode_clean_reps`
+**v28.3.10 - Training Style and Candle Speed Copy Polish**
+Build marker: `v28_3_10_training_style_and_candle_speed_copy_polish`
 
 ## Base build
 
@@ -12,7 +12,14 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 now have a strict teaching/rep split. Guided Mode owns all help and Coach Tray UI, while Normal Mode and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+World 1 and World 2 retain their teaching/rep split with clearer training-focused setup copy. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.3.10
+
+- Renamed `Run Mode` to `Training Style` and `Replay Tempo` to `Candle Speed`, with clearer subtitles.
+- Renamed Guided Mode to `Guided Training`, Normal Mode to `Fast Reps`, and the Normal tempo to `Standard`.
+- Updated option descriptions, Speedrun availability copy, and tempo progression messages to match the new names.
+- Preserved all Guided/Fast Reps behavior, Speedrun rules, exact answer pools, generators, checking, scoring, timers, chart rendering, coaching architecture, and world flows.
 
 ## What changed in v28.3.9
 

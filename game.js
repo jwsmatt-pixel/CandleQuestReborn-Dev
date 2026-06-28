@@ -1,9 +1,9 @@
-const CANDLE_QUEST_BUILD = "v28_3_9_normal_mode_clean_reps";
+const CANDLE_QUEST_BUILD = "v28_3_10_training_style_and_candle_speed_copy_polish";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
-  guided:Object.freeze({label:"Guided Mode", description:"Coach explanations and Next after every answer."}),
-  normal:Object.freeze({label:"Normal Mode", description:"Fast reps with automatic answer feedback."})
+  guided:Object.freeze({label:"Guided Training", description:"Coach explanations after every answer."}),
+  normal:Object.freeze({label:"Fast Reps", description:"Quick feedback. Keep the run moving."})
 });
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.9";
+    b.textContent = "v28.3.10";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -23,7 +23,7 @@ const $ = id => document.getElementById(id);
 
 const TEMPO_CONFIG = Object.freeze({
   beginner: Object.freeze({label:"Beginner", replayInterval:520, xpMultiplier:1, description:"Learn the shapes.", xpLabel:"Standard XP", unlockRequirement:null}),
-  normal: Object.freeze({label:"Normal", replayInterval:390, xpMultiplier:1.1, description:"Train faster.", xpLabel:"+10% XP", unlockRequirement:{tempo:"beginner", completedRuns:10}}),
+  normal: Object.freeze({label:"Standard", replayInterval:390, xpMultiplier:1.1, description:"Train faster.", xpLabel:"+10% XP", unlockRequirement:{tempo:"beginner", completedRuns:10}}),
   speedrun: Object.freeze({label:"Speedrun", replayInterval:300, xpMultiplier:1.25, description:"Fast reads.", xpLabel:"+25% XP", unlockRequirement:{tempo:"normal", completedRuns:20}})
 });
 const DEFAULT_TEMPO_RUNS = Object.freeze({beginner:0, normal:0, speedrun:0});
@@ -848,7 +848,7 @@ function renderFlowSelector(){
   options.innerHTML = Object.entries(RUN_FLOW_CONFIG).map(([id, config])=>`
     <button type="button" class="flow-option ${state.selectedFlowMode === id ? "selected" : ""}" aria-pressed="${state.selectedFlowMode === id}" onclick="selectFlowMode('${id}')">
       <b>${config.label}</b><small>${config.description}</small>
-    </button>`).join("") + `<p class="flow-speedrun-note">Speedrun is available in Normal Mode.</p>`;
+    </button>`).join("") + `<p class="flow-speedrun-note">Speedrun is available in Fast Reps.</p>`;
 }
 
 function renderTempoSelector(){
@@ -871,14 +871,14 @@ function renderTempoSelector(){
 function getTempoProgressMessage(tempoId, unlockedBefore){
   const count = state.tempoRuns[tempoId] || 0;
   if(tempoId === "beginner"){
-    if(!unlockedBefore.normal && isTempoUnlockedByProgress("normal")) return "Normal unlocked!";
-    if(isTempoUnlockedByProgress("normal")) return `Normal unlocked - ${count} Beginner runs completed`;
-    return `Beginner progress: ${Math.min(count,10)}/10 runs to unlock Normal`;
+    if(!unlockedBefore.normal && isTempoUnlockedByProgress("normal")) return "Standard unlocked!";
+    if(isTempoUnlockedByProgress("normal")) return `Standard unlocked - ${count} Beginner runs completed`;
+    return `Beginner progress: ${Math.min(count,10)}/10 runs to unlock Standard`;
   }
   if(tempoId === "normal"){
     if(!unlockedBefore.speedrun && isTempoUnlockedByProgress("speedrun")) return "Speedrun unlocked!";
-    if(isTempoUnlockedByProgress("speedrun")) return `Speedrun unlocked - ${count} Normal runs completed`;
-    return `Normal progress: ${Math.min(count,20)}/20 runs to unlock Speedrun`;
+    if(isTempoUnlockedByProgress("speedrun")) return `Speedrun unlocked - ${count} Standard runs completed`;
+    return `Standard progress: ${Math.min(count,20)}/20 runs to unlock Speedrun`;
   }
   return `Speedrun mastery: ${Math.min(count,30)}/30 runs`;
 }

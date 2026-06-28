@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.10 - Training Style and Candle Speed Copy Polish
+
+### Changed
+
+- Renamed the run setup sections to `Training Style` and `Candle Speed` with clearer coaching and replay-speed subtitles.
+- Renamed Guided Mode to `Guided Training`, Normal Mode to `Fast Reps`, and the Normal tempo to `Standard`.
+- Refined the option descriptions and clarified that Speedrun is available in Fast Reps.
+- Updated user-facing tempo progression messages to use `Standard`.
+- Updated the build marker to `v28_3_10_training_style_and_candle_speed_copy_polish` and the visible badge to `v28.3.10`.
+
+### Preserved
+
+- Guided/Fast Reps behavior, coaching visibility, Speedrun eligibility and rules, exact W1/W2 answer pools, generators, checking, scoring, timer behavior, chart rendering, Coach Tray architecture, and future worlds.
+
 ## v28.3.9 - Normal Mode Clean Reps
 
 ### Changed
