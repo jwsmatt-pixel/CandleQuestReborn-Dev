@@ -3170,7 +3170,8 @@ body[data-screen="game"][data-candle-speed="speedrun"] .coach-tray{
 
 @media(max-width:850px){
   body[data-screen="game"][data-game-world="1"] .chart-wrap,
-  body[data-screen="game"][data-game-world="2"] .chart-wrap{
+  body[data-screen="game"][data-game-world="2"] .chart-wrap,
+  body[data-screen="game"][data-game-world="3"] .chart-wrap{
     width:100%;
     flex:none;
   }

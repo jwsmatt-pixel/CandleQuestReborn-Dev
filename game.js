@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_4_1_w1_w2_smoke_test_cleanup";
+const CANDLE_QUEST_BUILD = "v28_5_0_world_3_price_context_foundation";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.4.1";
+    b.textContent = "v28.5.0";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -194,6 +194,20 @@ const WORLD_2_RULES_BIBLE = Object.freeze({
   })
 });
 
+const WORLD_3_CONTEXT = Object.freeze({
+  world:"World 3",
+  theme:"Price Context",
+  subtitle:"Read the recent swing path.",
+  teachingQuestion:"What is price context showing?",
+  answerPool:Object.freeze(["Stepping Up","Stepping Down","Moving Sideways","Breaking Flow"]),
+  concepts:Object.freeze({
+    "Stepping Up":Object.freeze({title:"Price is stepping up.",explanation:"The swing highs are pushing higher and the pullbacks are holding higher. Price is making upward progress.",beginnerTranslation:"Each push reaches higher, and each pullback holds higher than before.",tags:Object.freeze(["higher pushes","higher pullbacks"])}),
+    "Stepping Down":Object.freeze({title:"Price is stepping down.",explanation:"The swing lows are pushing lower and the bounces are failing lower. Price is making downward progress.",beginnerTranslation:"Each drop reaches lower, and each bounce fails lower than before.",tags:Object.freeze(["lower drops","lower bounces"])}),
+    "Moving Sideways":Object.freeze({title:"Price is moving sideways.",explanation:"Price is rotating between a similar upper and lower area. Neither side is making clear progress.",beginnerTranslation:"Price is moving back and forth inside the same rough area.",tags:Object.freeze(["similar highs","similar lows"])}),
+    "Breaking Flow":Object.freeze({title:"Price broke the flow.",explanation:"The previous swing pattern failed. Price broke the swing that was holding the prior flow together.",beginnerTranslation:"The old pattern changed. Price broke the swing that was keeping the move intact.",tags:Object.freeze(["old pattern failed","key swing broke"])})
+  })
+});
+
 const worlds = [
   {
     id:1, icon:"Ⅰ", title:"Candle Basics", unlock:0,
@@ -210,11 +224,11 @@ const worlds = [
     patterns:WORLD_2_RULES_BIBLE.answerPool
   },
   {
-    id:3, icon:"Ⅲ", title:"Breakouts", unlock:180,
-    short:"Break, hold, fakeout and continuation.",
-    lesson:"A breakout is only useful if price accepts beyond the level. Wicks through a level are not enough. Wait for hold, failure, or follow-through.",
-    rules:["Clean breakout = close and hold outside range.","Fakeout = break outside then fail back in.","Range Expansion = volatility increases but price stays inside."],
-    patterns:["Clean Breakout","Failed Breakout","Breakdown","Retest Hold","Range Expansion"]
+    id:3, icon:"Ⅲ", title:"Price Context", unlock:0,
+    short:"Read the recent swing path.",
+    lesson:"World 3 teaches price context. Read the recent swing path and decide whether price is stepping up, stepping down, moving sideways, or breaking its previous flow.",
+    rules:["Compare recent swing highs and swing lows.","Look for clear upward progress, downward progress, or rotation in one rough area.","Breaking Flow means the old swing pattern has failed."],
+    patterns:WORLD_3_CONTEXT.answerPool
   },
   {
     id:4, icon:"Ⅳ", title:"Trend", unlock:320,
@@ -310,6 +324,16 @@ const patternDefinitions = {
       invalidItems:concept.invalidIf,
       commonConfusion:concept.commonConfusions[0],
       memoryPhrase:concept.memoryPhrase
+    };
+  }),
+  "Context": WORLD_3_CONTEXT.answerPool.map(name=>{
+    const concept = WORLD_3_CONTEXT.concepts[name];
+    return {
+      name,
+      type:"World 3 Price Context",
+      read:concept.explanation,
+      beginnerTranslation:concept.beginnerTranslation,
+      cue:name === "Breaking Flow" ? "Find the prior flow, then find the key swing that failed." : "Compare the recent swing highs and swing lows."
     };
   }),
   "Breakouts": [
@@ -426,7 +450,7 @@ const patternDefinitions = {
 };
 
 function renderLibrary(category="Candle Basics"){
-  const tabs = ["Candle Basics", "Levels"];
+  const tabs = ["Candle Basics", "Levels", "Context"];
   const tabsEl = $("libraryTabs");
   const grid = $("definitionGrid");
   if(!tabsEl || !grid) return;
@@ -434,18 +458,21 @@ function renderLibrary(category="Candle Basics"){
   category = tabs.includes(category) ? category : "Candle Basics";
   tabsEl.innerHTML = tabs.map(tab=>{
     const active = tab === category;
-    const label = tab === "Candle Basics" ? "World 1: Candle Basics" : "World 2: Support & Resistance";
+    const label = tab === "Candle Basics" ? "World 1: Candle Basics" : tab === "Levels" ? "World 2: Support & Resistance" : "World 3: Price Context";
     return `<button class="${active ? "active" : ""}" type="button" ${active ? 'aria-current="true"' : ""} onclick="renderLibrary('${tab}')">${label}</button>`;
   }).join("");
 
   const isWorld1 = category === "Candle Basics";
+  const isWorld3 = category === "Context";
   const intro = document.querySelector(".library-intro");
   const locationKey = document.querySelector(".library-location-key");
   if(intro) intro.textContent = isWorld1
     ? "Study the five active World 1 patterns. Look at the candle shape first, then use Range High, Channel Mean, and Range Low as context."
+    : isWorld3 ? "Study the four active World 3 contexts. Read the recent swing path around the setup."
     : "Study the four active World 2 level interactions. Look at the level first, then decide whether it held or broke.";
   if(locationKey) locationKey.textContent = isWorld1
     ? "Range High = upper area / resistance. Channel Mean = middle / balance. Range Low = lower area / support."
+    : isWorld3 ? "Compare swing highs and swing lows: higher, lower, similar, or broken."
     : "Support = floor. Resistance = ceiling. A wick through a level is not the same as a decisive close beyond it.";
 
   grid.innerHTML = patternDefinitions[category].map((d,i)=>{
@@ -458,6 +485,10 @@ function renderLibrary(category="Candle Basics"){
       <p><b>${d.must ? "Bible condition" : "Best location"}:</b> ${d.location}</p>
       ${d.must ? `<p><b>Must-have:</b> ${d.must}</p>` : ""}
       ${d.invalid ? `<p><b>Invalid if:</b> ${d.invalid}</p>` : ""}
+      <p class="definition-cue"><b>Quest cue:</b> ${d.cue}</p>
+    ` : isWorld3 ? `
+      <p><b>Beginner translation:</b> ${d.beginnerTranslation}</p>
+      <p><b>Read:</b> ${d.read}</p>
       <p class="definition-cue"><b>Quest cue:</b> ${d.cue}</p>
     ` : `
       <p><b>Beginner translation:</b> ${d.beginnerTranslation}</p>
@@ -479,7 +510,9 @@ function renderLibrary(category="Candle Basics"){
     </article>
   `}).join("");
   if(isWorld1) renderStudyFocus();
-  else if($("studyFocus")) $("studyFocus").innerHTML = `<div><b>Study Focus: Level Reads</b><p>Review holds by spotting defended floors and ceilings. Review breaks by looking for strong closes beyond the level.</p></div>`;
+  else if($("studyFocus")) $("studyFocus").innerHTML = isWorld3
+    ? `<div><b>Study Focus: Swing Path</b><p>Compare the latest swing highs and lows. Ask whether price is progressing, rotating, or breaking its previous flow.</p></div>`
+    : `<div><b>Study Focus: Level Reads</b><p>Review holds by spotting defended floors and ceilings. Review breaks by looking for strong closes beyond the level.</p></div>`;
 }
 
 function getWorld1CoachContent(answer){
@@ -505,8 +538,14 @@ function getWorld2CoachContent(answer){
   };
 }
 
+function getWorld3CoachContent(answer){
+  const concept = WORLD_3_CONTEXT.concepts[answer];
+  if(!concept) return null;
+  return {label:"Context Coach",title:concept.title,explanation:concept.explanation,tags:concept.tags};
+}
+
 function getCurrentCoachState(){
-  if(!run || ![1,2].includes(run.world?.id)) return null;
+  if(!run || ![1,2,3].includes(run.world?.id)) return null;
   const question = run.current || null;
   const result = run.coachResult?.question === question ? run.coachResult : null;
   return {
@@ -517,23 +556,28 @@ function getCurrentCoachState(){
     answered:Boolean(result),
     correct:Boolean(result?.correct),
     resultState:result?.resultState || "ready",
-    lessonType:run.world.id === 1 ? "candle-pattern" : "support-resistance"
+    lessonType:run.world.id === 1 ? "candle-pattern" : run.world.id === 2 ? "support-resistance" : "price-context"
   };
 }
 
 function resolveCurrentCoachGuidance(){
   const state = getCurrentCoachState();
   if(!state) return null;
-  const label = state.worldId === 1 ? "Candle Coach" : "Level Coach";
+  const label = state.worldId === 1 ? "Candle Coach" : state.worldId === 2 ? "Level Coach" : "Context Coach";
   const neutral = state.worldId === 1
     ? {
         title:"Candle clue",
         explanation:"Inspect the candle body, wick size, and overall pattern shape.",
         tags:[]
       }
-    : {
+    : state.worldId === 2 ? {
         title:"Level clue",
         explanation:"Watch price at the level. Did it hold, reject, or break?",
+        tags:[]
+      }
+    : {
+        title:"Swing clue",
+        explanation:"Look at the swing highs and swing lows. Are they stepping higher, stepping lower, staying in a range, or did the flow break?",
         tags:[]
       };
   if(!state.answered || !state.correctAnswer){
@@ -541,7 +585,7 @@ function resolveCurrentCoachGuidance(){
   }
   const content = state.worldId === 1
     ? getWorld1CoachContent(state.correctAnswer)
-    : getWorld2CoachContent(state.correctAnswer);
+    : state.worldId === 2 ? getWorld2CoachContent(state.correctAnswer) : getWorld3CoachContent(state.correctAnswer);
   if(!content) return {...neutral, label, state, status:"Lesson tip"};
   const status = state.correct
     ? "Correct read"
@@ -616,7 +660,7 @@ function markNeedHelpReady(){
 
 function renderCoachBox({guidance=null, showResult=false}={}){
   const host = $("levelCoach");
-  if(!host || !run || ![1,2].includes(run.world.id)) return;
+  if(!host || !run || ![1,2,3].includes(run.world.id)) return;
   host.classList.remove("is-idle", "is-answer", "is-dimmed");
 
   if(!guidance?.state.question || !showResult){
@@ -656,7 +700,7 @@ function renderCurrentCoachContent(){
 }
 
 function showAnswerCoach(answer, {correct=false, selectedAnswer=null, resultState=null}={}){
-  if(!run || ![1,2].includes(run.world.id)) return;
+  if(!run || ![1,2,3].includes(run.world.id)) return;
   if(run.flowMode !== "guided"){
     run.coachResult = null;
     run.coachHelpOpen = false;
@@ -1546,7 +1590,7 @@ function beginRun(worldId=activeWorld){
   clearCoachBox();
   activeWorld = worldId;
   const startPrice = 100;
-  const flowMode = [1,2].includes(world.id) && RUN_FLOW_CONFIG[state.selectedFlowMode] ? state.selectedFlowMode : "normal";
+  const flowMode = [1,2,3].includes(world.id) && RUN_FLOW_CONFIG[state.selectedFlowMode] ? state.selectedFlowMode : "normal";
   const requestedTempoId = flowMode === "guided" && state.selectedTempo === "speedrun" ? "normal" : state.selectedTempo;
   const tempoId = isTempoUnlocked(requestedTempoId) ? requestedTempoId : "beginner";
   const tempo = TEMPO_CONFIG[tempoId];
@@ -1612,6 +1656,7 @@ function beginRun(worldId=activeWorld){
   const initCandles = isMobile() ? 18 : 26;
   for(let i=0;i<initCandles;i++) addCandle();
   if(world.id === 2) prepareWorld2Question();
+  if(world.id === 3) prepareWorld3Question();
   $("runMode").textContent = `${world.title} - ${RUN_FLOW_CONFIG[run.flowMode].label} - ${tempo.label}`;
   $("runHint").textContent = "Watch the candles move. Timer starts at Quest Moment.";
   $("scoreText").textContent = "0";
@@ -2368,11 +2413,12 @@ function _pickDiversePattern(pool, history){
 function addCandle(forced=null){
   if(!run) return;
 
-  if(!forced && run.world.id === 2 && run.w2ScenarioQueue?.length){
-    const candle = run.w2ScenarioQueue.shift();
+  const scenarioQueue = run.world.id === 2 ? run.w2ScenarioQueue : run.world.id === 3 ? run.w3ScenarioQueue : null;
+  if(!forced && scenarioQueue?.length){
+    const candle = scenarioQueue.shift();
     run.candles.push(candle);
     run.price = candle[3];
-    run.setupSteps = run.w2ScenarioQueue.length;
+    run.setupSteps = scenarioQueue.length;
     const maxCandles = isMobile() ? 22 : 38;
     while(run.candles.length > maxCandles) run.candles.shift();
     return;
@@ -2829,6 +2875,7 @@ function finishQuestMoment(){
   run.setupPulse = 0;
   run.setupStory = null;
   if(run.world.id === 2) prepareWorld2Question();
+  else if(run.world.id === 3) prepareWorld3Question();
   else run.nextFreeze = 5 + Math.floor(Math.random()*5);
   $("freezeBanner").classList.add("hidden");
   clearCoachBox();
@@ -2836,7 +2883,9 @@ function finishQuestMoment(){
   $("timeText").textContent = "—";
   $("runHint").textContent = run.world.id === 2
     ? `Quest ${run.questCount}/${run.maxQuests} complete. Watch price approach the next level.`
-    : `Quest ${run.questCount}/${run.maxQuests} complete. Watch the channel for the next setup.`;
+    : run.world.id === 3
+      ? `Quest ${run.questCount}/${run.maxQuests} complete. Watch the next swing path form.`
+      : `Quest ${run.questCount}/${run.maxQuests} complete. Watch the channel for the next setup.`;
 }
 
 
@@ -2916,6 +2965,52 @@ function prepareWorld2Question(){
   run.momentum = 0;
 }
 
+function prepareWorld3Question(){
+  if(!run || run.world.id !== 3) return;
+  const pool = WORLD_3_CONTEXT.answerPool;
+  if(!run.patternHistory) run.patternHistory = [];
+  const pattern = _pickDiversePattern(pool, run.patternHistory);
+  run.patternHistory.push(pattern);
+  if(run.patternHistory.length > 8) run.patternHistory.shift();
+
+  const start = run.candles.length ? run.candles[run.candles.length-1][3] : run.price;
+  // Each W3 question owns one clean replay path. Keep a single continuous seed
+  // candle so prior-question movement cannot muddy the next context read.
+  run.candles = [[start,start+0.15,start-0.15,start]];
+  const templates = {
+    "Stepping Up":[0,1.8,3.8,2.6,5.4,4.0,7.2,5.8,8.8],
+    "Stepping Down":[0,-1.8,-3.8,-2.6,-5.4,-4.0,-7.2,-5.8,-8.8],
+    "Moving Sideways":[0,2.1,4.0,1.9,-0.1,2.0,4.1,2.1,0.0],
+    "Breaking Flow":[0,1.8,4.0,2.7,5.6,4.2,7.1,3.0,1.2]
+  };
+  const offsets = templates[pattern];
+  const closes = [];
+  offsets.forEach((offset,index)=>{
+    if(index === 0) return;
+    const from = offsets[index-1];
+    closes.push(start + from + (offset-from)*0.48, start + offset);
+  });
+  const scenario = [];
+  let open = start;
+  closes.forEach((close,index)=>{
+    const wick = index % 2 ? 0.26 : 0.2;
+    scenario.push([open,Math.max(open,close)+wick,Math.min(open,close)-wick,close]);
+    open = close;
+  });
+  const anchors = (pattern === "Moving Sideways" ? [2,4,6,8] : [2,3,4,5,6,7,8]).map(index=>index*2-1);
+  run.w3SwingPoints = anchors.map(index=>({candle:scenario[index],value:scenario[index][3]}));
+  const values = scenario.flat();
+  const pad = Math.max(1.1,(Math.max(...values)-Math.min(...values))*0.12);
+  run.w3Viewport = {min:Math.min(...values)-pad,max:Math.max(...values)+pad};
+  run.w3BrokenSwing = pattern === "Breaking Flow" ? start + 4.2 : null;
+  run.w3ScenarioQueue = scenario;
+  run.setupPattern = pattern;
+  run.setupSteps = scenario.length;
+  run.nextFreeze = scenario.length;
+  run.setupPhase = "forming";
+  run.momentum = 0;
+}
+
 function patternCardKey(patternName){
   return STUDY_PATTERN_BY_NAME.get(patternName)?.key || String(patternName).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 }
@@ -2947,16 +3042,17 @@ function freezeScenario(){
   }
 
   const answer = run.setupPattern;
-  if(run.world.id === 2){
+  if(run.world.id === 2 || run.world.id === 3){
     run.coachHelpReady = false;
     run.paused = true;
     run.current = answer;
     run.setupPattern = null;
     run.setupSteps = 0;
-    run.w2ScenarioQueue = [];
+    if(run.world.id === 2) run.w2ScenarioQueue = [];
+    else run.w3ScenarioQueue = [];
     run.setupPhase = "quest";
     $("freezeBanner").classList.remove("hidden");
-    $("freezeBanner").textContent = "QUEST MOMENT · READ THE LEVEL";
+    $("freezeBanner").textContent = run.world.id === 2 ? "QUEST MOMENT · READ THE LEVEL" : "QUEST MOMENT · READ THE SWING PATH";
     $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
     clearCoachBox();
     renderAnswerDock("quest", shuffle(pool));
@@ -3061,7 +3157,9 @@ function answer(label){
   pulseChartRim(ok ? "correct" : "wrong", ok && run.combo >= 2);
   $("runHint").textContent = run.world.id === 2
     ? (ok ? "Correct read." : `Not this time — the answer was ${run.current}.`)
-    : (ok ? "Correct read — market resumes." : `Wrong read — answer was ${run.current}.`);
+    : run.world.id === 3
+      ? (ok ? "Correct context read." : `Not this time — the answer was ${run.current}.`)
+      : (ok ? "Correct read — market resumes." : `Wrong read — answer was ${run.current}.`);
   showAnswerCoach(run.current, {
     correct:ok,
     selectedAnswer:label,
@@ -3223,6 +3321,7 @@ function drawGame(frozen=false){
 
   const candleVals = visibleCandles.flat();
   const isWorld2 = run.world.id === 2;
+  const isWorld3 = run.world.id === 3;
   const hasTeachingLevel = isWorld2 && Number.isFinite(run.teachingLevel);
   const visibleMin = hasTeachingLevel ? Math.min(run.teachingLevel, ...candleVals) : Math.min(run.support, ...candleVals);
   const visibleMax = hasTeachingLevel ? Math.max(run.teachingLevel, ...candleVals) : Math.max(run.resistance, ...candleVals);
@@ -3232,8 +3331,8 @@ function drawGame(frozen=false){
     : mobile
       ? Math.max(0.85, (run.resistance - run.support) * 0.105)
       : Math.max(1.2, (run.resistance - run.support) * 0.16);
-  const min = isWorld2 && run.w2Viewport ? run.w2Viewport.min : visibleMin - pad;
-  const max = isWorld2 && run.w2Viewport ? run.w2Viewport.max : visibleMax + pad;
+  const min = isWorld2 && run.w2Viewport ? run.w2Viewport.min : isWorld3 && run.w3Viewport ? run.w3Viewport.min : visibleMin - pad;
+  const max = isWorld2 && run.w2Viewport ? run.w2Viewport.max : isWorld3 && run.w3Viewport ? run.w3Viewport.max : visibleMax + pad;
   const mapY = v => H - 54 - ((v - min) / (max - min)) * (H - 100);
 
   // Keep the replay and Quest Moment stage identical so freezing cannot shift candles.
@@ -3276,7 +3375,7 @@ function drawGame(frozen=false){
   };
   if(hasTeachingLevel){
     drawCrispLevel(run.teachingLevel);
-  } else if(!isWorld2) {
+  } else if(!isWorld2 && !isWorld3) {
     drawCrispLevel(hi);
     drawCrispLevel(lo);
     ctx.setLineDash([10,8]);
@@ -3291,7 +3390,7 @@ function drawGame(frozen=false){
   if(hasTeachingLevel){
     const label = run.levelType === "support" ? "SUPPORT" : "RESISTANCE";
     drawWorld2LevelLabel(ctx,label,36,Math.round(mapY(run.teachingLevel))-44,"rgba(255,255,255,.92)");
-  } else if(!isWorld2) {
+  } else if(!isWorld2 && !isWorld3) {
     drawLevelLabel(ctx,"Range High",36,mapY(hi)-18,"rgba(255,255,255,.92)");
     drawLevelLabel(ctx,"Channel Mean",36,mapY(mid)-18,"rgba(255,255,255,.72)");
     drawLevelLabel(ctx,"Range Low",36,mapY(lo)+8,"rgba(255,255,255,.92)");
@@ -3306,6 +3405,38 @@ function drawGame(frozen=false){
     const isSignal = frozen && i >= visibleCandles.length - 3;
     drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal);
   });
+
+  if(isWorld3 && run.w3SwingPoints?.length){
+    const points = run.w3SwingPoints
+      .map(point=>({point,index:visibleCandles.indexOf(point.candle)}))
+      .filter(item=>item.index >= 0)
+      .map(item=>({...item,x:drawLeft+item.index*gap,y:mapY(item.point.value)}));
+    if(points.length > 1){
+      ctx.save();
+      ctx.strokeStyle="rgba(255,255,255,.38)";
+      ctx.lineWidth=2;
+      ctx.setLineDash([6,6]);
+      ctx.beginPath();
+      points.forEach((point,index)=>index ? ctx.lineTo(point.x,point.y) : ctx.moveTo(point.x,point.y));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      points.forEach(point=>{
+        ctx.fillStyle="#ffd84d";
+        ctx.beginPath();
+        ctx.arc(point.x,point.y,5,0,Math.PI*2);
+        ctx.fill();
+      });
+      if(Number.isFinite(run.w3BrokenSwing)){
+        const y=Math.round(mapY(run.w3BrokenSwing));
+        ctx.strokeStyle="rgba(255,216,77,.72)";
+        ctx.lineWidth=2;
+        ctx.setLineDash([8,7]);
+        ctx.beginPath();ctx.moveTo(drawLeft,y);ctx.lineTo(drawRight,y);ctx.stroke();
+        drawLevelLabel(ctx,"FLOW HELD HERE",36,y-24,"rgba(255,216,77,.9)");
+      }
+      ctx.restore();
+    }
+  }
 }
 
 function round(ctx,x,y,w,h,r,fill){

@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.4.1 Checkpoint Summary
+# Candle Quest Reborn - v28.5.0 Checkpoint Summary
 
 ## Current build
 
-**v28.4.1 - W1/W2 Smoke Test + Cleanup Pass**
-Build marker: `v28_4_1_w1_w2_smoke_test_cleanup`
+**v28.5.0 - World 3 Price Context Foundation**
+Build marker: `v28_5_0_world_3_price_context_foundation`
 
 ## Base build
 
@@ -12,7 +12,16 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 1 and World 2 retain their teaching/rep split with clearer training-focused setup copy. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+World 3 is playable through the existing training arena and teaches only the recent swing path: stepping up, stepping down, moving sideways, or breaking flow. World 1 and World 2 remain on their accepted behavior. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.5.0
+
+- Added World 3: Price Context to the Lesson Map, lesson, gameplay, and lightweight Pattern Library flow.
+- Locked the World 3 pool to Stepping Up, Stepping Down, Moving Sideways, and Breaking Flow.
+- Added beginner-readable queued swing paths with stable per-question viewports, subtle swing dots/path, and a minimal broken-flow guide.
+- Added neutral Need Help copy plus the specified post-answer Context Coach explanations in Guided Training.
+- Reused existing Fast Reps, Speedrun, scoring, timer, progress, results, mobile cockpit, and dev-mode behavior.
+- Preserved the exact World 1 and World 2 answer pools and the World 2 support/resistance viewport and level-line behavior.
 
 ## What changed in v28.4.1
 

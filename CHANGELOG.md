@@ -1,5 +1,25 @@
 # Candle Quest Reborn — Changelog
 
+## v28.5.0 - World 3 Price Context Foundation
+
+### Added
+
+- Added playable World 3: Price Context to the Lesson Map and shared 10-question training arena.
+- Added the exact World 3 answer pool: Stepping Up, Stepping Down, Moving Sideways, and Breaking Flow.
+- Added clear queued swing-path examples with a locked per-question viewport, subtle swing dots/path, and a minimal broken-swing guide for Breaking Flow.
+- Added World 3 Guided Training hints and answer-specific Context Coach explanations.
+- Added a lightweight World 3 Price Context section to the Pattern Library and Study Focus.
+
+### Preserved
+
+- World 1 and World 2 answer pools, generators, training modes, scoring, timers, and World 2 level-line stability.
+- Guided Training owns Need Help and Coach explanations; Fast Reps and Speedrun hide guidance and auto-advance.
+- Speedrun remains available only in Fast Reps through the existing unlock system.
+
+### Build
+
+- Updated the build marker to `v28_5_0_world_3_price_context_foundation` and visible badge to `v28.5.0`.
+
 ## v28.4.1 - W1/W2 Smoke Test + Cleanup Pass
 
 ### Changed
