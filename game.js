@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_3_iphone_hud_text_cleanup";
+const CANDLE_QUEST_BUILD = "v28_3_3_iphone_hud_cleanup_coach_suppression";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.2 - iPhone Cockpit + Chart Rim Feedback";
+    b.textContent = "v28.3.3 - iPhone HUD Cleanup + Coach Suppression";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -518,7 +518,7 @@ function renderCoachBox({answer=null, full=false, correct=false, awaitingContinu
   host.innerHTML = `
     <div class="coach-box-head">
       <b>${content.label} · ${content.title}</b>
-      <button class="coach-box-toggle" type="button" onclick="toggleCoachBox()" aria-label="Dim coach guidance">Dim</button>
+      <button class="coach-box-toggle" type="button" onclick="${run.coachSuppressed ? "toggleCoachBox()" : "suppressAutomaticCoach()"}" aria-label="${run.coachSuppressed ? "Hide coach guidance" : "Do not show automatic coach guidance again this run"}">${run.coachSuppressed ? "Hide coach" : "Don&rsquo;t show again"}</button>
     </div>
     <p class="coach-box-copy">${content.explanation}</p>
     <div class="coach-box-footer">
@@ -531,8 +531,9 @@ function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContin
   if(!run || ![1,2].includes(run.world.id)) return;
   run.coachAnswer = answer;
   run.coachCorrect = correct;
-  run.coachAwaitingContinue = awaitingContinue;
-  renderCoachBox({answer, full:forceFull, correct, awaitingContinue});
+  const showFull = forceFull && !run.coachSuppressed;
+  run.coachAwaitingContinue = showFull && awaitingContinue;
+  renderCoachBox({answer, full:showFull, correct, awaitingContinue:run.coachAwaitingContinue});
 }
 
 function toggleCoachBox(){
@@ -541,7 +542,6 @@ function toggleCoachBox(){
   const isFull = !host.classList.contains("is-quiet");
   if(isFull){
     renderCoachBox({answer:run.coachAnswer, full:false, correct:run.coachCorrect});
-    host.classList.add("is-dimmed");
     run.reviewTimer = setTimeout(()=>finishQuestMoment(), 500);
     return;
   }
@@ -555,6 +555,17 @@ function toggleCoachBox(){
     correct:run.coachCorrect,
     awaitingContinue:true
   });
+}
+
+function suppressAutomaticCoach(){
+  if(!run) return;
+  run.coachSuppressed = true;
+  run.coachAwaitingContinue = false;
+  renderCoachBox({answer:run.coachAnswer, full:false, correct:run.coachCorrect});
+  if(run.current){
+    if(run.reviewTimer) clearTimeout(run.reviewTimer);
+    run.reviewTimer = setTimeout(()=>finishQuestMoment(), 500);
+  }
 }
 
 function continueFromCoach(){
@@ -1431,7 +1442,8 @@ function beginRun(worldId=activeWorld){
     reviewTimer:null,
     coachAnswer:null,
     coachCorrect:false,
-    coachAwaitingContinue:false
+    coachAwaitingContinue:false,
+    coachSuppressed:false
   };
   clearCoachBox();
   // Mobile: fewer initial candles for clarity
@@ -2623,6 +2635,9 @@ function timeoutQuestMoment(){
     b.disabled = true;
     if(b.textContent === run.current) b.classList.add("correct");
   });
+  if(run.coachSuppressed){
+    run.reviewTimer = setTimeout(()=>finishQuestMoment(), 1100);
+  }
 }
 
 function finishQuestMoment(){
@@ -2873,7 +2888,7 @@ function answer(label){
     if(b.textContent === run.current) b.classList.add("correct");
     else if(b.textContent === label) b.classList.add("wrong");
   });
-  if(ok){
+  if(ok || run.coachSuppressed){
     run.reviewTimer = setTimeout(()=>finishQuestMoment(), run.world.id === 2 ? 1100 : 750);
   }
 }
