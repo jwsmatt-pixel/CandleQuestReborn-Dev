@@ -1,5 +1,20 @@
 # Candle Quest Reborn — Changelog
 
+## v28.4.0 - W1/W2 Layout Standard Lock
+
+### Changed
+
+- Locked World 1 and World 2 to one active gameplay structure: cockpit, stable replay window, answer dock, and mode-specific overlays.
+- Made the active world, Training Style, and Candle Speed explicit layout states so Guided Training alone reserves the compact help lane.
+- Enforced clean Fast Reps and Speedrun surfaces at the layout layer: no Need Help control or Coach Tray, with feedback continuing to auto-advance.
+- Kept Guided Training help and post-answer coaching fixed outside document flow so neither can move or resize the chart.
+- Updated the build marker to `v28_4_0_w1_w2_layout_standard_lock` and the visible badge to `v28.4.0`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, scoring, timers, progression, Pattern Bible wording, and World 2 locked level viewport/line behavior.
+- Future worlds, Mochi, tutorials, shop logic, XP economy, Pattern Library, Study Progress, and unlock systems.
+
 ## v28.3.10 - Training Style and Candle Speed Copy Polish
 
 ### Changed

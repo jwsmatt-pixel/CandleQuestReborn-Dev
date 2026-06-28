@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.3.10 Checkpoint Summary
+# Candle Quest Reborn - v28.4.0 Checkpoint Summary
 
 ## Current build
 
-**v28.3.10 - Training Style and Candle Speed Copy Polish**
-Build marker: `v28_3_10_training_style_and_candle_speed_copy_polish`
+**v28.4.0 - W1/W2 Layout Standard Lock**
+Build marker: `v28_4_0_w1_w2_layout_standard_lock`
 
 ## Base build
 
@@ -13,6 +13,14 @@ Build marker: `v26_3_0_chart_viewport_unification`
 ## Current status
 
 World 1 and World 2 retain their teaching/rep split with clearer training-focused setup copy. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.4.0
+
+- Locked W1/W2 to the same cockpit, replay window, answer dock, and optional fixed coaching structure.
+- Added explicit active world, Training Style, and Candle Speed layout states.
+- Reserved the compact help lane only for Guided Training; Fast Reps and Speedrun have no Need Help or Coach Tray surface.
+- Kept all help and coaching out of document flow so replay geometry remains unchanged through hints, feedback, and transitions.
+- Preserved the exact W1/W2 answer pools and the v28.3.5 World 2 level/viewport stability baseline.
 
 ## What changed in v28.3.10
 

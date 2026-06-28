@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_10_training_style_and_candle_speed_copy_polish";
+const CANDLE_QUEST_BUILD = "v28_4_0_w1_w2_layout_standard_lock";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.10";
+    b.textContent = "v28.4.0";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1604,6 +1604,9 @@ function beginRun(worldId=activeWorld){
     coachHelpReady:false,
     coachHelpReadyToken:0
   };
+  document.body.dataset.gameWorld = String(world.id);
+  document.body.dataset.trainingStyle = run.flowMode;
+  document.body.dataset.candleSpeed = run.tempoId;
   clearCoachBox();
   // Mobile: fewer initial candles for clarity
   const initCandles = isMobile() ? 18 : 26;
@@ -1638,6 +1641,9 @@ function beginRun(worldId=activeWorld){
 function quitRun(){
   if(run){clearInterval(run.timer);clearInterval(run.tick);clearInterval(run.questTimer);clearTimeout(run.reviewTimer);}
   run=null;
+  delete document.body.dataset.gameWorld;
+  delete document.body.dataset.trainingStyle;
+  delete document.body.dataset.candleSpeed;
   openScreen("home");
 }
 function endRun(){
@@ -1709,6 +1715,9 @@ function endRun(){
   `;
 
   run=null;
+  delete document.body.dataset.gameWorld;
+  delete document.body.dataset.trainingStyle;
+  delete document.body.dataset.candleSpeed;
   openScreen("result");
   showResultStep("score");
 }

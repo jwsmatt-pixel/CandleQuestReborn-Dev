@@ -3158,3 +3158,35 @@ body[data-screen="game"] .coach-tray.is-answer{
     min-width:82px;
   }
 }
+
+/* v28.4.0 - W1/W2 use one locked training arena.
+   Mode-specific UI remains out of flow so the replay viewport never moves. */
+body[data-screen="game"][data-training-style="normal"] .need-help-layer,
+body[data-screen="game"][data-candle-speed="speedrun"] .need-help-layer,
+body[data-screen="game"][data-training-style="normal"] .coach-tray,
+body[data-screen="game"][data-candle-speed="speedrun"] .coach-tray{
+  display:none!important;
+}
+
+@media(max-width:850px){
+  body[data-screen="game"][data-game-world="1"] .chart-wrap,
+  body[data-screen="game"][data-game-world="2"] .chart-wrap{
+    width:100%;
+    flex:none;
+  }
+  body[data-screen="game"][data-training-style="normal"] .answer-pad{
+    margin-top:0!important;
+  }
+  body[data-screen="game"][data-training-style="guided"] .answer-pad{
+    margin-top:38px!important;
+  }
+  body[data-screen="game"] #buildBadge{
+    opacity:.72;
+  }
+}
+
+@media(max-width:390px){
+  body[data-screen="game"][data-training-style="guided"] .answer-pad{
+    margin-top:36px!important;
+  }
+}
