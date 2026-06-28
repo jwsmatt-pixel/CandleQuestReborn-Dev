@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_3_4_4_coach_tips_simple_manual_button";
+const CANDLE_QUEST_BUILD = "v28_3_4_5_coach_box_answer_only_need_help_button";
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
@@ -6,7 +6,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.3.4.4 - Coach Tips Simple Manual Button";
+    b.textContent = "v28.3.4.5 - Coach Box Answer-Only + Need Help Button";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -553,40 +553,41 @@ function resolveCurrentCoachGuidance(){
   };
 }
 
-function renderCoachBox({guidance=null, expanded=false, awaitingContinue=false}={}){
+function renderCoachBox({guidance=null, helpOpen=false, answered=false}={}){
   const host = $("levelCoach");
   if(!host || !run || ![1,2].includes(run.world.id)) return;
-  const label = run.world.id === 1 ? "Candle Coach" : "Level Coach";
-  host.classList.toggle("is-quiet", !expanded);
-  host.classList.remove("is-dimmed");
+  host.classList.remove("is-idle", "is-help", "is-answer", "is-dimmed");
 
-  if(!expanded || !guidance){
-    const message = guidance?.state.correct ? "Correct read. Tips are available while this result is active." : "Get fresh guidance for the current lesson.";
-    host.innerHTML = `
-      <div class="coach-box-head">
-        <b>${label}</b>
-        <button class="coach-box-toggle coach-tips-button" type="button" onclick="manualCoachTipsClick()" aria-label="Show fresh coach tips">Coach tips</button>
-      </div>
-      <div class="coach-box-footer">
-        <p class="coach-box-status">${message}</p>
-        ${awaitingContinue ? `<button class="coach-box-next" type="button" onclick="continueFromCoach()">Next</button>` : ""}
-      </div>`;
+  if(!guidance?.state.question){
+    host.classList.add("is-idle");
+    host.innerHTML = "";
     return;
   }
 
+  if(!answered){
+    host.classList.add(helpOpen ? "is-help" : "is-quiet");
+    host.innerHTML = `
+      <button class="need-help-button" type="button" onclick="showNeedHelp()" aria-expanded="${helpOpen}" aria-controls="coachHint">
+        <span class="need-help-icon" aria-hidden="true"><span>?</span></span>
+        <span>Need help?</span>
+      </button>
+      ${helpOpen ? `
+        <div id="coachHint" class="coach-hint">
+          <b>${guidance.title}</b>
+          <p>${guidance.explanation}</p>
+        </div>` : ""}`;
+    return;
+  }
+
+  host.classList.add("is-answer");
   host.innerHTML = `
     <div class="coach-box-head">
       <b>${guidance.label} · ${guidance.status}: ${guidance.title}</b>
-      <div class="coach-box-actions">
-        ${run.coachSuppressed ? "" : `<button class="coach-box-toggle" type="button" onclick="suppressAutomaticCoach()" aria-label="Do not show automatic coach guidance again this run">Don&rsquo;t show again</button>`}
-        <button class="coach-box-toggle coach-tips-button" type="button" onclick="manualCoachTipsClick()" aria-label="Refresh coach tips">Coach tips</button>
-        <button class="coach-box-toggle" type="button" onclick="closeCoachTips()" aria-label="Close coach tips">Close tips</button>
-      </div>
     </div>
     <p class="coach-box-copy">${guidance.explanation}</p>
     <div class="coach-box-footer">
       <div class="level-coach-tags">${guidance.tags.map(tag=>`<span>${tag}</span>`).join("")}</div>
-      ${awaitingContinue ? `<button class="coach-box-next" type="button" onclick="continueFromCoach()">Next</button>` : ""}
+      <button class="coach-box-next" type="button" onclick="continueFromCoach()">Next</button>
     </div>`;
 }
 
@@ -603,12 +604,12 @@ function renderCurrentCoachContent(){
   }
   renderCoachBox({
     guidance,
-    expanded:Boolean(run.coachVisible),
-    awaitingContinue:run.coachAwaitingContinue
+    helpOpen:Boolean(run.coachHelpOpen),
+    answered:Boolean(guidance.state.answered)
   });
 }
 
-function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContinue=false, selectedAnswer=null, resultState=null}={}){
+function showAnswerCoach(answer, {correct=false, selectedAnswer=null, resultState=null}={}){
   if(!run || ![1,2].includes(run.world.id)) return;
   run.coachResult = {
     question:answer,
@@ -616,39 +617,16 @@ function showAnswerCoach(answer, {correct=false, forceFull=false, awaitingContin
     correct,
     resultState:resultState || (correct ? "correct" : "wrong")
   };
-  run.coachVisible = forceFull && !run.coachSuppressed;
-  run.coachAwaitingContinue = run.coachVisible && awaitingContinue;
+  run.coachHelpOpen = false;
   renderCurrentCoachContent();
 }
 
-function manualCoachTipsClick(){
+function showNeedHelp(){
   if(!run) return;
   const guidance = resolveCurrentCoachGuidance();
-  if(!guidance) return;
-  if(guidance.state.answered && run.reviewTimer){
-    clearTimeout(run.reviewTimer);
-    run.reviewTimer = null;
-  }
-  run.coachVisible = true;
-  run.coachAwaitingContinue = guidance.state.answered;
-  renderCoachBox({guidance, expanded:true, awaitingContinue:run.coachAwaitingContinue});
-}
-
-function closeCoachTips(){
-  if(!run) return;
-  run.coachVisible = false;
-  renderCurrentCoachContent();
-}
-
-function suppressAutomaticCoach(){
-  if(!run) return;
-  run.coachSuppressed = true;
-  run.coachVisible = false;
-  renderCurrentCoachContent();
-  if(run.current){
-    if(run.reviewTimer) clearTimeout(run.reviewTimer);
-    run.reviewTimer = setTimeout(()=>finishQuestMoment(), 500);
-  }
+  if(!guidance || guidance.state.answered || !guidance.state.question) return;
+  run.coachHelpOpen = true;
+  renderCoachBox({guidance, helpOpen:true, answered:false});
 }
 
 function continueFromCoach(){
@@ -666,8 +644,7 @@ function clearCoachBox(){
   host.classList.remove("is-dimmed");
   if(run){
     run.coachResult = null;
-    run.coachVisible = false;
-    run.coachAwaitingContinue = false;
+    run.coachHelpOpen = false;
   }
   renderCurrentCoachContent();
 }
@@ -1524,9 +1501,7 @@ function beginRun(worldId=activeWorld){
     questTimer:null,
     reviewTimer:null,
     coachResult:null,
-    coachVisible:false,
-    coachAwaitingContinue:false,
-    coachSuppressed:false
+    coachHelpOpen:false
   };
   clearCoachBox();
   // Mobile: fewer initial candles for clarity
@@ -2714,8 +2689,6 @@ function timeoutQuestMoment(){
   recordPatternAttempt(run.current, false);
   $("runHint").textContent = `Time up — answer was ${run.current}.`;
   showAnswerCoach(run.current, {
-    forceFull:true,
-    awaitingContinue:true,
     selectedAnswer:"Timeout",
     resultState:"timeout"
   });
@@ -2723,9 +2696,6 @@ function timeoutQuestMoment(){
     b.disabled = true;
     if(b.textContent === run.current) b.classList.add("correct");
   });
-  if(run.coachSuppressed){
-    run.reviewTimer = setTimeout(()=>finishQuestMoment(), 1100);
-  }
 }
 
 function finishQuestMoment(){
@@ -2886,6 +2856,7 @@ function freezeScenario(){
   $("freezeBanner").classList.remove("hidden");
   $("freezeBanner").textContent = "QUEST MOMENT · READ THE CANDLE";
   $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
+  clearCoachBox();
   const options = shuffle([answer,...shuffle(pool.filter(x=>x!==answer)).slice(0,3)]);
   renderAnswerDock("quest", options);
   drawGame(true);
@@ -2968,8 +2939,6 @@ function answer(label){
     : (ok ? "Correct read — market resumes." : `Wrong read — answer was ${run.current}.`);
   showAnswerCoach(run.current, {
     correct:ok,
-    forceFull:!ok,
-    awaitingContinue:!ok,
     selectedAnswer:label,
     resultState:ok ? "correct" : "wrong"
   });
@@ -2978,9 +2947,6 @@ function answer(label){
     if(b.textContent === run.current) b.classList.add("correct");
     else if(b.textContent === label) b.classList.add("wrong");
   });
-  if(ok || run.coachSuppressed){
-    run.reviewTimer = setTimeout(()=>finishQuestMoment(), run.world.id === 2 ? 1100 : 750);
-  }
 }
 
 function recordPatternAttempt(patternName, wasCorrect){

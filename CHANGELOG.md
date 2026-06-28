@@ -1,5 +1,19 @@
 # Candle Quest Reborn — Changelog
 
+## v28.3.4.5 - Coach Box Answer-Only + Need Help Button
+
+### Changed
+
+- Removed the large default pre-answer Coach Box and the `Coach tips`, `Close tips`, and `Don't show again` control loop.
+- Added a small speech-bubble `Need help?` action that opens fresh, neutral W1/W2 guidance for only the active unanswered question.
+- Made the Coach Box answer-led: correct, incorrect, and timed-out reads now show the correct-answer explanation and a `Next` button.
+- Reset optional help on every question transition so previous-question guidance cannot carry forward.
+- Updated the build marker to `v28_3_4_5_coach_box_answer_only_need_help_button` and the visible badge to `v28.3.4.5`.
+
+### Preserved
+
+- Exact W1/W2 answer pools, generators, Pattern Bible logic, support/resistance behavior, scoring, timer, streaks, 10-question flow, large Q progress, iPhone cockpit, and chart-rim feedback.
+
 ## v28.3.4.4 - Coach Tips Simple Manual Button
 
 ### Changed
