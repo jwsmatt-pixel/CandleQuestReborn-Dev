@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.5.2 Checkpoint Summary
+# Candle Quest Reborn - v28.5.3 Checkpoint Summary
 
 ## Current build
 
-**v28.5.2 - W3 Flow Regime Variety + Fairness Pass**
-Build marker: `v28_5_2_w3_flow_regime_variety_fairness`
+**v28.5.3 - W4 Replay Lab Candle Development Prototype**
+Build marker: `v28_5_3_w4_replay_lab_candle_development`
 
 ## Base build
 
@@ -12,7 +12,19 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 3 now presents four controlled visual variants for each locked flow regime, with balanced answer scheduling and variant anti-repeat logic across each 10-question run. World 1 and World 2 remain on their accepted behavior. Guided Training owns all help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+World 4 is now an isolated Replay Lab for testing two-frame candle development. Every W4 candle first renders as a deterministic developing state and then resolves into its untouched final OHLC candle. W1/W2/W3 replay behavior and answer truth remain unchanged. Guided Training owns optional Replay Lab help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.5.3
+
+- Exposed World 4 as `Replay Lab` with the subtitle `Watch candles develop.`
+- Locked the temporary W4 answer pool to Strong Push Up, Strong Push Down, Rejection Up, and Rejection Down.
+- Added simple, visually obvious W4 push and rejection scenario generators.
+- Added W4-only developing candle frames derived from final OHLC at fixed progress, with partial bodies and wicks.
+- Kept final closed candles as the only canonical candle and answer truth state.
+- Added a stable W4 per-question viewport and lightweight opacity/glow treatment without changing chart dimensions.
+- Reused Beginner, Standard, and Speedrun intervals while keeping Speedrun limited to Fast Reps.
+- Added neutral Guided Training Replay Lab help; Fast Reps and Speedrun remain guidance-free.
+- Updated the build marker and visible badge to v28.5.3.
 
 ## What changed in v28.5.2
 

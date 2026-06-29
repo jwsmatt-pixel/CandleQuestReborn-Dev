@@ -1,5 +1,24 @@
 # Candle Quest Reborn — Changelog
 
+## v28.5.3 - W4 Replay Lab Candle Development Prototype
+
+### Added
+
+- Repurposed World 4 as the unlocked Replay Lab with the subtitle `Watch candles develop.` and the exact temporary answer pool: Strong Push Up, Strong Push Down, Rejection Up, and Rejection Down.
+- Added four visually obvious W4-only replay scenarios for upward pushes, downward pushes, bullish rejection, and bearish rejection.
+- Added a deterministic two-frame W4 candle cycle: a softer developing frame derived from final OHLC, followed by the exact final closed candle.
+- Added W4 Guided Training help and result coaching that reminds players that final closed candles are the truth state.
+
+### Preserved
+
+- W1/W2/W3 generators, answer pools, replay timing, final candle truth, answer logic, and locked behavior.
+- Guided Training/Fast Reps behavior, Speedrun eligibility, seven-second Quest Moment timer, scoring, progression, mobile cockpit dimensions, and dev mode.
+- W4 uses a fixed per-question viewport, so developing and closed frames do not resize the chart or move the answer dock.
+
+### Release marker
+
+- Updated the build marker to `v28_5_3_w4_replay_lab_candle_development` and visible badge to `v28.5.3`.
+
 ## v28.5.2 - W3 Flow Regime Variety + Fairness Pass
 
 ### Changed

@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_5_2_w3_flow_regime_variety_fairness";
+const CANDLE_QUEST_BUILD = "v28_5_3_w4_replay_lab_candle_development";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.5.2";
+    b.textContent = "v28.5.3";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -208,6 +208,15 @@ const WORLD_3_CONTEXT = Object.freeze({
   })
 });
 
+const WORLD_4_REPLAY_LAB = Object.freeze({
+  world:"World 4",
+  theme:"Replay Lab",
+  subtitle:"Watch candles develop.",
+  teachingQuestion:"What did the replay show?",
+  answerPool:Object.freeze(["Strong Push Up","Strong Push Down","Rejection Up","Rejection Down"]),
+  hint:"Watch how each candle develops before it closes. The final closed candles are what count."
+});
+
 const WORLD_3_VARIANTS = Object.freeze({
   "Accepting Higher":Object.freeze([
     Object.freeze({id:"clean-up", offsets:[0,1.2,2.7,2.1,4.1,5.5,4.8,6.8,8.1,7.5,9.6], swings:[0,2,3,5,6,8,9,10], wick:"normal"}),
@@ -258,11 +267,11 @@ const worlds = [
     patterns:WORLD_3_CONTEXT.answerPool
   },
   {
-    id:4, icon:"Ⅳ", title:"Trend", unlock:320,
-    short:"Higher lows, lower highs and structure.",
-    lesson:"Trends are not straight lines. In an uptrend, pullbacks should respect structure. In a downtrend, rallies should fail. Your job is to judge whether structure is respected or broken.",
-    rules:["Uptrend = higher lows and stronger pushes.","Downtrend = lower highs and weaker bounces.","Trend break = structure no longer respected."],
-    patterns:["Uptrend Continuation","Downtrend Continuation","Trend Break","Pullback Hold","Lower High"]
+    id:4, icon:"Ⅳ", title:"Replay Lab", unlock:0,
+    short:"Watch candles develop.",
+    lesson:"What did the replay show? Watch each candle form, then use only the final closed candles for your answer.",
+    rules:["Each candle first appears in a developing state.","The closed candle is the final truth state.","Read the full replay as a strong push or rejection."],
+    patterns:WORLD_4_REPLAY_LAB.answerPool
   },
   {
     id:5, icon:"Ⅴ", title:"Risk Brain", unlock:500,
@@ -571,8 +580,18 @@ function getWorld3CoachContent(answer){
   return {label:"Flow Coach",title:concept.title,explanation:concept.explanation,tags:concept.tags};
 }
 
+function getWorld4CoachContent(answer){
+  const explanations = {
+    "Strong Push Up":"The closed candles made clear bullish progress.",
+    "Strong Push Down":"The closed candles made clear bearish progress.",
+    "Rejection Up":"Price probed lower, then the closed candles recovered upward.",
+    "Rejection Down":"Price probed higher, then the closed candles failed downward."
+  };
+  return {label:"Replay Coach",title:answer,explanation:explanations[answer] || WORLD_4_REPLAY_LAB.hint,tags:["closed candles count"]};
+}
+
 function getCurrentCoachState(){
-  if(!run || ![1,2,3].includes(run.world?.id)) return null;
+  if(!run || ![1,2,3,4].includes(run.world?.id)) return null;
   const question = run.current || null;
   const result = run.coachResult?.question === question ? run.coachResult : null;
   return {
@@ -583,14 +602,14 @@ function getCurrentCoachState(){
     answered:Boolean(result),
     correct:Boolean(result?.correct),
     resultState:result?.resultState || "ready",
-    lessonType:run.world.id === 1 ? "candle-pattern" : run.world.id === 2 ? "support-resistance" : "price-context"
+    lessonType:run.world.id === 1 ? "candle-pattern" : run.world.id === 2 ? "support-resistance" : run.world.id === 3 ? "price-context" : "replay-lab"
   };
 }
 
 function resolveCurrentCoachGuidance(){
   const state = getCurrentCoachState();
   if(!state) return null;
-  const label = state.worldId === 1 ? "Candle Coach" : state.worldId === 2 ? "Level Coach" : "Flow Coach";
+  const label = state.worldId === 1 ? "Candle Coach" : state.worldId === 2 ? "Level Coach" : state.worldId === 3 ? "Flow Coach" : "Replay Coach";
   const neutral = state.worldId === 1
     ? {
         title:"Candle clue",
@@ -602,9 +621,14 @@ function resolveCurrentCoachGuidance(){
         explanation:"Watch price at the level. Did it hold, reject, or break?",
         tags:[]
       }
-    : {
+    : state.worldId === 3 ? {
         title:"Flow clue",
         explanation:"Look at what price is accepting. Is it building higher, building lower, rotating sideways, or changing regime?",
+        tags:[]
+      }
+    : {
+        title:"Replay clue",
+        explanation:WORLD_4_REPLAY_LAB.hint,
         tags:[]
       };
   if(!state.answered || !state.correctAnswer){
@@ -612,7 +636,7 @@ function resolveCurrentCoachGuidance(){
   }
   const content = state.worldId === 1
     ? getWorld1CoachContent(state.correctAnswer)
-    : state.worldId === 2 ? getWorld2CoachContent(state.correctAnswer) : getWorld3CoachContent(state.correctAnswer);
+    : state.worldId === 2 ? getWorld2CoachContent(state.correctAnswer) : state.worldId === 3 ? getWorld3CoachContent(state.correctAnswer) : getWorld4CoachContent(state.correctAnswer);
   if(!content) return {...neutral, label, state, status:"Lesson tip"};
   const status = state.correct
     ? "Correct read"
@@ -687,7 +711,7 @@ function markNeedHelpReady(){
 
 function renderCoachBox({guidance=null, showResult=false}={}){
   const host = $("levelCoach");
-  if(!host || !run || ![1,2,3].includes(run.world.id)) return;
+  if(!host || !run || ![1,2,3,4].includes(run.world.id)) return;
   host.classList.remove("is-idle", "is-answer", "is-dimmed");
 
   if(!guidance?.state.question || !showResult){
@@ -727,7 +751,7 @@ function renderCurrentCoachContent(){
 }
 
 function showAnswerCoach(answer, {correct=false, selectedAnswer=null, resultState=null}={}){
-  if(!run || ![1,2,3].includes(run.world.id)) return;
+  if(!run || ![1,2,3,4].includes(run.world.id)) return;
   if(run.flowMode !== "guided"){
     run.coachResult = null;
     run.coachHelpOpen = false;
@@ -1617,7 +1641,7 @@ function beginRun(worldId=activeWorld){
   clearCoachBox();
   activeWorld = worldId;
   const startPrice = 100;
-  const flowMode = [1,2,3].includes(world.id) && RUN_FLOW_CONFIG[state.selectedFlowMode] ? state.selectedFlowMode : "normal";
+  const flowMode = [1,2,3,4].includes(world.id) && RUN_FLOW_CONFIG[state.selectedFlowMode] ? state.selectedFlowMode : "normal";
   const requestedTempoId = flowMode === "guided" && state.selectedTempo === "speedrun" ? "normal" : state.selectedTempo;
   const tempoId = isTempoUnlocked(requestedTempoId) ? requestedTempoId : "beginner";
   const tempo = TEMPO_CONFIG[tempoId];
@@ -1684,8 +1708,11 @@ function beginRun(worldId=activeWorld){
   for(let i=0;i<initCandles;i++) addCandle();
   if(world.id === 2) prepareWorld2Question();
   if(world.id === 3) prepareWorld3Question();
+  if(world.id === 4) prepareWorld4Question();
   $("runMode").textContent = `${world.title} - ${RUN_FLOW_CONFIG[run.flowMode].label} - ${tempo.label}`;
-  $("runHint").textContent = "Watch the candles move. Timer starts at Quest Moment.";
+  $("runHint").textContent = world.id === 4
+    ? "What did the replay show? Watch each candle develop, then read the closed candles."
+    : "Watch the candles move. Timer starts at Quest Moment.";
   $("scoreText").textContent = "0";
   $("timeText").textContent = "—";
   updateRunProgress();
@@ -1704,8 +1731,10 @@ function beginRun(worldId=activeWorld){
       return;
     }
     const wasFinishingSetup = !!run.setupPattern && run.setupSteps > 0;
-    addCandle();
+    if(world.id === 4) advanceWorld4Replay();
+    else addCandle();
     run.nextFreeze--;
+    if(world.id === 4 && run.w4DevelopingCandle) run.nextFreeze++;
     if(run.nextFreeze<=0 && !(wasFinishingSetup && run.setupSteps <= 0)) freezeScenario();
     drawGame();
   },tempo.replayInterval);
@@ -2903,6 +2932,7 @@ function finishQuestMoment(){
   run.setupStory = null;
   if(run.world.id === 2) prepareWorld2Question();
   else if(run.world.id === 3) prepareWorld3Question();
+  else if(run.world.id === 4) prepareWorld4Question();
   else run.nextFreeze = 5 + Math.floor(Math.random()*5);
   $("freezeBanner").classList.add("hidden");
   clearCoachBox();
@@ -2912,6 +2942,8 @@ function finishQuestMoment(){
     ? `Quest ${run.questCount}/${run.maxQuests} complete. Watch price approach the next level.`
     : run.world.id === 3
       ? `Quest ${run.questCount}/${run.maxQuests} complete. Watch the next flow regime form.`
+      : run.world.id === 4
+        ? `Quest ${run.questCount}/${run.maxQuests} complete. Watch the next replay develop.`
       : `Quest ${run.questCount}/${run.maxQuests} complete. Watch the channel for the next setup.`;
 }
 
@@ -3052,6 +3084,69 @@ function prepareWorld3Question(){
   run.momentum = 0;
 }
 
+function createDevelopingCandle(finalCandle, scenarioType, progress=0.55){
+  const [open,high,low,close] = finalCandle;
+  const developingClose = open + (close - open) * progress;
+  const bodyHigh = Math.max(open,developingClose);
+  const bodyLow = Math.min(open,developingClose);
+  let developingHigh = bodyHigh + Math.max(0,(high - Math.max(open,close)) * progress);
+  let developingLow = bodyLow - Math.max(0,(Math.min(open,close) - low) * progress);
+  if(scenarioType === "Rejection Up") developingLow = bodyLow - Math.max(0,(Math.min(open,close) - low) * 0.68);
+  if(scenarioType === "Rejection Down") developingHigh = bodyHigh + Math.max(0,(high - Math.max(open,close)) * 0.68);
+  return [open,Math.min(high,developingHigh),Math.max(low,developingLow),developingClose];
+}
+
+function prepareWorld4Question(){
+  if(!run || run.world.id !== 4) return;
+  const pool = WORLD_4_REPLAY_LAB.answerPool;
+  if(!run.patternHistory) run.patternHistory = [];
+  const pattern = _pickDiversePattern(pool,run.patternHistory);
+  run.patternHistory.push(pattern);
+  if(run.patternHistory.length > 8) run.patternHistory.shift();
+
+  const start = run.candles.length ? run.candles[run.candles.length-1][3] : run.price;
+  run.candles = [[start,start+0.18,start-0.18,start]];
+  const closeOffsets = {
+    "Strong Push Up":[0.9,1.8,2.9,3.8,5.0,6.2,7.3],
+    "Strong Push Down":[-0.9,-1.8,-2.9,-3.8,-5.0,-6.2,-7.3],
+    "Rejection Up":[-0.7,-1.4,-0.3,0.8,1.5,2.2,2.9],
+    "Rejection Down":[0.7,1.4,0.3,-0.8,-1.5,-2.2,-2.9]
+  }[pattern];
+  let open = start;
+  const scenario = closeOffsets.map((offset,index)=>{
+    const close = start + offset;
+    const rejectionUp = pattern === "Rejection Up" && index === 2;
+    const rejectionDown = pattern === "Rejection Down" && index === 2;
+    const high = Math.max(open,close) + (rejectionDown ? 2.1 : 0.28);
+    const low = Math.min(open,close) - (rejectionUp ? 2.1 : 0.28);
+    const candle = [open,high,low,close];
+    open = close;
+    return candle;
+  });
+  const values = scenario.flat();
+  const pad = Math.max(1,(Math.max(...values)-Math.min(...values))*0.14);
+  run.w4Viewport = {min:Math.min(...values)-pad,max:Math.max(...values)+pad};
+  run.w4ScenarioQueue = scenario;
+  run.w4DevelopingCandle = null;
+  run.setupPattern = pattern;
+  run.setupSteps = scenario.length;
+  run.nextFreeze = scenario.length;
+  run.setupPhase = "forming";
+}
+
+function advanceWorld4Replay(){
+  if(!run || run.world.id !== 4 || !run.w4ScenarioQueue?.length) return;
+  if(!run.w4DevelopingCandle){
+    run.w4DevelopingCandle = createDevelopingCandle(run.w4ScenarioQueue[0],run.setupPattern);
+    return;
+  }
+  const finalCandle = run.w4ScenarioQueue.shift();
+  run.w4DevelopingCandle = null;
+  run.candles.push(finalCandle);
+  run.price = finalCandle[3];
+  run.setupSteps = run.w4ScenarioQueue.length;
+}
+
 function _buildWorld3AnswerQueue(pool, history){
   const queue = [];
   let previous = history[history.length - 1];
@@ -3098,17 +3193,21 @@ function freezeScenario(){
   }
 
   const answer = run.setupPattern;
-  if(run.world.id === 2 || run.world.id === 3){
+  if(run.world.id === 2 || run.world.id === 3 || run.world.id === 4){
     run.coachHelpReady = false;
     run.paused = true;
     run.current = answer;
     run.setupPattern = null;
     run.setupSteps = 0;
     if(run.world.id === 2) run.w2ScenarioQueue = [];
-    else run.w3ScenarioQueue = [];
+    else if(run.world.id === 3) run.w3ScenarioQueue = [];
+    else {
+      run.w4ScenarioQueue = [];
+      run.w4DevelopingCandle = null;
+    }
     run.setupPhase = "quest";
     $("freezeBanner").classList.remove("hidden");
-    $("freezeBanner").textContent = run.world.id === 2 ? "QUEST MOMENT · READ THE LEVEL" : "QUEST MOMENT · READ THE FLOW";
+    $("freezeBanner").textContent = run.world.id === 2 ? "QUEST MOMENT · READ THE LEVEL" : run.world.id === 3 ? "QUEST MOMENT · READ THE FLOW" : "QUEST MOMENT · READ THE REPLAY";
     $("runHint").textContent = `Quest Moment ${run.questCount+1}/${run.maxQuests} — 7 seconds to answer.`;
     clearCoachBox();
     renderAnswerDock("quest", shuffle(pool));
@@ -3215,6 +3314,8 @@ function answer(label){
     ? (ok ? "Correct read." : `Not this time — the answer was ${run.current}.`)
     : run.world.id === 3
       ? (ok ? "Correct flow read." : `Not this time — the answer was ${run.current}.`)
+      : run.world.id === 4
+        ? (ok ? "Correct replay read." : `Not this time — the replay showed ${run.current}.`)
       : (ok ? "Correct read — market resumes." : `Wrong read — answer was ${run.current}.`);
   showAnswerCoach(run.current, {
     correct:ok,
@@ -3378,6 +3479,7 @@ function drawGame(frozen=false){
   const candleVals = visibleCandles.flat();
   const isWorld2 = run.world.id === 2;
   const isWorld3 = run.world.id === 3;
+  const isWorld4 = run.world.id === 4;
   const hasTeachingLevel = isWorld2 && Number.isFinite(run.teachingLevel);
   const visibleMin = hasTeachingLevel ? Math.min(run.teachingLevel, ...candleVals) : Math.min(run.support, ...candleVals);
   const visibleMax = hasTeachingLevel ? Math.max(run.teachingLevel, ...candleVals) : Math.max(run.resistance, ...candleVals);
@@ -3387,8 +3489,8 @@ function drawGame(frozen=false){
     : mobile
       ? Math.max(0.85, (run.resistance - run.support) * 0.105)
       : Math.max(1.2, (run.resistance - run.support) * 0.16);
-  const min = isWorld2 && run.w2Viewport ? run.w2Viewport.min : isWorld3 && run.w3Viewport ? run.w3Viewport.min : visibleMin - pad;
-  const max = isWorld2 && run.w2Viewport ? run.w2Viewport.max : isWorld3 && run.w3Viewport ? run.w3Viewport.max : visibleMax + pad;
+  const min = isWorld2 && run.w2Viewport ? run.w2Viewport.min : isWorld3 && run.w3Viewport ? run.w3Viewport.min : isWorld4 && run.w4Viewport ? run.w4Viewport.min : visibleMin - pad;
+  const max = isWorld2 && run.w2Viewport ? run.w2Viewport.max : isWorld3 && run.w3Viewport ? run.w3Viewport.max : isWorld4 && run.w4Viewport ? run.w4Viewport.max : visibleMax + pad;
   const mapY = v => H - 54 - ((v - min) / (max - min)) * (H - 100);
 
   // Keep the replay and Quest Moment stage identical so freezing cannot shift candles.
@@ -3431,7 +3533,7 @@ function drawGame(frozen=false){
   };
   if(hasTeachingLevel){
     drawCrispLevel(run.teachingLevel);
-  } else if(!isWorld2 && !isWorld3) {
+  } else if(!isWorld2 && !isWorld3 && !isWorld4) {
     drawCrispLevel(hi);
     drawCrispLevel(lo);
     ctx.setLineDash([10,8]);
@@ -3446,7 +3548,7 @@ function drawGame(frozen=false){
   if(hasTeachingLevel){
     const label = run.levelType === "support" ? "SUPPORT" : "RESISTANCE";
     drawWorld2LevelLabel(ctx,label,36,Math.round(mapY(run.teachingLevel))-44,"rgba(255,255,255,.92)");
-  } else if(!isWorld2 && !isWorld3) {
+  } else if(!isWorld2 && !isWorld3 && !isWorld4) {
     drawLevelLabel(ctx,"Range High",36,mapY(hi)-18,"rgba(255,255,255,.92)");
     drawLevelLabel(ctx,"Channel Mean",36,mapY(mid)-18,"rgba(255,255,255,.72)");
     drawLevelLabel(ctx,"Range Low",36,mapY(lo)+8,"rgba(255,255,255,.92)");
@@ -3461,6 +3563,16 @@ function drawGame(frozen=false){
     const isSignal = frozen && i >= visibleCandles.length - 3;
     drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal);
   });
+  if(isWorld4 && run.w4DevelopingCandle){
+    const [o,h,l,cl] = run.w4DevelopingCandle;
+    const x = drawLeft + visibleCandles.length * gap;
+    ctx.save();
+    ctx.globalAlpha = 0.58;
+    ctx.shadowColor = cl >= o ? "rgba(49,201,119,.42)" : "rgba(255,92,92,.38)";
+    ctx.shadowBlur = 9;
+    drawFlatCandle(ctx,x,mapY(o),mapY(h),mapY(l),mapY(cl),cw,cl>=o,false);
+    ctx.restore();
+  }
 
   if(isWorld3 && run.w3SwingPoints?.length){
     const points = run.w3SwingPoints
