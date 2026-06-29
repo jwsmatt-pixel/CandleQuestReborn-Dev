@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_5_3_w4_replay_lab_candle_development";
+const CANDLE_QUEST_BUILD = "v28_5_4_w4_micro_path_replay_adapter";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.5.3";
+    b.textContent = "v28.5.4";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1723,6 +1723,9 @@ function beginRun(worldId=activeWorld){
   updateStreakHud();
   if(world.id === 1) showFirstRunOnboardingHelper();
   run.timer = null;
+  const replayTickInterval = world.id === 4
+    ? Math.max(120,Math.round(tempo.replayInterval / Math.max(2,getWorld4MicroStepCount()-1)))
+    : tempo.replayInterval;
   run.tick = setInterval(()=>{
     if(!run || run.paused) return;
     if(run.setupPattern && run.setupSteps <= 0 && run.nextFreeze <= 0){
@@ -1737,7 +1740,7 @@ function beginRun(worldId=activeWorld){
     if(world.id === 4 && run.w4DevelopingCandle) run.nextFreeze++;
     if(run.nextFreeze<=0 && !(wasFinishingSetup && run.setupSteps <= 0)) freezeScenario();
     drawGame();
-  },tempo.replayInterval);
+  },replayTickInterval);
 }
 function quitRun(){
   if(run){clearInterval(run.timer);clearInterval(run.tick);clearInterval(run.questTimer);clearTimeout(run.reviewTimer);}
@@ -3096,6 +3099,56 @@ function createDevelopingCandle(finalCandle, scenarioType, progress=0.55){
   return [open,Math.min(high,developingHigh),Math.max(low,developingLow),developingClose];
 }
 
+function validateMicroPath(finalCandle,path){
+  if(!Array.isArray(finalCandle) || finalCandle.length !== 4 || !Array.isArray(path) || path.length < 2) return false;
+  const [open,high,low,close] = finalCandle;
+  if(![open,high,low,close,...path].every(Number.isFinite) || high < Math.max(open,close) || low > Math.min(open,close)) return false;
+  const epsilon = 1e-9;
+  return Math.abs(path[0]-open) <= epsilon
+    && Math.abs(path[path.length-1]-close) <= epsilon
+    && Math.max(...path) <= high + epsilon
+    && Math.min(...path) >= low - epsilon;
+}
+
+function createMicroPathForCandle(finalCandle,role,options={}){
+  const [open,high,low,close] = finalCandle;
+  const requestedSteps = Math.max(3,Math.min(5,options.steps || 4));
+  const range = Math.max(1e-9,high-low);
+  const clamp = value=>Math.max(low,Math.min(high,value));
+  const earlyPush = clamp(open + (close-open) * 0.72);
+  const pauseAbove = clamp(close + range * 0.12);
+  const pauseBelow = clamp(close - range * 0.12);
+  let path;
+
+  if(role === "bullish-rejection") path = [open,low,high,pauseBelow,close];
+  else if(role === "bearish-rejection") path = [open,high,low,pauseAbove,close];
+  else if(role === "bearish-expansion") path = [open,earlyPush,high,low,close];
+  else if(role === "pause") {
+    const firstExtreme = close >= open ? high : low;
+    const secondExtreme = close >= open ? low : high;
+    path = [open,firstExtreme,secondExtreme,clamp((open+close)/2),close];
+  } else path = [open,earlyPush,low,high,close];
+
+  if(requestedSteps === 4) path = [path[0],path[1],path[2],path[path.length-1]];
+  if(requestedSteps === 3){
+    const storyExtreme = role === "bearish-rejection" || role === "bearish-expansion" ? high : low;
+    path = [open,storyExtreme,close];
+  }
+  return validateMicroPath(finalCandle,path) ? path : null;
+}
+
+function getWorld4MicroStepCount(){
+  if(!run || run.world.id !== 4) return 0;
+  return run.tempoId === "beginner" ? 5 : run.tempoId === "speedrun" ? 3 : 4;
+}
+
+function getWorld4CandleRole(pattern,candle,index){
+  if(pattern === "Rejection Up" && index === 2) return "bullish-rejection";
+  if(pattern === "Rejection Down" && index === 2) return "bearish-rejection";
+  if(index === 3) return "pause";
+  return candle[3] >= candle[0] ? "bullish-expansion" : "bearish-expansion";
+}
+
 function prepareWorld4Question(){
   if(!run || run.world.id !== 4) return;
   const pool = WORLD_4_REPLAY_LAB.answerPool;
@@ -3123,24 +3176,68 @@ function prepareWorld4Question(){
     open = close;
     return candle;
   });
+  const microSteps = getWorld4MicroStepCount();
+  run.w4MicroFallbackCount = 0;
+  run.w4MicroReplayQueue = scenario.map((candle,index)=>{
+    const role = getWorld4CandleRole(pattern,candle,index);
+    const path = createMicroPathForCandle(candle,role,{steps:microSteps});
+    if(!path) run.w4MicroFallbackCount++;
+    return {candle,role,path};
+  });
   const values = scenario.flat();
   const pad = Math.max(1,(Math.max(...values)-Math.min(...values))*0.14);
   run.w4Viewport = {min:Math.min(...values)-pad,max:Math.max(...values)+pad};
   run.w4ScenarioQueue = scenario;
   run.w4DevelopingCandle = null;
+  run.w4MicroReplay = null;
   run.setupPattern = pattern;
   run.setupSteps = scenario.length;
   run.nextFreeze = scenario.length;
   run.setupPhase = "forming";
+  if(DEV_PREVIEW_MODE){
+    console.debug("[W4 micro-path]",{
+      scenario:pattern,
+      steps:microSteps,
+      roles:run.w4MicroReplayQueue.map(item=>item.role),
+      pathLengths:run.w4MicroReplayQueue.map(item=>item.path?.length || 2),
+      fallbacks:run.w4MicroFallbackCount
+    });
+  }
 }
 
 function advanceWorld4Replay(){
   if(!run || run.world.id !== 4 || !run.w4ScenarioQueue?.length) return;
-  if(!run.w4DevelopingCandle){
-    run.w4DevelopingCandle = createDevelopingCandle(run.w4ScenarioQueue[0],run.setupPattern);
+  if(!run.w4MicroReplay){
+    const item = run.w4MicroReplayQueue?.[0];
+    const finalCandle = run.w4ScenarioQueue[0];
+    if(!item?.path){
+      run.w4DevelopingCandle = createDevelopingCandle(finalCandle,run.setupPattern);
+      run.w4MicroReplay = {fallback:true,index:0,finalCandle};
+      return;
+    }
+    run.w4MicroReplay = {
+      fallback:false,
+      index:0,
+      path:item.path,
+      finalCandle,
+      seenHigh:item.path[0],
+      seenLow:item.path[0]
+    };
+    run.w4DevelopingCandle = [finalCandle[0],item.path[0],item.path[0],item.path[0]];
     return;
   }
+  const replay = run.w4MicroReplay;
+  if(!replay.fallback && replay.index < replay.path.length-1){
+    replay.index++;
+    const price = replay.path[replay.index];
+    replay.seenHigh = Math.max(replay.seenHigh,price);
+    replay.seenLow = Math.min(replay.seenLow,price);
+    run.w4DevelopingCandle = [replay.finalCandle[0],replay.seenHigh,replay.seenLow,price];
+    if(replay.index < replay.path.length-1) return;
+  }
   const finalCandle = run.w4ScenarioQueue.shift();
+  run.w4MicroReplayQueue?.shift();
+  run.w4MicroReplay = null;
   run.w4DevelopingCandle = null;
   run.candles.push(finalCandle);
   run.price = finalCandle[3];
@@ -3203,6 +3300,8 @@ function freezeScenario(){
     else if(run.world.id === 3) run.w3ScenarioQueue = [];
     else {
       run.w4ScenarioQueue = [];
+      run.w4MicroReplayQueue = [];
+      run.w4MicroReplay = null;
       run.w4DevelopingCandle = null;
     }
     run.setupPhase = "quest";
@@ -3567,9 +3666,9 @@ function drawGame(frozen=false){
     const [o,h,l,cl] = run.w4DevelopingCandle;
     const x = drawLeft + visibleCandles.length * gap;
     ctx.save();
-    ctx.globalAlpha = 0.58;
+    ctx.globalAlpha = 0.66;
     ctx.shadowColor = cl >= o ? "rgba(49,201,119,.42)" : "rgba(255,92,92,.38)";
-    ctx.shadowBlur = 9;
+    ctx.shadowBlur = 7;
     drawFlatCandle(ctx,x,mapY(o),mapY(h),mapY(l),mapY(cl),cw,cl>=o,false);
     ctx.restore();
   }

@@ -1,5 +1,26 @@
 # Candle Quest Reborn — Changelog
 
+## v28.5.4 - W4 Micro-Path Replay Adapter
+
+### Changed
+
+- Replaced W4's two-frame candle prototype with a guarded OHLC-respecting micro-path replay adapter.
+- Added W4 role templates for bullish/bearish expansion, bullish/bearish rejection, and pause candles.
+- Active W4 candles now update in place with cumulative high/low and the latest micro-path price before the exact generated candle is committed.
+- Beginner uses five micro-steps, Standard uses four, and Speedrun uses three, with a W4-only faster internal tick so total replay time stays compact.
+- Added lightweight path validation and a safe fallback to the v28.5.3 developing frame if a path cannot be generated.
+- Added compact `?dev=1` console diagnostics for scenario, role, path length, and fallback count.
+
+### Preserved
+
+- W4 remains the experimental Replay Lab with the exact temporary answer pool: Strong Push Up, Strong Push Down, Rejection Up, and Rejection Down.
+- Final generated OHLC candles remain canonical; micro-paths only control how those candles visually form.
+- W1/W2/W3 generators, answer pools, replay behavior, and all accepted Training Style/Candle Speed rules remain unchanged.
+
+### Release marker
+
+- Updated the build marker to `v28_5_4_w4_micro_path_replay_adapter` and visible badge to `v28.5.4`.
+
 ## v28.5.3 - W4 Replay Lab Candle Development Prototype
 
 ### Added

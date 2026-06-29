@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.5.3 Checkpoint Summary
+# Candle Quest Reborn - v28.5.4 Checkpoint Summary
 
 ## Current build
 
-**v28.5.3 - W4 Replay Lab Candle Development Prototype**
-Build marker: `v28_5_3_w4_replay_lab_candle_development`
+**v28.5.4 - W4 Micro-Path Replay Adapter**
+Build marker: `v28_5_4_w4_micro_path_replay_adapter`
 
 ## Base build
 
@@ -12,7 +12,17 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 4 is now an isolated Replay Lab for testing two-frame candle development. Every W4 candle first renders as a deterministic developing state and then resolves into its untouched final OHLC candle. W1/W2/W3 replay behavior and answer truth remain unchanged. Guided Training owns optional Replay Lab help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+World 4 remains an isolated Replay Lab, now testing OHLC-respecting micro-path candle development. Each active W4 candle updates in place through a short role-based auction path, then resolves into its untouched final generated OHLC candle. W1/W2/W3 replay behavior and answer truth remain unchanged. Guided Training owns optional Replay Lab help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.5.4
+
+- Added a W4-only micro-path adapter with expansion, rejection, and pause role templates.
+- Built each forming frame from the original open, highest price seen, lowest price seen, and latest path price.
+- Kept every path inside the generated candle bounds and committed the exact final high, low, and close as the canonical closed candle.
+- Added five-step Beginner, four-step Standard, and three-step Speedrun paths on a W4-only internal cadence that keeps total replay time compact.
+- Retained the v28.5.3 developing-frame fallback for any path that fails lightweight OHLC validation.
+- Added minimal W4 diagnostics in `?dev=1` without adding player-facing UI.
+- Updated the build marker and visible badge to v28.5.4.
 
 ## What changed in v28.5.3
 
