@@ -1,5 +1,26 @@
 # Candle Quest Reborn — Changelog
 
+## v28.5.6 - W4 Live Candle Close Settle Pass
+
+### Changed
+
+- Reworked W4-only expansion and rejection micro-paths so counterflow is shallower and reads as traded retracement rather than animation recoil.
+- Added an explicit penultimate near-close settle to every valid W4 micro-path; the final step now makes a small confirmation move into the exact generated close.
+- Kept probes, retraces, reclaims/rejections, and final candle extremes visible at every Candle Speed, using seven points for Beginner and six for Standard and Speedrun.
+- Tuned W4 close pacing to give the exact close a brief lock without adding a long pause between candles.
+- Extended `?dev=1` W4 diagnostics with near-close insertion status.
+
+### Preserved
+
+- World 4 remains the isolated experimental Replay Lab with the exact temporary answer pool: Strong Push Up, Strong Push Down, Rejection Up, and Rejection Down.
+- Active candles remain cumulative OHLC views of visited path prices, while final generated OHLC candles remain canonical and answer truth uses only closed candles.
+- Invalid W4 paths retain the safe developing-candle fallback.
+- W1/W2/W3 generators, answer pools, replay behavior, mode/copy rules, chart geometry, and mobile layout remain unchanged.
+
+### Build
+
+- Updated the build marker to `v28_5_6_w4_live_candle_close_settle_pass` and visible badge to `v28.5.6`.
+
 ## v28.5.5 - W4 Live Candle Feel Pass
 
 ### Changed

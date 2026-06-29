@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_5_5_w4_live_candle_feel_pass";
+const CANDLE_QUEST_BUILD = "v28_5_6_w4_live_candle_close_settle_pass";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.5.5";
+    b.textContent = "v28.5.6";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -3112,35 +3112,43 @@ function validateMicroPath(finalCandle,path){
 
 function createMicroPathForCandle(finalCandle,role,options={}){
   const [open,high,low,close] = finalCandle;
-  const requestedSteps = Math.max(4,Math.min(7,options.steps || 5));
+  const requestedSteps = Math.max(6,Math.min(7,options.steps || 6));
   const clamp = value=>Math.max(low,Math.min(high,value));
   const toward = (from,to,amount)=>clamp(from + (to-from)*amount);
-  const bodyMid = clamp((open+close)/2);
+  const nearCloseFrom = from=>toward(from,close,0.9);
   let path;
 
   if(role === "bullish-rejection"){
-    path = [open,toward(open,low,0.45),low,toward(low,close,0.72),high,toward(high,close,0.55),close];
+    const recovery = toward(low,close,0.78);
+    path = [open,toward(open,low,0.48),low,recovery,high,nearCloseFrom(high),close];
   } else if(role === "bearish-rejection"){
-    path = [open,toward(open,high,0.45),high,toward(high,close,0.72),low,toward(low,close,0.55),close];
+    const rejection = toward(high,close,0.78);
+    path = [open,toward(open,high,0.48),high,rejection,low,nearCloseFrom(low),close];
   } else if(role === "bearish-expansion"){
-    path = [open,high,toward(open,low,0.7),low,bodyMid,toward(bodyMid,close,0.82),close];
+    const push = toward(open,low,0.72);
+    const counterflow = toward(push,open,0.22);
+    path = [open,high,push,counterflow,low,nearCloseFrom(low),close];
   } else if(role === "pause") {
     const firstExtreme = close >= open ? high : low;
     const secondExtreme = close >= open ? low : high;
-    path = [open,toward(open,firstExtreme,0.55),firstExtreme,bodyMid,secondExtreme,bodyMid,close];
+    const probe = toward(open,firstExtreme,0.58);
+    const counterflow = toward(probe,secondExtreme,0.42);
+    path = [open,probe,firstExtreme,counterflow,secondExtreme,nearCloseFrom(secondExtreme),close];
   } else {
-    path = [open,low,toward(open,high,0.7),high,bodyMid,toward(bodyMid,close,0.82),close];
+    const push = toward(open,high,0.72);
+    const counterflow = toward(push,open,0.22);
+    path = [open,low,push,counterflow,high,nearCloseFrom(high),close];
   }
 
+  // Standard and Speedrun omit only the early approach point. The defining
+  // probe/retrace, exact extreme, near-close settle, and final lock remain.
   if(requestedSteps === 6) path = [path[0],path[2],path[3],path[4],path[5],path[6]];
-  if(requestedSteps === 5) path = [path[0],path[2],path[3],path[4],path[6]];
-  if(requestedSteps === 4) path = [path[0],path[2],path[4],path[6]];
   return validateMicroPath(finalCandle,path) ? path : null;
 }
 
 function getWorld4MicroStepCount(){
   if(!run || run.world.id !== 4) return 0;
-  return run.tempoId === "beginner" ? 7 : run.tempoId === "speedrun" ? 4 : 5;
+  return run.tempoId === "beginner" ? 7 : 6;
 }
 
 function getWorld4MicroTickInterval(){
@@ -3150,6 +3158,7 @@ function getWorld4MicroTickInterval(){
 
 function getWorld4StepWeight(role,index,pathLength){
   if(index >= pathLength-1) return 2;
+  if(index === pathLength-2) return 1;
   const probeIndex = pathLength >= 7 ? 2 : 1;
   const retraceIndex = pathLength >= 7 ? 4 : Math.max(1,pathLength-2);
   if(role === "bullish-rejection" || role === "bearish-rejection") return index === probeIndex ? 2 : 1;
@@ -3218,6 +3227,7 @@ function prepareWorld4Question(){
       steps:microSteps,
       roles:run.w4MicroReplayQueue.map(item=>item.role),
       pathLengths:run.w4MicroReplayQueue.map(item=>item.path?.length || 2),
+      nearCloseInserted:run.w4MicroReplayQueue.map(item=>Boolean(item.path && item.path.length >= 3)),
       fallbacks:run.w4MicroFallbackCount
     });
   }

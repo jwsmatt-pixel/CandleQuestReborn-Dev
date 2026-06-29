@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.5.5 Checkpoint Summary
+# Candle Quest Reborn - v28.5.6 Checkpoint Summary
 
 ## Current build
 
-**v28.5.5 - W4 Live Candle Feel Pass**
-Build marker: `v28_5_5_w4_live_candle_feel_pass`
+**v28.5.6 - W4 Live Candle Close Settle Pass**
+Build marker: `v28_5_6_w4_live_candle_close_settle_pass`
 
 ## Base build
 
@@ -12,7 +12,18 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 4 remains an isolated Replay Lab, now testing OHLC-respecting live candle rhythm. Each active W4 candle opens, pushes or probes, visibly retraces or rejects, reclaims, and locks to its untouched final generated OHLC candle. W1/W2/W3 replay behavior and answer truth remain unchanged. Guided Training owns optional Replay Lab help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+World 4 remains an isolated Replay Lab, now testing OHLC-respecting live candle close settlement. Each active W4 candle opens, pushes or probes, visibly retraces or rejects, reclaims, settles near its generated close, and briefly locks to its untouched final OHLC candle. W1/W2/W3 replay behavior and answer truth remain unchanged. Guided Training owns optional Replay Lab help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.5.6
+
+- Replaced deep expansion recoil with shallow counterflow before directional continuation.
+- Added an explicit near-close point before every valid W4 micro-path's exact final close.
+- Reduced the final close movement to a calm ten-percent settle from the preceding exact extreme.
+- Preserved visible probes, retraces, extremes, and settling at all speeds with seven Beginner points and six Standard/Speedrun points.
+- Kept the final close briefly visible before committing the exact generated OHLC candle.
+- Added dev-only near-close insertion notes while retaining validation and safe fallback behavior.
+- Preserved W4-only isolation, final-closed-candle answer truth, stable chart geometry, and all W1/W2/W3 behavior.
+- Updated the build marker and visible badge to v28.5.6.
 
 ## What changed in v28.5.5
 
