@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.5.4 Checkpoint Summary
+# Candle Quest Reborn - v28.5.5 Checkpoint Summary
 
 ## Current build
 
-**v28.5.4 - W4 Micro-Path Replay Adapter**
-Build marker: `v28_5_4_w4_micro_path_replay_adapter`
+**v28.5.5 - W4 Live Candle Feel Pass**
+Build marker: `v28_5_5_w4_live_candle_feel_pass`
 
 ## Base build
 
@@ -12,7 +12,17 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 4 remains an isolated Replay Lab, now testing OHLC-respecting micro-path candle development. Each active W4 candle updates in place through a short role-based auction path, then resolves into its untouched final generated OHLC candle. W1/W2/W3 replay behavior and answer truth remain unchanged. Guided Training owns optional Replay Lab help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+World 4 remains an isolated Replay Lab, now testing OHLC-respecting live candle rhythm. Each active W4 candle opens, pushes or probes, visibly retraces or rejects, reclaims, and locks to its untouched final generated OHLC candle. W1/W2/W3 replay behavior and answer truth remain unchanged. Guided Training owns optional Replay Lab help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+
+## What changed in v28.5.5
+
+- Refined W4 role templates so bullish/bearish expansion, bullish/bearish rejection, and pause candles have distinct intra-candle auction rhythms.
+- Kept developing OHLC cumulative from the visited price path, leaving probe wicks behind as visible evidence.
+- Added W4-only weighted pacing for readable probes/retraces, decisive reclaims/rejections, and brief exact-close locks.
+- Improved all four Replay Lab sequences into readable push, pause, rejection, recovery, and continuation stories.
+- Tuned Candle Speed detail to seven path points for Beginner, five for Standard, and four for Speedrun.
+- Preserved exact final generated OHLC truth, safe validation fallback, final-candle-only answers, fixed chart geometry, and all W1/W2/W3 behavior.
+- Updated the build marker and visible badge to v28.5.5.
 
 ## What changed in v28.5.4
 

@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_5_4_w4_micro_path_replay_adapter";
+const CANDLE_QUEST_BUILD = "v28_5_5_w4_live_candle_feel_pass";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const RUN_FLOW_CONFIG = Object.freeze({
@@ -12,7 +12,7 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.5.4";
+    b.textContent = "v28.5.5";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1724,7 +1724,7 @@ function beginRun(worldId=activeWorld){
   if(world.id === 1) showFirstRunOnboardingHelper();
   run.timer = null;
   const replayTickInterval = world.id === 4
-    ? Math.max(120,Math.round(tempo.replayInterval / Math.max(2,getWorld4MicroStepCount()-1)))
+    ? getWorld4MicroTickInterval()
     : tempo.replayInterval;
   run.tick = setInterval(()=>{
     if(!run || run.paused) return;
@@ -3112,41 +3112,59 @@ function validateMicroPath(finalCandle,path){
 
 function createMicroPathForCandle(finalCandle,role,options={}){
   const [open,high,low,close] = finalCandle;
-  const requestedSteps = Math.max(3,Math.min(5,options.steps || 4));
-  const range = Math.max(1e-9,high-low);
+  const requestedSteps = Math.max(4,Math.min(7,options.steps || 5));
   const clamp = value=>Math.max(low,Math.min(high,value));
-  const earlyPush = clamp(open + (close-open) * 0.72);
-  const pauseAbove = clamp(close + range * 0.12);
-  const pauseBelow = clamp(close - range * 0.12);
+  const toward = (from,to,amount)=>clamp(from + (to-from)*amount);
+  const bodyMid = clamp((open+close)/2);
   let path;
 
-  if(role === "bullish-rejection") path = [open,low,high,pauseBelow,close];
-  else if(role === "bearish-rejection") path = [open,high,low,pauseAbove,close];
-  else if(role === "bearish-expansion") path = [open,earlyPush,high,low,close];
-  else if(role === "pause") {
+  if(role === "bullish-rejection"){
+    path = [open,toward(open,low,0.45),low,toward(low,close,0.72),high,toward(high,close,0.55),close];
+  } else if(role === "bearish-rejection"){
+    path = [open,toward(open,high,0.45),high,toward(high,close,0.72),low,toward(low,close,0.55),close];
+  } else if(role === "bearish-expansion"){
+    path = [open,high,toward(open,low,0.7),low,bodyMid,toward(bodyMid,close,0.82),close];
+  } else if(role === "pause") {
     const firstExtreme = close >= open ? high : low;
     const secondExtreme = close >= open ? low : high;
-    path = [open,firstExtreme,secondExtreme,clamp((open+close)/2),close];
-  } else path = [open,earlyPush,low,high,close];
-
-  if(requestedSteps === 4) path = [path[0],path[1],path[2],path[path.length-1]];
-  if(requestedSteps === 3){
-    const storyExtreme = role === "bearish-rejection" || role === "bearish-expansion" ? high : low;
-    path = [open,storyExtreme,close];
+    path = [open,toward(open,firstExtreme,0.55),firstExtreme,bodyMid,secondExtreme,bodyMid,close];
+  } else {
+    path = [open,low,toward(open,high,0.7),high,bodyMid,toward(bodyMid,close,0.82),close];
   }
+
+  if(requestedSteps === 6) path = [path[0],path[2],path[3],path[4],path[5],path[6]];
+  if(requestedSteps === 5) path = [path[0],path[2],path[3],path[4],path[6]];
+  if(requestedSteps === 4) path = [path[0],path[2],path[4],path[6]];
   return validateMicroPath(finalCandle,path) ? path : null;
 }
 
 function getWorld4MicroStepCount(){
   if(!run || run.world.id !== 4) return 0;
-  return run.tempoId === "beginner" ? 5 : run.tempoId === "speedrun" ? 3 : 4;
+  return run.tempoId === "beginner" ? 7 : run.tempoId === "speedrun" ? 4 : 5;
+}
+
+function getWorld4MicroTickInterval(){
+  if(!run || run.world.id !== 4) return 120;
+  return run.tempoId === "beginner" ? 115 : run.tempoId === "speedrun" ? 80 : 95;
+}
+
+function getWorld4StepWeight(role,index,pathLength){
+  if(index >= pathLength-1) return 2;
+  const probeIndex = pathLength >= 7 ? 2 : 1;
+  const retraceIndex = pathLength >= 7 ? 4 : Math.max(1,pathLength-2);
+  if(role === "bullish-rejection" || role === "bearish-rejection") return index === probeIndex ? 2 : 1;
+  if(role === "pause") return index === probeIndex || index === retraceIndex ? 2 : 1;
+  return index === retraceIndex ? 2 : 1;
 }
 
 function getWorld4CandleRole(pattern,candle,index){
-  if(pattern === "Rejection Up" && index === 2) return "bullish-rejection";
-  if(pattern === "Rejection Down" && index === 2) return "bearish-rejection";
-  if(index === 3) return "pause";
-  return candle[3] >= candle[0] ? "bullish-expansion" : "bearish-expansion";
+  const stories = {
+    "Strong Push Up":["bullish-expansion","bullish-expansion","pause","bullish-expansion","bullish-expansion","pause","bullish-expansion"],
+    "Strong Push Down":["bearish-expansion","bearish-expansion","pause","bearish-expansion","bearish-expansion","pause","bearish-expansion"],
+    "Rejection Up":["bearish-expansion","bearish-expansion","bullish-rejection","bullish-expansion","pause","bullish-expansion","bullish-expansion"],
+    "Rejection Down":["bullish-expansion","bullish-expansion","bearish-rejection","bearish-expansion","pause","bearish-expansion","bearish-expansion"]
+  };
+  return stories[pattern]?.[index] || (candle[3] >= candle[0] ? "bullish-expansion" : "bearish-expansion");
 }
 
 function prepareWorld4Question(){
@@ -3160,10 +3178,10 @@ function prepareWorld4Question(){
   const start = run.candles.length ? run.candles[run.candles.length-1][3] : run.price;
   run.candles = [[start,start+0.18,start-0.18,start]];
   const closeOffsets = {
-    "Strong Push Up":[0.9,1.8,2.9,3.8,5.0,6.2,7.3],
-    "Strong Push Down":[-0.9,-1.8,-2.9,-3.8,-5.0,-6.2,-7.3],
-    "Rejection Up":[-0.7,-1.4,-0.3,0.8,1.5,2.2,2.9],
-    "Rejection Down":[0.7,1.4,0.3,-0.8,-1.5,-2.2,-2.9]
+    "Strong Push Up":[1.2,2.2,2.0,3.1,4.2,4.1,5.4],
+    "Strong Push Down":[-1.2,-2.2,-2.0,-3.1,-4.2,-4.1,-5.4],
+    "Rejection Up":[-0.8,-1.5,-0.7,0.4,0.3,1.5,2.7],
+    "Rejection Down":[0.8,1.5,0.7,-0.4,-0.3,-1.5,-2.7]
   }[pattern];
   let open = start;
   const scenario = closeOffsets.map((offset,index)=>{
@@ -3219,21 +3237,28 @@ function advanceWorld4Replay(){
       fallback:false,
       index:0,
       path:item.path,
+      role:item.role,
       finalCandle,
       seenHigh:item.path[0],
-      seenLow:item.path[0]
+      seenLow:item.path[0],
+      waitTicks:0
     };
     run.w4DevelopingCandle = [finalCandle[0],item.path[0],item.path[0],item.path[0]];
     return;
   }
   const replay = run.w4MicroReplay;
+  if(replay.waitTicks > 0){
+    replay.waitTicks--;
+    return;
+  }
   if(!replay.fallback && replay.index < replay.path.length-1){
     replay.index++;
     const price = replay.path[replay.index];
     replay.seenHigh = Math.max(replay.seenHigh,price);
     replay.seenLow = Math.min(replay.seenLow,price);
     run.w4DevelopingCandle = [replay.finalCandle[0],replay.seenHigh,replay.seenLow,price];
-    if(replay.index < replay.path.length-1) return;
+    replay.waitTicks = getWorld4StepWeight(replay.role,replay.index,replay.path.length)-1;
+    return;
   }
   const finalCandle = run.w4ScenarioQueue.shift();
   run.w4MicroReplayQueue?.shift();

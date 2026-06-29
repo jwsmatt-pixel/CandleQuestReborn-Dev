@@ -1,5 +1,26 @@
 # Candle Quest Reborn — Changelog
 
+## v28.5.5 - W4 Live Candle Feel Pass
+
+### Changed
+
+- Refined W4-only expansion, rejection, and pause micro-paths into distinct open, push/probe, retrace, reclaim/reject, and close rhythms.
+- Kept each developing candle cumulative from its original open, highest and lowest visited prices, and latest path price; exact generated OHLC candles remain canonical.
+- Added readable W4-only timing weights so probes and retraces register briefly, reclaims/rejections move decisively, and exact closes lock without long dead air.
+- Reshaped all four Replay Lab scenarios into small auction stories with expansion, pauses, rejection probes, recovery, and continuation.
+- Beginner now shows the fullest seven-point path, Standard uses five points, and Speedrun uses four while retaining each candle's defining probe or extreme.
+
+### Preserved
+
+- World 4 remains the experimental Replay Lab with the exact temporary answer pool: Strong Push Up, Strong Push Down, Rejection Up, and Rejection Down.
+- W1/W2/W3 generators, answer pools, replay behavior, tempo behavior, and accepted Training Style/Candle Speed copy remain unchanged.
+- W4 answer truth still uses only final closed generated candles, with invalid paths falling back to the existing safe replay behavior.
+- Chart geometry, answer layout, and mobile cockpit dimensions remain unchanged.
+
+### Build
+
+- Updated the build marker to `v28_5_5_w4_live_candle_feel_pass` and visible badge to `v28.5.5`.
+
 ## v28.5.4 - W4 Micro-Path Replay Adapter
 
 ### Changed
