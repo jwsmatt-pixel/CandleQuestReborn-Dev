@@ -115,6 +115,14 @@ h2{font-size:clamp(42px,8vw,76px);line-height:.88;letter-spacing:-.075em;margin:
 .dev-tools-panel{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;padding:12px 14px;border:2px solid #b879c7;border-radius:18px;background:#fff7ff;color:#68277c;box-shadow:0 5px 0 #ead5ef}
 .dev-tools-copy{min-width:0}.dev-tools-copy b,.dev-tools-copy span,.dev-tools-copy small{display:block}.dev-tools-copy b{font-size:13px;letter-spacing:.1em}.dev-tools-copy span{margin-top:2px;font-size:11px;font-weight:850}.dev-tools-copy small{min-height:14px;margin-top:3px;color:#8a3f9d;font-size:10px;font-weight:900}
 .dev-tools-actions{display:flex;gap:8px;flex-wrap:wrap}.dev-tools-actions button{min-height:44px;border:0;border-radius:14px;padding:9px 12px;background:#68277c;color:#fff;font-size:12px;font-weight:950;cursor:pointer;white-space:nowrap}
+.w4-timing-lab[hidden]{display:none!important}
+.w4-timing-lab{margin:0 0 8px;padding:8px 10px;border:1px solid #b879c7;border-radius:14px;background:#fff7ff;color:#68277c;font-size:11px}
+.w4-timing-lab summary{cursor:pointer;font-size:12px;font-weight:950;letter-spacing:.04em}
+.w4-timing-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0}
+.w4-timing-grid label{display:grid;grid-template-columns:1fr auto;gap:2px 6px;font-weight:850}
+.w4-timing-grid output{font-variant-numeric:tabular-nums}
+.w4-timing-grid input{grid-column:1/-1;width:100%;accent-color:#68277c}
+.w4-timing-lab>button{min-height:34px;border:0;border-radius:10px;padding:7px 10px;background:#68277c;color:#fff;font-size:11px;font-weight:900;cursor:pointer}
 .dev-shop-tools{margin:10px 0 2px}
 .familiar-card{position:relative;border-color:#f6c8dd;background:linear-gradient(145deg,#fff8fc,#f5fff7)}
 .familiar-card.locked{opacity:.72}
@@ -174,6 +182,7 @@ body[data-skin="gold"]{--bg:#13110c;--card:#1c1810;--ink:#fff8df;--muted:#c9b982
   .dev-tools-panel{align-items:stretch;flex-direction:column;padding:11px 12px}
   .dev-tools-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
   .dev-tools-actions button{width:100%;white-space:normal}
+  .w4-timing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 

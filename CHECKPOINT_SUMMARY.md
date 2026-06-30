@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.5.7 Checkpoint Summary
+# Candle Quest Reborn - v28.5.8 Checkpoint Summary
 
 ## Current build
 
-**v28.5.7 - W4 Replay Timing + Candle Fill Pass**
-Build marker: `v28_5_7_w4_replay_timing_candle_fill_pass`
+**v28.5.8 - W4 Replay Timing Dev Controls**
+Build marker: `v28_5_8_w4_replay_timing_dev_controls`
 
 ## Base build
 
@@ -12,7 +12,16 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 4 remains an isolated Replay Lab, now using a faster reflexive cadence and substantially more solid active candle bodies. Each active W4 candle still follows its OHLC-respecting path to the untouched final candle, with short readable probes, decisive recovery/rejection, a brief close lock, and a natural answer settle. W1/W2/W3 replay behavior and answer truth remain unchanged.
+World 4 remains an isolated Replay Lab. In `?dev=1`, a compact timing panel now tunes micro-step cadence, close lock, next-candle delay, and answer delay without code edits. Settings persist for dev use and reset to the selected Candle Speed's v28.5.7 baseline. W4 candle visuals, generated truth, and W1/W2/W3 behavior remain unchanged.
+
+## What changed in v28.5.8
+
+- Added the dev-only W4 Replay Timing Lab when W4 is selected or actively running.
+- Added immediate value readouts and persistent controls for micro-step interval, close lock, next-candle delay, and answer delay.
+- Added a reset button that clears dev overrides and restores the active speed's v28.5.7 timing.
+- Kept controls unavailable outside `?dev=1` and isolated all timing overrides to W4.
+- Preserved W4 scenarios, answers, OHLC truth, micro-paths, candle visuals, and all W1/W2/W3 systems.
+- Updated the build marker and visible badge to v28.5.8.
 
 ## What changed in v28.5.7
 

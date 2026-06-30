@@ -102,6 +102,16 @@
     </main>
 
     <main id="game" class="screen">
+      <details id="w4TimingLab" class="w4-timing-lab" hidden>
+        <summary>W4 Replay Timing Lab</summary>
+        <div class="w4-timing-grid">
+          <label>Micro-step <output id="w4MicroStepValue">72ms</output><input id="w4MicroStep" type="range" min="30" max="260" step="1" value="72" oninput="updateW4TimingDev('microStepInterval', this.value)"></label>
+          <label>Close lock <output id="w4CloseLockValue">105ms</output><input id="w4CloseLock" type="range" min="0" max="350" step="5" value="105" oninput="updateW4TimingDev('closeLock', this.value)"></label>
+          <label>Next candle <output id="w4NextCandleValue">28ms</output><input id="w4NextCandle" type="range" min="0" max="350" step="5" value="28" oninput="updateW4TimingDev('nextCandleDelay', this.value)"></label>
+          <label>Answer delay <output id="w4AnswerDelayValue">165ms</output><input id="w4AnswerDelay" type="range" min="0" max="1500" step="10" value="165" oninput="updateW4TimingDev('answerDelay', this.value)"></label>
+        </div>
+        <button type="button" onclick="resetW4TimingDev()">Reset W4 timing defaults</button>
+      </details>
       <section class="game-shell">
         <div class="game-hud">
           <button class="ghost desktop-exit" onclick="quitRun()">← Exit</button>

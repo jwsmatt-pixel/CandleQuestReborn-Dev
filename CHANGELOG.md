@@ -1,5 +1,22 @@
 # Candle Quest Reborn — Changelog
 
+## v28.5.8 - W4 Replay Timing Dev Controls
+
+### Changed
+
+- Added a compact, collapsible `?dev=1` W4 Replay Timing Lab with live value readouts for micro-step interval, close lock, next-candle delay, and answer/freeze delay.
+- Applied timing adjustments only to active W4 replays; micro-step changes safely restart the W4 interval, while other changes apply to subsequent replay waits.
+- Persisted dev timing overrides in `candleQuestW4TimingDev` and added a reset control that restores the selected Candle Speed's v28.5.7 baseline.
+
+### Preserved
+
+- W4 remains Replay Lab with the exact temporary answer pool and unchanged generated candles, micro-path geometry, final OHLC truth, and candle visuals.
+- Normal player mode and all W1/W2/W3 timing, answers, copy, modes, and replay behavior remain unchanged.
+
+### Build
+
+- Updated the build marker to `v28_5_8_w4_replay_timing_dev_controls` and visible badge to `v28.5.8`.
+
 ## v28.5.7 - W4 Replay Timing + Candle Fill Pass
 
 ### Changed

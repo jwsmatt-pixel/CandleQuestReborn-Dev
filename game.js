@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_5_7_w4_replay_timing_candle_fill_pass";
+const CANDLE_QUEST_BUILD = "v28_5_8_w4_replay_timing_dev_controls";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const WORLD_4_REPLAY_TIMING = Object.freeze({
@@ -11,13 +11,15 @@ const RUN_FLOW_CONFIG = Object.freeze({
   normal:Object.freeze({label:"Fast Reps", description:"Quick feedback. Keep the run moving."})
 });
 const DEV_PREVIEW_MODE = new URLSearchParams(window.location.search).get("dev") === "1";
+const W4_TIMING_DEV_STORAGE_KEY = "candleQuestW4TimingDev";
+let w4TimingDev = loadW4TimingDev();
 console.log("Candle Quest build:", CANDLE_QUEST_BUILD);
 
 function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.5.7";
+    b.textContent = "v28.5.8";
     b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
     document.body.appendChild(b);
   }
@@ -1045,6 +1047,7 @@ function openScreen(id){
   if(id==="shop") renderShop();
   if(id==="library") renderLibrary();
   if(id==="home"){ renderDevTools(); drawMini(); renderFlowSelector(); renderTempoSelector(); renderHomeFamiliar(); }
+  renderW4TimingLab();
 }
 function renderMap(){
   $("worldGrid").innerHTML = worlds.map(w=>{
@@ -1102,6 +1105,84 @@ function renderDevTools(){
     const panel = $(id);
     if(panel) panel.hidden = !DEV_PREVIEW_MODE;
   });
+}
+function loadW4TimingDev(){
+  if(!DEV_PREVIEW_MODE) return {};
+  try{
+    const stored = JSON.parse(localStorage.getItem(W4_TIMING_DEV_STORAGE_KEY) || "{}");
+    const values = {};
+    const ranges = {
+      microStepInterval:[30,260],
+      closeLockDuration:[0,350],
+      nextCandleDelay:[0,350],
+      answerDelay:[0,1500]
+    };
+    Object.entries(ranges).forEach(([storedKey,[min,max]])=>{
+      if(!Number.isFinite(Number(stored[storedKey]))) return;
+      const runtimeKey = storedKey === "closeLockDuration" ? "closeLock" : storedKey;
+      values[runtimeKey] = Math.max(min,Math.min(max,Number(stored[storedKey])));
+    });
+    return values;
+  }catch(e){ return {}; }
+}
+function saveW4TimingDev(){
+  try{
+    localStorage.setItem(W4_TIMING_DEV_STORAGE_KEY,JSON.stringify({
+      microStepInterval:w4TimingDev.microStepInterval,
+      closeLockDuration:w4TimingDev.closeLock,
+      nextCandleDelay:w4TimingDev.nextCandleDelay,
+      answerDelay:w4TimingDev.answerDelay
+    }));
+  }catch(e){}
+}
+function getWorld4BaselineTiming(){
+  const tempoId = run?.tempoId || state?.selectedTempo || "normal";
+  return WORLD_4_REPLAY_TIMING[tempoId] || WORLD_4_REPLAY_TIMING.normal;
+}
+function isW4TimingDevContext(){
+  return DEV_PREVIEW_MODE && (run?.world.id === 4 || (activeWorld === 4 && document.body.dataset.screen === "lesson"));
+}
+function renderW4TimingLab(){
+  const panel = $("w4TimingLab");
+  if(!panel) return;
+  const screenId = document.body.dataset.screen;
+  const visible = DEV_PREVIEW_MODE && ((run?.world.id === 4 && screenId === "game") || (activeWorld === 4 && screenId === "lesson"));
+  panel.hidden = !visible;
+  if(!visible) return;
+  const host = screenId === "lesson" ? document.querySelector("#lesson .lesson-card") : $("game");
+  if(host && panel.parentElement !== host) host.prepend(panel);
+  const timing = getWorld4Timing();
+  const controls = {
+    microStepInterval:["w4MicroStep","w4MicroStepValue"],
+    closeLock:["w4CloseLock","w4CloseLockValue"],
+    nextCandleDelay:["w4NextCandle","w4NextCandleValue"],
+    answerDelay:["w4AnswerDelay","w4AnswerDelayValue"]
+  };
+  Object.entries(controls).forEach(([key,[inputId,outputId]])=>{
+    $(inputId).value = timing[key];
+    $(outputId).textContent = `${timing[key]}ms`;
+  });
+}
+function updateW4TimingDev(key,value){
+  if(!isW4TimingDevContext()) return;
+  const limits = {
+    microStepInterval:[30,260],
+    closeLock:[0,350],
+    nextCandleDelay:[0,350],
+    answerDelay:[0,1500]
+  };
+  if(!limits[key]) return;
+  w4TimingDev[key] = Math.max(limits[key][0],Math.min(limits[key][1],Number(value)));
+  saveW4TimingDev();
+  renderW4TimingLab();
+  if(key === "microStepInterval") restartWorld4ReplayInterval();
+}
+function resetW4TimingDev(){
+  if(!isW4TimingDevContext()) return;
+  w4TimingDev = {};
+  try{ localStorage.removeItem(W4_TIMING_DEV_STORAGE_KEY); }catch(e){}
+  renderW4TimingLab();
+  restartWorld4ReplayInterval();
 }
 function updateDevPreviewBadge(screenId){
   const badge = $("devPreviewBadge");
@@ -1724,6 +1805,7 @@ function beginRun(worldId=activeWorld){
   renderAnswerDock("waiting");
   $("freezeBanner").classList.add("hidden");
   openScreen("game");
+  renderW4TimingLab();
   drawGame();
   updateStreakHud();
   if(world.id === 1) showFirstRunOnboardingHelper();
@@ -1734,9 +1816,7 @@ function beginRun(worldId=activeWorld){
   run.tick = setInterval(()=>{
     if(!run || run.paused) return;
     if(world.id === 4){
-      if(advanceWorld4Replay()) freezeScenario();
-      drawGame();
-      return;
+      return world4ReplayTick();
     }
     if(run.setupPattern && run.setupSteps <= 0 && run.nextFreeze <= 0){
       freezeScenario();
@@ -1757,6 +1837,7 @@ function quitRun(){
   delete document.body.dataset.trainingStyle;
   delete document.body.dataset.candleSpeed;
   openScreen("home");
+  renderW4TimingLab();
 }
 function endRun(){
   if(!run) return;
@@ -3161,11 +3242,12 @@ function getWorld4MicroStepCount(){
 
 function getWorld4MicroTickInterval(){
   if(!run || run.world.id !== 4) return WORLD_4_REPLAY_TIMING.normal.microStepInterval;
-  return (WORLD_4_REPLAY_TIMING[run.tempoId] || WORLD_4_REPLAY_TIMING.normal).microStepInterval;
+  return getWorld4Timing().microStepInterval;
 }
 
 function getWorld4Timing(){
-  return WORLD_4_REPLAY_TIMING[run?.tempoId] || WORLD_4_REPLAY_TIMING.normal;
+  const baseline = getWorld4BaselineTiming();
+  return isW4TimingDevContext() ? {...baseline,...w4TimingDev} : baseline;
 }
 
 function getWorld4StepHold(role,index,pathLength){
@@ -3322,6 +3404,18 @@ function advanceWorld4Replay(){
   run.setupSteps = run.w4ScenarioQueue.length;
   run.w4BetweenCandleTicks = world4WaitTicks(getWorld4Timing().nextCandleDelay);
   return false;
+}
+
+function world4ReplayTick(){
+  if(!run || run.paused || run.world.id !== 4) return;
+  if(advanceWorld4Replay()) freezeScenario();
+  drawGame();
+}
+
+function restartWorld4ReplayInterval(){
+  if(!DEV_PREVIEW_MODE || !run || run.world.id !== 4) return;
+  clearInterval(run.tick);
+  run.tick = setInterval(world4ReplayTick,getWorld4MicroTickInterval());
 }
 
 function _buildWorld3AnswerQueue(pool, history){
