@@ -1,5 +1,25 @@
 # Candle Quest Reborn — Changelog
 
+## v28.5.7 - W4 Replay Timing + Candle Fill Pass
+
+### Changed
+
+- Added compact W4-only pacing constants for micro-step cadence, probe/retrace holds, close lock, next-candle rhythm, and the final answer delay.
+- Shortened and varied W4 replay holds so initial moves arrive quickly, probes remain readable, reclaims/rejections feel decisive, and closed candles hand off without dead air.
+- Added a brief W4-only post-sequence settle before Quest Moment while keeping answer timing unchanged in W1/W2/W3.
+- Increased the active W4 candle fill from 66% to 94% opacity and reduced its glow, preventing chart lines from showing through the body while preserving wick clarity.
+- Expanded `?dev=1` W4 diagnostics with the active pacing values and estimated candle duration.
+
+### Preserved
+
+- W4 remains the isolated Replay Lab with its existing micro-path templates and exact temporary answer pool.
+- Final generated OHLC candles remain canonical; micro-paths begin at open, end at close, remain inside final high/low, and never determine answer truth.
+- W1/W2/W3 replay behavior, answer timing, answer pools, copy, modes, chart geometry, and mobile layout remain unchanged.
+
+### Build
+
+- Updated the build marker to `v28_5_7_w4_replay_timing_candle_fill_pass` and visible badge to `v28.5.7`.
+
 ## v28.5.6 - W4 Live Candle Close Settle Pass
 
 ### Changed

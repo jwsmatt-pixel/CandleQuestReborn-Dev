@@ -1,9 +1,9 @@
-# Candle Quest Reborn - v28.5.6 Checkpoint Summary
+# Candle Quest Reborn - v28.5.7 Checkpoint Summary
 
 ## Current build
 
-**v28.5.6 - W4 Live Candle Close Settle Pass**
-Build marker: `v28_5_6_w4_live_candle_close_settle_pass`
+**v28.5.7 - W4 Replay Timing + Candle Fill Pass**
+Build marker: `v28_5_7_w4_replay_timing_candle_fill_pass`
 
 ## Base build
 
@@ -12,7 +12,17 @@ Build marker: `v26_3_0_chart_viewport_unification`
 
 ## Current status
 
-World 4 remains an isolated Replay Lab, now testing OHLC-respecting live candle close settlement. Each active W4 candle opens, pushes or probes, visibly retraces or rejects, reclaims, settles near its generated close, and briefly locks to its untouched final OHLC candle. W1/W2/W3 replay behavior and answer truth remain unchanged. Guided Training owns optional Replay Lab help and Coach Tray UI, while Fast Reps and Speedrun keep the replay and answers unobstructed and advance automatically after feedback.
+World 4 remains an isolated Replay Lab, now using a faster reflexive cadence and substantially more solid active candle bodies. Each active W4 candle still follows its OHLC-respecting path to the untouched final candle, with short readable probes, decisive recovery/rejection, a brief close lock, and a natural answer settle. W1/W2/W3 replay behavior and answer truth remain unchanged.
+
+## What changed in v28.5.7
+
+- Added W4-only timing config for the micro-step interval, probe/retrace holds, close lock, next-candle delay, and answer delay at each Candle Speed.
+- Accelerated the overall replay while retaining visible probes, retraces, reclaims/rejections, and exact-close settlement.
+- Added a short final-sequence settle so Quest Moment follows the completed replay naturally.
+- Raised active candle opacity from 66% to 94% and reduced glow, making bodies solid without obscuring wicks.
+- Added dev-only timing and estimated candle-duration diagnostics.
+- Preserved existing micro-path templates, final-OHLC truth, fixed chart geometry, and all W1/W2/W3 behavior.
+- Updated the build marker and visible badge to v28.5.7.
 
 ## What changed in v28.5.6
 
