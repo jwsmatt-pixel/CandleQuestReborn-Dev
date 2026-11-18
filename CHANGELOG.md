@@ -1,5 +1,12 @@
 # Candle Quest Reborn — Changelog
 
+## PLB-006 — Slice 1 Classification Foundation (prototype, unreleased)
+
+- Added an isolated browser-compatible ES module for synthetic COINBASE:BTCUSD 1m opening-range classification, with New York DST handling and explicit completion cutoffs.
+- Added validated input, first-breakout retention, 15-close assessment evidence, and complete/incomplete/invalid results.
+- Added deterministic synthetic fixtures and dependency-free Node tests; input contract and test commands are in docs/PLB006_SLICE1.md.
+- Kept the v28.5.8 game baseline, game files, Worlds 1–4, progression, saved data, legacy roadmap, and official Trading Research Studio baseline unchanged. No replay adapter or subsequent slice.
+
 ## v28.5.8 - W4 Replay Timing Dev Controls
 
 ### Changed

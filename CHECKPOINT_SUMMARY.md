@@ -5,6 +5,14 @@
 **v28.5.8 - W4 Replay Timing Dev Controls**
 Build marker: `v28_5_8_w4_replay_timing_dev_controls`
 
+## PLB-006 Slice 1 — isolated prototype
+
+- Added playbook/classifier.mjs, independent of the game engine, with synthetic-only 1m input, New York session boundaries, deterministic asOf completion, and structured A/B/C or incomplete/invalid evidence.
+- Added tests/playbook-classifier.test.mjs and tests/fixtures/playbook-synthetic.mjs using Node's built-in test runner, with no dependencies.
+- Input/output contract, timing semantics, limitations, and test commands: docs/PLB006_SLICE1.md.
+- v28.5.8 remains the game baseline and build marker. No game integration, replay adapter, UI, saved-data changes, roadmap changes, or official Trading Research Studio baseline changes.
+- Stop after Slice 1 for human review; no subsequent slice has started.
+
 ## Base build
 
 **v26.3.0 - Chart Viewport Unification**
