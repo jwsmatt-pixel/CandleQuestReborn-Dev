@@ -1,3 +1,45 @@
+# PLB-006 Task 3 — Guided Training expansion
+
+Task 3 extends the accepted Task 2 prototype. The historical Task 2 notes follow below.
+
+## Launch and play
+
+From PowerShell in the repository:
+
+~~~powershell
+Set-Location 'C:\Users\jwsma\OneDrive\Documents\GitHub\CandleQuestReborn-Dev'
+py -m http.server 8000 --bind 127.0.0.1
+~~~
+
+Open http://127.0.0.1:8000 and choose **Playbook Training · Prototype**. Python 3 is required; no install/build step. Keep the terminal open; Ctrl+C stops the server. Use HTTP for ES modules.
+
+Each first viewing autoplays for approximately 60 seconds. Then choose **Answer now** or **Inspect replay first**. Inspection retains Play/Pause, Previous candle, Next candle and Restart. Submit classification and description together to reveal feedback and evidence. **Next synthetic exercise →** advances without a consecutive repeat; Restart repeats the current exercise. The five-exercise rotation is kept only in memory, wraps after five and starts over after a page reload.
+
+The deterministic rotation is: Failed Bullish Initial Breakout (B), Sustained Bullish Breakout (A), Failed Bearish Initial Breakout (B), Sustained Bearish Breakout (A), No Qualifying Breakout (C). Only generic exercise numbers appear before feedback. These are invented synthetic BTCUSD 1m candles for 15 January 2026; canonical UTC timestamps map to New York session rules. Outcome names, grades and descriptions derive from the original classifier.
+
+## Changes from Task 2
+
+- Five playable cases with classifier-driven completion. All A/B cases retain 37 sequential completed candles, including all 15 following closes even after a return. C retains all 76 candles (15 opening-range plus 61 search closes).
+- One tuning point: `DEFAULT_AUTOPLAY_MS = 60000` in playbook/replay.mjs. Per-candle interval is duration / required candle count; every scenario has the same target total time. Background timer throttling can extend real playback. C has a faster cadence because it requires more candles.
+- Short instructions above the dominant navy chart; optional rules below it. Clear Observe, Inspect, Answer and Review stages. Completion focuses the next-step panel and emphasises Answer now. Existing answer targets remain at least 48px high.
+- Narrower charts show fewer candles with wider bodies; every candle remains reachable through inspection. Blue ORH, pink ORL, translucent range box, white/outlined candles and feedback-only yellow outlines remain intact.
+- Feedback removes duplicate correct-description text, adds a concise legend and a prominent Next action. C includes full-search shading and search-end evidence navigation. Description choices vary position deterministically.
+- No classifier rules, Worlds, XP, player storage, research baseline, dependencies or hybrid controller changes.
+
+## Verification and human review
+
+~~~powershell
+node --test tests/playbook-*.test.mjs
+node --check game.js
+Get-ChildItem playbook,tests -Recurse -Filter *.mjs | ForEach-Object { node --check $_.FullName }
+git diff --check
+~~~
+
+Baseline: 90 tests passed. Task 3: 101 tests passed, covering all five outcomes, valid OHLC/completion, required assessment/search periods, prefix isolation, descriptions, duration configuration, UI transitions and a complete rotation/wrap. DOM/timer simulation includes a 320px SVG width; it does not establish rendered layout correctness.
+
+Rendered browser/mobile testing remains for human review: isolated Playwright/Puppeteer tooling is unavailable in this workspace. No existing browser profile or external account was accessed. Test 320/375/390px portrait and landscape, chart readability, touch/keyboard navigation, completion focus/scroll, 60-second pacing, all inspection and evidence controls, correct/wrong answers, next/restart/exit/re-entry and existing Worlds/saved progression. Fixed finite exercises can become familiar; broader variation is outside this task. Stop after Task 3 for human review; Task 4 is not started.
+
+---
 # PLB-006 Task 2 — Guided Training prototype
 
 ## Launch on Windows

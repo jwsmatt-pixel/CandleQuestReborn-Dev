@@ -1,5 +1,5 @@
 import {classifySession} from './classifier.mjs';
-export const DEFAULT_AUTOPLAY_MS = 75_000; // Playtest tuning point; no player settings.
+export const DEFAULT_AUTOPLAY_MS = 60_000; // Single playtest tuning point for every scenario.
 export const LABELS = Object.freeze({A:'Sustained Breakout', B:'Failed Initial Breakout', C:'No Qualifying Breakout'});
 export const nyTime = stamp => new Intl.DateTimeFormat('en-GB', {timeZone:'America/New_York', hour:'2-digit', minute:'2-digit', hourCycle:'h23'}).format(new Date(stamp));
 const cutoff = (input, count) => count ? new Date(Date.parse(input.candles[count-1].timestamp)+60000).toISOString() : input.candles[0].timestamp;
@@ -16,6 +16,7 @@ export function observationLength(input) {
   throw new Error('Training scenario lacks required observations');
 }
 export function createReplay(input, duration=DEFAULT_AUTOPLAY_MS) {
+  if (!Number.isFinite(duration) || duration <= 0) throw new RangeError('Replay duration must be positive milliseconds');
   const limit=observationLength(input);
   return {cursor:0, revealed:0, limit, completed:false, playing:true, stepMs:duration/limit};
 }
@@ -46,14 +47,24 @@ export function descriptionChoices(result) {
   const correct=b
     ? (nyTime(b.timestamp)+' '+b.direction+' candle closes '+b.close+' beyond '+boundary+' '+b.boundary+' → '+(a.firstReturn ? 'a close returns to or through that boundary at '+nyTime(a.firstReturn.timestamp)+' within the 15 following completed candles' : 'all 15 following closes stay beyond that boundary')+' → '+LABELS[result.classification]+'.')
     : 'No strict close beyond ORH or ORL from 09:45 through 10:45 → all 61 search closes observed → No Qualifying Breakout.';
-  // Stable order, with the correct card away from the first position. No correctness sent to markup.
-  return [
-    {id:'wick',text:'A wick crosses ORH → count the wick as the first breakout → Sustained Breakout.'},
-    {id:'equal',text:'A close equals ORH → equality qualifies as an upward breakout → assess the next 15 candles.'},
+  const choices = [
+    {id:'wick',text:'A wick crosses a range boundary → count the wick as the first breakout → Sustained Breakout.'},
+    {id:'equal',text:'A close equals a boundary → equality qualifies as a breakout → assess the next 15 candles.'},
     {id:'evidence',text:correct},
-    {id:'replace',text:'The first breakout returns inside → replace it with the later upward breakout → Sustained Breakout.'},
-    {id:'reversal',text:'The initial upward breakout fails → assume the entire session reverses down → whole-session bearish reversal.'}
+    {id:'replace',text:'The first breakout returns inside → replace it with a later breakout → Sustained Breakout.'},
+    {id:'reversal',text:'The initial breakout fails → assume a reversal for the entire session → whole-session reversal.'}
   ];
+  // Deterministic variety; the evidence card has no fixed screen position.
+  const offset=result.classification==='C'?4:(result.classification==='A'?1:0)+(b?.direction==='bearish'?2:0);
+  return [...choices.slice(offset),...choices.slice(0,offset)];
+}
+export function scenarioTitle(result) {
+  if(result.status!=='complete') throw new Error('Observation incomplete');
+  return result.firstBreakout
+    ? (result.classification==='A'?'Sustained ':'Failed ')+
+      (result.firstBreakout.direction==='bullish'?'Bullish':'Bearish')+
+      (result.classification==='A'?' Breakout':' Initial Breakout')+' ('+result.classification+')'
+    : LABELS.C+' (C)';
 }
 export function grade(result, classification, description) {
   if(result.status!=='complete') throw new Error('Observation incomplete');

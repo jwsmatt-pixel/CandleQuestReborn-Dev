@@ -3207,7 +3207,13 @@ body[data-screen="game"][data-candle-speed="speedrun"] .coach-tray{
 #playbook p{font-size:14px;line-height:1.5;color:#d2dfef;margin:10px 0}
 #playbook .eyebrow{color:#a6df86;margin-top:18px;font-size:11px}
 #playbook .pb-rules{padding:12px;background:#19283b;border-radius:12px}
-#playbook #pbPhase{min-height:42px;font-weight:800}
+#playbook #pbPhase{min-height:36px;font-weight:750;font-size:12px;margin:6px 0}
+#playbook #pbStage{color:#b6ed8e;font-weight:800;margin:6px 0}
+#playbook .pb-intro{margin:4px 0}
+#playbook .pb-rules summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:750}
+#playbook .pb-rules{margin-top:10px;padding:4px 12px}
+#playbook #pbLegend{font-size:12px;border-left:3px solid #ffdf70;padding-left:10px}
+#playbook button.pb-primary{background:#315e86;border-color:#83c5ff;text-align:center;font-size:16px}
 #playbook #pbLevels{color:#e9f2ff;font-weight:800}
 #pbChart{display:block;width:100%;height:300px;border-radius:14px;background:#0a1220;font-family:system-ui,sans-serif;overflow:hidden}
 #playbook #pbClock,#playbook #pbOhlc{font-variant-numeric:tabular-nums;font-size:12px}

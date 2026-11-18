@@ -1,5 +1,12 @@
 # Candle Quest Reborn — Changelog
 
+## PLB-006 — Task 3 Guided Training expansion (unreleased)
+
+- Expanded to five deterministic synthetic cases, with classifier-derived answers and sequential non-repeating progression.
+- Set all first viewings to a configurable 60-second target while retaining full required completed-candle periods.
+- Shortened instructions, clarified stages/next actions, widened narrow-screen candles and simplified feedback with an evidence legend.
+- Added five-scenario validation/replay tests and full-rotation UI coverage. 101 tests pass; rendered mobile playtesting remains for human review. Guide: docs/PLB006_TASK2.md.
+- Classifier rules, Worlds, XP/storage, research baseline and existing logs preserved. Task 4 not started.
 ## PLB-006 — Task 2 Guided Training (prototype, unreleased)
 
 - Added a separate Home entry and one labelled synthetic BTCUSD 1m exercise, without World, XP, score or player-storage integration.

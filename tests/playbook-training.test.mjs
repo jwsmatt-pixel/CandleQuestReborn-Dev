@@ -28,6 +28,8 @@ training.startTraining();
 assert.equal(document.body.dataset.screen,'playbook');assert.equal(el('pbControls').hidden,true);assert.deepEqual(labels(),[]);
 for(let i=1;i<=37;i++){
  tick();
+ assert.ok(!el('pbChart').innerHTML.includes('#ffdf70'));
+ assert.equal(el('pbLegend').hidden,true);
  if(i<15){assert.ok(el('pbLevels').textContent.includes('Provisional'));assert.ok(!el('pbChart').innerHTML.includes('fill-opacity=".6"'));}
  if(i===15){assert.ok(el('pbLevels').textContent.includes('Locked'));assert.ok(el('pbChart').innerHTML.includes('fill-opacity=".6"'));assert.ok(el('pbClock').textContent.startsWith('09:45'));}
  if(i<37)assert.deepEqual(labels(),[]);
@@ -40,7 +42,28 @@ const correct=labels().find(t=>t.startsWith('09:51 bullish'));assert.ok(correct)
 const evidence=el('pbQuestions').children.find(c=>c.className==='pb-evidence');evidence.children.find(c=>c.textContent.startsWith('First close')).onclick();assert.ok(el('pbOhlc').textContent.startsWith('09:51 candle'));
 click('Replay revealed exercise');assert.ok(pending);el('pbExit').onclick();assert.equal(pending,null);assert.equal(document.body.dataset.screen,'home');
 training.startTraining();for(let i=0;i<37;i++)tick();click('Answer now');click('A — Sustained Breakout');click('Continue to Move → Response → Result');click(labels().find(t=>t.startsWith('A wick')));click('Submit both answers');assert.ok(el('pbQuestions').children.some(c=>c.textContent.includes('correct result: B')));
-click('Restart exercise');assert.equal(el('pbControls').hidden,true);assert.ok(el('pbClock').textContent.includes('0 completed'));document.body.dataset.screen='shop';observer();assert.equal(pending,null);
+click('Restart exercise');assert.equal(el('pbControls').hidden,true);assert.ok(el('pbClock').textContent.includes('0 completed'));
+// Complete a whole rotation and wrap; Next must clear answers, highlights and
+// inspection privileges and never reveal outcome names before submission.
+for(const [index,classification] of ['B','A','B','A','C','B'].entries()){
+ assert.ok(el('pbScenario').textContent.startsWith('Synthetic exercise '+(index%5+1)+' / 5'));
+ assert.equal(el('pbControls').hidden,true);assert.equal(el('pbLegend').hidden,true);
+ assert.ok(!el('pbChart').innerHTML.includes('#ffdf70'));
+ assert.deepEqual(labels(),[]);
+ for(let n=0;n<(classification==='C'?76:37);n++)tick();
+ assert.equal(el('pbStage').textContent,'2 · Choose your next step');
+ click('Answer now');click(classification+' — '+({A:'Sustained Breakout',B:'Failed Initial Breakout',C:'No Qualifying Breakout'})[classification]);click('Continue to Move → Response → Result');
+ click(labels().find(t=>t.startsWith(classification==='C'?'No strict close':'09:51 ')));click('Submit both answers');
+ assert.ok(el('pbQuestions').children.some(c=>c.textContent.startsWith('✓ Both reads correct.')));
+ assert.equal(el('pbLegend').hidden,false);
+ if(classification==='C'){
+   assert.ok(!el('pbChart').innerHTML.includes('#ffdf70'));
+   assert.ok(el('pbChart').innerHTML.includes('fill-opacity=".07"'));
+   assert.ok(el('pbQuestions').children.some(c=>c.textContent.startsWith('All 61 search closes')));
+ }
+ click('Next synthetic exercise →');
+}
+document.body.dataset.screen='shop';observer();assert.equal(pending,null);
 
 } finally {Object.assign(globalThis,saved);}
 });

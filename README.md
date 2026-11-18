@@ -1,10 +1,10 @@
 # Candle Quest Reborn
 
-## PLB-006 Task 2 — Playbook Training prototype
+## PLB-006 Task 3 — Playbook Training
 
-Home now includes **Playbook Training · Prototype**, an isolated synthetic BTCUSD 1m guided exercise with autoplay, range development, inspection, A/B/C and Move → Response → Result questions, and evidence feedback. Worlds and saved progression retain the v28.5.8 baseline.
+Home now includes **Playbook Training · Prototype**, five isolated synthetic BTCUSD 1m guided exercises with ~60-second autoplay and Next exercise progression, range development, inspection, A/B/C and Move → Response → Result questions, and evidence feedback. Worlds and saved progression retain the v28.5.8 baseline.
 
-Run `py -m http.server 8000 --bind 127.0.0.1` from this repository, then open http://127.0.0.1:8000. Playbook Training needs HTTP for ES modules. Exact Windows launch, rules, controls, tests and browser limitations: [Task 2 guide](docs/PLB006_TASK2.md).
+Run `py -m http.server 8000 --bind 127.0.0.1` from this repository, then open http://127.0.0.1:8000. Playbook Training needs HTTP for ES modules. Exact Windows launch, rules, controls, tests and browser limitations: [Guided Training guide](docs/PLB006_TASK2.md).
 
 **Current build:** `v28.2 - World 2 Fairness Pass`
 **Build marker:** `v28_2_world_2_fairness_pass`

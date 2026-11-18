@@ -5,6 +5,13 @@
 **v28.5.8 - W4 Replay Timing Dev Controls**
 Build marker: `v28_5_8_w4_replay_timing_dev_controls`
 
+## PLB-006 Task 3 — expansion ready for human review
+
+- Five synthetic exercises rotate through failed/sustained bullish, failed/sustained bearish and no qualifying breakout. Next advances; Restart repeats; reload resets the in-memory rotation.
+- Classifier and required periods unchanged. One DEFAULT_AUTOPLAY_MS=60000 setting normalises total playback; no skipped candles or early highlights/grades.
+- Compact optional guidance, distinct stages, completion focus, wider mobile candles, evidence legend and simpler feedback/next action.
+- 101 Node tests pass, including all outcomes, prefix isolation and full UI rotation. Browser/mobile rendering and pacing need human review. Launch and checks: docs/PLB006_TASK2.md.
+- Worlds, XP, storage, research baseline, logs and build marker preserved. Stop after Task 3; Task 4 not started.
 ## PLB-006 Task 2 — Guided Training prototype
 
 - Added the isolated Home entry, synthetic scenario, prefix-based replay state, mobile-oriented SVG chart, mandatory first viewing, inspection, classification/description submission and evidence feedback.
