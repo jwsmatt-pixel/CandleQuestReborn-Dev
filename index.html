@@ -112,11 +112,11 @@
         <p class="pb-intro">Watch the range form, then read the first closing breakout.</p>
         <p id="pbPhase" role="status"></p>
         <p id="pbLevels"></p>
-        <svg id="pbChart" role="img" aria-label="Moving viewport of completed synthetic candlesticks. Blue ORH, pink ORL; developing levels dashed, locked levels solid."></svg>
+        <svg id="pbChart" role="img" aria-label="Moving viewport of completed synthetic candlesticks. Blue ORH, pink ORL, dashed light-grey midpoint; developing boundaries dashed, locked boundaries solid."></svg>
         <p id="pbClock"></p><p id="pbOhlc"></p>
         <progress id="pbProgress" max="1" value="0" aria-label="Observation progress"></progress>
         <p id="pbLegend" hidden>Yellow outline: first breakout / first return. Pale band: 15 following closes, or the full search for C. Blue: ORH · Pink: ORL.</p>
-        <details class="pb-rules"><summary>How to read this exercise</summary><p>Invented prices, never market history. The 09:30–09:44 opening range locks at 09:45 New York. The first strict close outside starts a 15-close assessment. Wicks and equal closes do not qualify. A later breakout never replaces the first; a failure alone does not prove a session reversal. With no qualifying close through 10:45, choose C. Candle labels show New York opening times; each candle appears only after its minute closes.</p></details>
+        <details class="pb-guide"><summary>Opening-range guide · New York time</summary><ol><li>09:30–09:45 forms the opening range.</li><li>The first completed candle closing strictly outside the range determines the breakout. A wick alone does not qualify.</li><li>The next 15 completed closes determine A (stay beyond the breached boundary) or B (return to or through it). No qualifying breakout by the 10:45 search cutoff results in C.</li></ol><details class="pb-rules"><summary>Timing and edge cases</summary><p>Candle labels show opening times. The 09:30–09:44 candles complete the range at 09:45. The 10:45 search candle completes at 10:46. Equality does not start a breakout; a following close equal to the breached boundary counts as a return. Always finish all 15 following closes, even for a late breakout. A later breakout never replaces the first. Invented prices, never market history. The dashed grey midpoint follows completed range candles and locks at 09:45.</p></details></details>
         <div id="pbControls" class="pb-controls" hidden>
           <button id="pbPlay" type="button">Play</button><button id="pbPrev" type="button">← Previous candle</button>
           <button id="pbNext" type="button">Next candle →</button><button id="pbRestart" type="button">Restart</button>

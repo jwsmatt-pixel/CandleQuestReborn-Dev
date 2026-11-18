@@ -5,6 +5,15 @@
 **v28.5.8 - W4 Replay Timing Dev Controls**
 Build marker: `v28_5_8_w4_replay_timing_dev_controls`
 
+## PLB-006 Task 4 — Explanation Builder ready for owner playtest
+
+- Watch → classify → Move → Response → Result → submit → review is playable across the five accepted fixtures. Three choices per part; back navigation preserves selections. Classification and explanation scores stay separate.
+- New playbook/explanation.mjs builds explicit evidence from the completed replay prefix and reuses classifySession; answer wording/positions never classify the session. All 15 following closes or the full 61-close C search remain mandatory.
+- Provisional midpoint uses only completed opening-range candles; ORH, ORL and midpoint lock at 09:45. Clearer guide preserves opening-label / completion-time distinctions.
+- All 115 test callbacks pass using an in-process adapter because process launch is denied in the managed host. Eleven syntax checks and nine localhost delivery checks pass. No rendered browser/mobile verification; owner playtest required.
+- game.js, classifier.mjs and scenario.mjs are byte-identical to the starting baseline. Existing Worlds, XP, persistence and Category C's repetitive OHLC remain unchanged. No commit, push, merge, deployment or branch change performed.
+- Verdict and exact evidence: logs/task4-explanation-20261118-224800/codex-verdict.md.
+
 ## PLB-006 Task 3 — expansion ready for human review
 
 - Five synthetic exercises rotate through failed/sustained bullish, failed/sustained bearish and no qualifying breakout. Next advances; Restart repeats; reload resets the in-memory rotation.

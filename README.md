@@ -1,10 +1,12 @@
 # Candle Quest Reborn
 
-## PLB-006 Task 3 — Playbook Training
+## PLB-006 Task 4 — Explanation Builder v0.1
 
-Home now includes **Playbook Training · Prototype**, five isolated synthetic BTCUSD 1m guided exercises with ~60-second autoplay and Next exercise progression, range development, inspection, A/B/C and Move → Response → Result questions, and evidence feedback. Worlds and saved progression retain the v28.5.8 baseline.
+Home now includes **Playbook Training · Prototype**, five isolated synthetic BTCUSD 1m guided exercises with ~60-second autoplay and Next exercise progression, range development, inspection, A/B/C classification followed by three short Move → Response → Result choices, separate accuracy feedback, a reference comparison, and delayed evidence highlights. A subtle dashed light-grey midpoint develops from completed range candles and locks at 09:45. Worlds and saved progression retain the v28.5.8 baseline.
 
-Run `py -m http.server 8000 --bind 127.0.0.1` from this repository, then open http://127.0.0.1:8000. Playbook Training needs HTTP for ES modules. Exact Windows launch, rules, controls, tests and browser limitations: [Guided Training guide](docs/PLB006_TASK2.md).
+Run `py -m http.server 8000 --bind 127.0.0.1` from this repository, then open http://127.0.0.1:8000. Playbook Training needs HTTP for ES modules. Task 4 checks: `node --test tests/*.test.mjs` (115 tests). In the managed implementation host, the same assertion callbacks passed using the documented in-process adapter; native CLI execution was unavailable. Rendered browser/mobile testing remains unverified and requires owner playtesting. Evidence: [Task 4 verdict](logs/task4-explanation-20261118-224800/codex-verdict.md).
+
+Exact Windows launch, rules, controls, tests and browser limitations: [Guided Training guide](docs/PLB006_TASK2.md).
 
 **Current build:** `v28.2 - World 2 Fairness Pass`
 **Build marker:** `v28_2_world_2_fairness_pass`

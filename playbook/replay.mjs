@@ -38,6 +38,7 @@ export function snapshot(input,state) {
   const result=classifySession(inputPrefix);
   const opening=inputPrefix.candles.slice(0,15);
   const range=opening.length ? {high:Math.max(...opening.map(c=>c.high)),low:Math.min(...opening.map(c=>c.low)),locked:!!result.openingRange} : null;
+  if(range) range.midpoint=(range.high+range.low)/2;
   return {candles:inputPrefix.candles,asOf:inputPrefix.asOf,range,result};
 }
 export function descriptionChoices(result) {

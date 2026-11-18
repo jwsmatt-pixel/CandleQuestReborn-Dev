@@ -3229,3 +3229,12 @@ body[data-screen="game"][data-candle-speed="speedrun"] .coach-tray{
 #playbook .pb-evidence{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 body[data-screen="playbook"] .topbar,body[data-screen="playbook"] #installTip{display:none!important}
 @media(max-width:480px){#playbook .pb-shell{padding:12px;border-radius:18px}body[data-screen="playbook"] #app{padding:8px 8px 40px}#playbook p{font-size:13px}}
+
+/* Task 4: compact explanation controls and optional reference comparison. */
+#playbook .pb-guide{font-size:13px;line-height:1.45;margin-top:12px}
+#playbook .pb-guide ol{padding-left:20px;margin:6px 0}
+#playbook .pb-guide li{margin:4px 0}
+#playbook .pb-questions details{padding:8px 12px;background:#19283b;border-radius:12px}
+#playbook .pb-questions summary{cursor:pointer;min-height:44px;display:flex;align-items:center}
+#playbook .pb-questions .pb-card{padding:10px 12px}
+#playbook .pb-guide>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:750}

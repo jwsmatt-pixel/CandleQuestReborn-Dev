@@ -1,5 +1,14 @@
 # Candle Quest Reborn — Changelog
 
+## PLB-006 Task 4 — Explanation Builder v0.1 (2026-11-18)
+
+- Replace the full-sentence description quiz with three compact Move, Response and Result selections across all five exercises; support back navigation and submit only after all parts are chosen.
+- Build evidence from the completed displayed candle prefix using the existing authoritative classifier. Rotate option positions and alternate compact wording independently of ground truth.
+- Separate classification accuracy from explanation accuracy, with a coherent reference, per-part comparison and existing post-submission significant-candle highlights.
+- Clarify the opening-range guide and optional timestamp/equality rules. Add a subtle dashed light-grey midpoint using observed completed range candles, locked at 09:45.
+- Preserve classifier rules, all synthetic OHLC including Category C, Worlds, XP, storage and the v28.5.8 build marker.
+- Verification: 115 assertion callbacks pass through the managed-host adapter; syntax and localhost delivery pass. Native CLI and rendered browser/mobile checks remain owner verification items. Evidence is under logs/task4-explanation-20261118-224800.
+
 ## PLB-006 — Task 3 Guided Training expansion (unreleased)
 
 - Expanded to five deterministic synthetic cases, with classifier-derived answers and sequential non-repeating progression.

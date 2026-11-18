@@ -1,8 +1,9 @@
 import {trainingScenario,SCENARIO_COUNT} from './scenario.mjs';
-import {createReplay,advance,inspect,replayFromStart,snapshot,descriptionChoices,grade,scenarioTitle,LABELS,nyTime,DEFAULT_AUTOPLAY_MS} from './replay.mjs';
+import {createReplay,advance,inspect,replayFromStart,snapshot,prefix,scenarioTitle,LABELS,nyTime,DEFAULT_AUTOPLAY_MS} from './replay.mjs';
+import {buildEvidence,explanationChoices,gradeExplanation,PARTS} from './explanation.mjs';
 const el=id=>document.getElementById(id);
-let input, state, timer, stage, chosenClass, chosenDescription, feedback;
-let scenarioIndex=0;
+let input, state, timer, stage, chosenClass, answers, partIndex, evidence, feedback;
+let scenarioIndex=0, variation=-1;
 const button=(text,fn,selected=false)=>{
   const b=document.createElement('button'); b.type='button'; b.textContent=text;
   b.className='pb-card'; b.setAttribute('aria-pressed',String(selected)); b.onclick=fn; return b;
@@ -21,14 +22,14 @@ function schedule(){
 }
 export function startTraining(){
   stop(); input=trainingScenario(scenarioIndex); state=createReplay(input);
-  stage='watch'; chosenClass=null;chosenDescription=null;feedback=null;
+  stage='watch'; chosenClass=null;answers={};partIndex=0;evidence=null;feedback=null;variation++;
   window.openScreen('playbook'); render(); schedule();
   el('pbTitle').focus(); window.scrollTo(0,0);
 }
 function render(){
   const s=snapshot(input,state), r=s.result;
   el('pbScenario').textContent='Synthetic exercise '+(scenarioIndex+1)+' / '+SCENARIO_COUNT+' · BTCUSD · 1m · 15 Jan 2026';
-  el('pbStage').textContent=({watch:'1 · Observe',ready:'2 · Choose your next step',inspect:'2 · Inspect',classify:'3 · Answer',describe:'3 · Answer',feedback:'4 · Review'})[stage];
+  el('pbStage').textContent=({watch:'1 · Observe',ready:'2 · Choose your next step',inspect:'2 · Inspect',classify:'3 · Answer',describe:'3 · Build explanation',feedback:'4 · Review'})[stage];
   el('pbLegend').hidden=stage!=='feedback';
   el('pbProgress').value=state.cursor/state.limit;
   el('pbClock').textContent=nyTime(s.asOf)+' New York · '+state.cursor+' completed 1m candles';
@@ -58,31 +59,43 @@ function render(){
     panel.append(button('Answer now',()=>{state.playing=false;stop();stage='classify';render();}));return;
   }
   if(stage==='classify'){
-    text('1 / 2 · Classify the first qualifying breakout. No feedback until both answers are submitted.');
+    text('Classify the completed outcome. Feedback follows your full explanation.');
     Object.entries(LABELS).forEach(([id,label])=>panel.append(button(id+' — '+label,()=>{chosenClass=id;render();},chosenClass===id)));
-    const next=button('Continue to Move → Response → Result',()=>{stage='describe';render();});next.disabled=!chosenClass;panel.append(next);return;
+    const next=button('Continue to Move → Response → Result',()=>{evidence=buildEvidence(prefix(input,state.limit));partIndex=0;stage='describe';render();el('pbQuestions').focus();});next.disabled=!chosenClass;panel.append(next);return;
   }
   if(stage==='describe'){
-    text('2 / 2 · Select the Move → Response → Result description supported by the candles.');
-    descriptionChoices(snapshot(input,{...state,cursor:state.limit}).result).forEach(c=>panel.append(button(c.text,()=>{chosenDescription=c.id;render();},chosenDescription===c.id)));
-    panel.append(button('Back to classification',()=>{stage='classify';render();}));
-    const submit=button('Submit both answers',()=>{
-      const final=snapshot(input,{...state,cursor:state.limit}).result;
-      feedback=grade(final,chosenClass,chosenDescription);state={...state,cursor:state.limit,playing:false};stop();stage='feedback';render();el('pbQuestions').focus();
-    });submit.disabled=!chosenDescription;panel.append(submit);return;
+    const part=PARTS[partIndex];
+    const prompts={move:'What did price do?',response:'What did subsequent price action do?',result:'What does the completed evidence establish?'};
+    text((partIndex+1)+' / 3 · '+part.toUpperCase()+' — '+prompts[part]);
+    explanationChoices(evidence,part,variation).forEach(c=>panel.append(button(c.text,()=>{answers[part]=c.id;render();},answers[part]===c.id)));
+    panel.append(button(partIndex ? '← Previous part' : 'Back to classification',()=>{
+      if(partIndex) partIndex--; else stage='classify';render();el('pbQuestions').focus();
+    }));
+    const next=button(partIndex<2 ? 'Continue to '+PARTS[partIndex+1].toUpperCase() : 'Submit explanation',()=>{
+      if(partIndex<2){partIndex++;render();el('pbQuestions').focus();return;}
+      feedback=gradeExplanation(evidence,chosenClass,answers,variation);
+      state={...state,cursor:state.limit,playing:false};stop();stage='feedback';render();el('pbQuestions').focus();
+    });next.disabled=!answers[part];if(partIndex===2)next.disabled=!PARTS.every(p=>answers[p]);panel.append(next);return;
   }
   const final=snapshot(input,{...state,cursor:state.limit}).result;
   text('Synthetic · '+scenarioTitle(final));
-  text((feedback.classificationCorrect && feedback.descriptionCorrect ? '✓ Both reads correct.' : 'Keep practising.')+' Your classification: '+chosenClass+'; '+(feedback.classificationCorrect?'correct.':'correct result: '+final.classification+' — '+LABELS[final.classification]+'.')+' Description: '+(feedback.descriptionCorrect?'correct.':'review the evidence below.'));
-  text(feedback.explanation);
+  text('Classification: '+chosenClass+' · '+(feedback.classificationCorrect?'correct.':'incorrect; reference: '+final.classification+' — '+LABELS[final.classification]+'.'));
+  text('Explanation: '+feedback.parts.filter(p=>p.correct).length+' / 3 correct.');
+  text('Reference · '+feedback.reference);
+  const comparison=document.createElement('details');
+  const summary=document.createElement('summary');summary.textContent='Compare your explanation';comparison.append(summary);
+  feedback.parts.forEach(p=>{
+    const row=document.createElement('p');
+    row.textContent=p.part.toUpperCase()+' · '+(p.correct?'Correct':'Incorrect')+' · You: '+p.chosen+(p.correct?'':' Reference: '+p.reference);
+    comparison.append(row);
+  });panel.append(comparison);
   if(final.assessment) text('All 15 following completed closes assessed through '+nyTime(final.assessment.end)+'; decision available at '+nyTime(final.assessment.completesAt)+' New York.');
   if(!final.assessment) text('All 61 search closes checked through 10:45; complete at '+nyTime(final.search.completesAt)+' New York.');
-  if(!feedback.descriptionCorrect){const chosen=descriptionChoices(final).find(c=>c.id===chosenDescription);text('Your description: '+chosen.text);}
-  const evidence=document.createElement('div');evidence.className='pb-evidence';
+  const evidenceLinks=document.createElement('div');evidenceLinks.className='pb-evidence';
   const points=[['Range lock',final.openingRange.completesAt],['First close',final.firstBreakout?.timestamp],['First return',final.assessment?.firstReturn?.timestamp],[final.assessment?'Assessment end':'Search end',final.assessment?.end ?? final.search.end]];
-  points.filter(p=>p[1]).forEach(([label,stamp])=>evidence.append(button(label+' · '+nyTime(stamp),()=>{state={...state,cursor:Math.min(state.limit,Math.max(0,input.candles.findIndex(c=>c.timestamp===stamp)+(label==='Range lock'?0:1))),playing:false};stop();render();})));
+  points.filter(p=>p[1]).forEach(([label,stamp])=>evidenceLinks.append(button(label+' · '+nyTime(stamp),()=>{state={...state,cursor:Math.min(state.limit,Math.max(0,input.candles.findIndex(c=>c.timestamp===stamp)+(label==='Range lock'?0:1))),playing:false};stop();render();})));
   const next=button('Next synthetic exercise →',()=>{scenarioIndex=(scenarioIndex+1)%SCENARIO_COUNT;startTraining();});next.className+=' pb-primary';
-  panel.append(next,evidence,button('Replay revealed exercise',()=>{state=replayFromStart(state);render();schedule();}),button('Restart exercise',startTraining));
+  panel.append(next,evidenceLinks,button('Replay revealed exercise',()=>{state=replayFromStart(state);render();schedule();}),button('Restart exercise',startTraining));
 }
 function draw(s){
   const svg=el('pbChart'), w=Math.max(280,svg.clientWidth||340), h=300;
@@ -98,6 +111,7 @@ function draw(s){
   if(s.range){
     const {high,low,locked}=s.range;
     if(locked){const bx=Math.max(left,x(0)-gap/2),ex=Math.min(right,x(15)-gap/2);if(ex>bx) markup+='<rect x="'+bx+'" y="'+y(high)+'" width="'+(ex-bx)+'" height="'+(y(low)-y(high))+'" fill="#24385f" fill-opacity=".6"/>';}
+    markup+='<path data-level="midpoint" d="M '+left+' '+y(s.range.midpoint)+' H '+right+'" stroke="#cbd0d8" stroke-width="1" stroke-opacity=".65" stroke-dasharray="3 5"/>';
     [[high,'#53adff','ORH'],[low,'#ff80b7','ORL']].forEach(([price,color,label])=>{markup+='<path d="M '+left+' '+y(price)+' H '+right+'" stroke="'+color+'" stroke-width="'+(feedback && price===snapshot(input,{...state,cursor:state.limit}).result.breachedBoundary?3:1)+'" '+(locked?'':'stroke-dasharray="4 4"')+'/><text x="'+(right+5)+'" y="'+(y(price)-3)+'" fill="'+color+'" font-size="11">'+label+' '+price+'</text>';});
   }
   const f=feedback ? snapshot(input,{...state,cursor:state.limit}).result : null;
