@@ -56,3 +56,23 @@ export function gradeExplanation(e, classification, answers, variation=0) {
     explanationCorrect:parts.every(p=>p.correct),parts,
     reference:parts.map(p=>p.reference).join(' → ')};
 }
+
+// Independent writing is preserved for human comparison, never semantically graded.
+export function independentReview(e, classification, written, variation=0) {
+  if (!['A','B','C'].includes(classification) || !PARTS.every(p=>typeof written[p]==='string' && written[p].trim())) throw new Error('Complete your read and choose a category');
+  const time=stamp=>new Intl.DateTimeFormat('en-GB',{timeZone:'America/New_York',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(stamp));
+  const b=e.firstBreakout, boundary=b?.direction==='bullish'?'ORH':'ORL';
+  const facts=b ? {
+    move:time(b.timestamp)+' candle closed '+b.close+' strictly '+(b.direction==='bullish'?'above':'below')+' '+boundary+' '+b.boundary+'; this was the first qualifying closing breakout.',
+    response:e.firstReturn
+      ? time(e.firstReturn.timestamp)+' candle closed '+e.firstReturn.close+' at or through '+boundary+' '+b.boundary+' within the next 15 completed closes. The original first breakout remains authoritative.'
+      : 'All 15 following completed closes stayed strictly beyond '+boundary+' '+b.boundary+'.',
+    result:'Category '+e.classification+': '+(e.classification==='A'?'the first breakout held':'the first breakout failed')+' across its 15-close assessment through '+time(e.followingCloses.at(-1).timestamp)+'.'
+  } : {
+    move:'No qualifying closing breakout occurred from 09:45 through 10:45 inclusive. ORH '+e.openingRange.high+'; ORL '+e.openingRange.low+'.',
+    response:'All 61 completed search closes stayed within or exactly on the opening range boundaries. There is no first breakout or 15-close A/B assessment.',
+    result:'Category C: no qualifying closing breakout by the complete search cutoff; the 10:45 candle completed at 10:46 New York.'
+  };
+  return {classificationCorrect:classification===e.classification,
+    parts:PARTS.map(part=>({part,chosen:written[part],reference:facts[part]}))};
+}

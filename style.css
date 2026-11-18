@@ -3238,3 +3238,13 @@ body[data-screen="playbook"] .topbar,body[data-screen="playbook"] #installTip{di
 #playbook .pb-questions summary{cursor:pointer;min-height:44px;display:flex;align-items:center}
 #playbook .pb-questions .pb-card{padding:10px 12px}
 #playbook .pb-guide>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:750}
+
+/* Independent Read: compact choice, comfortable writing and literal review text. */
+#playbook .pb-modes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#playbook .pb-mode-hint{font-size:12px}
+#playbook .pb-questions label{font-size:14px;font-weight:750;line-height:1.5}
+#playbook .pb-questions textarea{box-sizing:border-box;width:100%;min-height:88px;padding:12px;border:1px solid #7189a5;border-radius:12px;background:#0a1220;color:#eff5ff;font:inherit;font-size:16px;line-height:1.5;resize:vertical}
+#playbook textarea:focus-visible{outline:3px solid #ffdf70;outline-offset:3px}
+#playbook .pb-comparison{min-width:0;padding:12px;background:#19283b;border-radius:12px}
+#playbook .pb-comparison h3{font-size:14px;margin:0}
+#playbook .pb-original{white-space:pre-wrap;overflow-wrap:anywhere;border-left:2px solid #b6ed8e;padding-left:10px}

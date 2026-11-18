@@ -5,6 +5,15 @@
 **v28.5.8 - W4 Replay Timing Dev Controls**
 Build marker: `v28_5_8_w4_replay_timing_dev_controls`
 
+## PLB-006 Task 5 — Independent Read ready for owner playtest
+
+- Select Guided (default) or Independent Read immediately. Independent Read: observe → inspect if desired → write three short responses → choose A/B/C → submit → compare original words with factual references and chart evidence.
+- Only the deterministic A/B/C classification is checked. Free text is preserved literally and remains ungraded, with a self-review checklist; no writing correctness, self-assessment XP, backend or API.
+- All five existing fixtures covered, including Category C's complete 61-close no-breakout explanation with no invented first breakout/A/B assessment. Mode switches restart the current exercise and clear its draft, as stated in the UI. Drafts survive category selection and remain in review during evidence inspection/replay; reload/restart/Next clears them.
+- Verification: node --test --test-isolation=none tests/*.test.mjs: 121 passed, 0 failed. Twelve syntax checks and eight loopback HTTP exact-content checks passed. Default test process spawning is denied by the host; a saved local adapter also passed all 121 callbacks.
+- game.js, classifier.mjs, replay.mjs, scenario.mjs and prior tests are unchanged. World progression/XP/storage remain isolated; rendered mobile/World smoke tests are UNVERIFIED and require owner playtest. Category C waveform polish remains deferred.
+- Evidence: logs/task5-independent-20261119-000814/codex-verdict.md. No commit, push, merge, deployment or branch change performed.
+
 ## PLB-006 Task 4 — Explanation Builder ready for owner playtest
 
 - Watch → classify → Move → Response → Result → submit → review is playable across the five accepted fixtures. Three choices per part; back navigation preserves selections. Classification and explanation scores stay separate.

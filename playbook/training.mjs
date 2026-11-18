@@ -1,9 +1,9 @@
 import {trainingScenario,SCENARIO_COUNT} from './scenario.mjs';
 import {createReplay,advance,inspect,replayFromStart,snapshot,prefix,scenarioTitle,LABELS,nyTime,DEFAULT_AUTOPLAY_MS} from './replay.mjs';
-import {buildEvidence,explanationChoices,gradeExplanation,PARTS} from './explanation.mjs';
+import {buildEvidence,explanationChoices,gradeExplanation,independentReview,PARTS} from './explanation.mjs';
 const el=id=>document.getElementById(id);
 let input, state, timer, stage, chosenClass, answers, partIndex, evidence, feedback;
-let scenarioIndex=0, variation=-1;
+let scenarioIndex=0, variation=-1, mode='guided', written, submitted;
 const button=(text,fn,selected=false)=>{
   const b=document.createElement('button'); b.type='button'; b.textContent=text;
   b.className='pb-card'; b.setAttribute('aria-pressed',String(selected)); b.onclick=fn; return b;
@@ -22,12 +22,15 @@ function schedule(){
 }
 export function startTraining(){
   stop(); input=trainingScenario(scenarioIndex); state=createReplay(input);
+  written={move:'',response:'',result:''};submitted=null;
   stage='watch'; chosenClass=null;answers={};partIndex=0;evidence=null;feedback=null;variation++;
   window.openScreen('playbook'); render(); schedule();
   el('pbTitle').focus(); window.scrollTo(0,0);
 }
 function render(){
   const s=snapshot(input,state), r=s.result;
+  el('pbGuided').setAttribute('aria-pressed',String(mode==='guided'));
+  el('pbIndependent').setAttribute('aria-pressed',String(mode==='independent'));
   el('pbScenario').textContent='Synthetic exercise '+(scenarioIndex+1)+' / '+SCENARIO_COUNT+' · BTCUSD · 1m · 15 Jan 2026';
   el('pbStage').textContent=({watch:'1 · Observe',ready:'2 · Choose your next step',inspect:'2 · Inspect',classify:'3 · Answer',describe:'3 · Build explanation',feedback:'4 · Review'})[stage];
   el('pbLegend').hidden=stage!=='feedback';
@@ -36,7 +39,8 @@ function render(){
   let phase=!s.range ? 'Session opens at 09:30. Watch completed candles appear.' : !s.range.locked
     ? 'Opening range developing · '+state.cursor+'/15 candles · levels provisional'
     : 'Opening range locked at 09:45 · '+(r.firstBreakout ? 'First qualifying '+r.firstBreakout.direction+' candle: '+nyTime(r.firstBreakout.timestamp)+' · following closes '+r.assessment.observedCount+'/15' : 'Searching strict closing breakouts · 09:45–10:45 inclusive');
-  el('pbPhase').textContent=phase;
+  el('pbPhase').textContent=mode==='independent' && !feedback && s.range?.locked
+    ? 'Opening range locked at 09:45 · Observe the completed candles against ORH, ORL and midpoint.' : phase;
   el('pbLevels').textContent=s.range ? 'ORH '+s.range.high+' · ORL '+s.range.low+' · '+(s.range.locked?'Locked':'Provisional') : 'ORH / ORL develop from observed candles only';
   const last=s.candles.at(-1);
   el('pbOhlc').textContent=last ? nyTime(last.timestamp)+' candle · O '+last.open+' · H '+last.high+' · L '+last.low+' · C '+last.close : 'No completed candle yet.';
@@ -57,6 +61,28 @@ function render(){
   if(stage==='inspect'){
     text('Inspect the revealed sequence with Play / Pause or one completed candle at a time.');
     panel.append(button('Answer now',()=>{state.playing=false;stop();stage='classify';render();}));return;
+  }
+  if(stage==='classify' && mode==='independent'){
+    text('Write a short read in your own words, then choose a category. “Unsure” is welcome. All three fields are required; no word minimum.');
+    const prompts={move:'What did price do?',response:'What happened afterwards?',result:'What does the completed evidence establish?'};
+    const submit=button('Submit independent read',()=>{
+      if(!chosenClass || !PARTS.every(p=>written[p].trim())) return;
+      submitted=Object.freeze({...written});
+      evidence=buildEvidence(prefix(input,state.limit));
+      feedback=independentReview(evidence,chosenClass,submitted,variation);
+      state={...state,cursor:state.limit,playing:false};stop();stage='feedback';render();el('pbQuestions').focus();
+    });
+    const update=()=>{submit.disabled=!chosenClass || !PARTS.every(p=>written[p].trim());};
+    PARTS.forEach(part=>{
+      const label=document.createElement('label');label.htmlFor='pbWritten-'+part;
+      label.textContent=part.toUpperCase()+' — '+prompts[part];
+      const field=document.createElement('textarea');field.id=label.htmlFor;field.rows=2;field.required=true;
+      field.value=written[part];field.placeholder='A short response, or Unsure';
+      field.oninput=()=>{written[part]=field.value;update();};panel.append(label,field);
+    });
+    text('Choose your classification independently.');
+    ['A','B','C'].forEach(id=>panel.append(button('Category '+id,()=>{chosenClass=id;render();},chosenClass===id)));
+    submit.className+=' pb-primary';update();panel.append(submit);return;
   }
   if(stage==='classify'){
     text('Classify the completed outcome. Feedback follows your full explanation.');
@@ -79,6 +105,20 @@ function render(){
   }
   const final=snapshot(input,{...state,cursor:state.limit}).result;
   text('Synthetic · '+scenarioTitle(final));
+  if(mode==='independent'){
+    text('Verified classification: '+final.classification+' — '+LABELS[final.classification]+'.');
+    text('Your classification: '+chosenClass+' · '+(feedback.classificationCorrect?'correct.':'incorrect.'));
+    text('Self-review · Your writing is not automatically graded. Compare each original response with the factual reference. No writing score or XP is awarded.');
+    feedback.parts.forEach(p=>{
+      const row=document.createElement('section');row.className='pb-comparison';
+      const title=document.createElement('h3');title.textContent=p.part.toUpperCase();
+      const own=document.createElement('p');own.className='pb-original';own.textContent=p.chosen;
+      const reference=document.createElement('p');reference.textContent='Reference: '+p.reference;
+      const label=document.createElement('p');label.textContent='Your original words:';
+      row.append(title,label,own,reference);panel.append(row);
+    });
+    text('Your self-review checklist: Did I identify the important price movement? Did I describe the response accurately? Does my result follow from the observed evidence?');
+  } else {
   text('Classification: '+chosenClass+' · '+(feedback.classificationCorrect?'correct.':'incorrect; reference: '+final.classification+' — '+LABELS[final.classification]+'.'));
   text('Explanation: '+feedback.parts.filter(p=>p.correct).length+' / 3 correct.');
   text('Reference · '+feedback.reference);
@@ -89,6 +129,7 @@ function render(){
     row.textContent=p.part.toUpperCase()+' · '+(p.correct?'Correct':'Incorrect')+' · You: '+p.chosen+(p.correct?'':' Reference: '+p.reference);
     comparison.append(row);
   });panel.append(comparison);
+  }
   if(final.assessment) text('All 15 following completed closes assessed through '+nyTime(final.assessment.end)+'; decision available at '+nyTime(final.assessment.completesAt)+' New York.');
   if(!final.assessment) text('All 61 search closes checked through 10:45; complete at '+nyTime(final.search.completesAt)+' New York.');
   const evidenceLinks=document.createElement('div');evidenceLinks.className='pb-evidence';
@@ -133,3 +174,8 @@ el('pbRestart').onclick=startTraining;
 el('pbExit').onclick=()=>{stop();state.playing=false;window.openScreen('home');el('playbookEntry').focus();};
 new MutationObserver(()=>{if(document.body.dataset.screen!=='playbook'){stop();if(state)state.playing=false;}}).observe(document.body,{attributes:true,attributeFilter:['data-screen']});
 window.addEventListener('resize',()=>{if(state && document.body.dataset.screen==='playbook') draw(snapshot(input,state));});
+
+// Switching mode restarts this exercise only; no World or saved progression is touched.
+for(const [id,value] of [['pbGuided','guided'],['pbIndependent','independent']]){
+  el(id).onclick=()=>{if(mode!==value){mode=value;startTraining();}};
+}

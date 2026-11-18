@@ -1,5 +1,13 @@
 # Candle Quest Reborn — Changelog
 
+## PLB-006 Task 5 — Independent Read v0.1 (2026-11-19)
+
+- Add immediately available Guided / Independent Read selection. Switching mode restarts the current exercise; the in-memory fixture rotation and all saved World progression stay separate.
+- Independent Read observes the same no-lookahead replay, then accepts short Move / Response / Result writing (including Unsure) and an independent Category A/B/C choice. Submit requires a nonblank response in each field and a category, with no word minimum.
+- Before submission, conceal breakout-identifying phase text, outcome names, references and evidence highlights. Afterwards show objective classification accuracy, exact original words alongside candle-derived references, a clearly ungraded self-review checklist and the existing chart evidence controls.
+- Preserve Guided scoring, classifier rules, all five fixtures/OHLC, replay timing, ORH/ORL/midpoint, Worlds, XP and persistence. No external services or dependencies.
+- Verification: native Node tests with process isolation disabled: 121 passed, 0 failed; 12 JS/module syntax checks and 8 localhost content checks passed. Rendered browser/mobile verification is UNVERIFIED. Evidence and manual steps: logs/task5-independent-20261119-000814/codex-verdict.md.
+
 ## PLB-006 Task 4 — Explanation Builder v0.1 (2026-11-18)
 
 - Replace the full-sentence description quiz with three compact Move, Response and Result selections across all five exercises; support back navigation and submit only after all parts are chosen.
