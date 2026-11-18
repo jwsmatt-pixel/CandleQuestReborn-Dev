@@ -1,5 +1,13 @@
 # Candle Quest Reborn — Changelog
 
+## PLB-006 — Task 2 Guided Training (prototype, unreleased)
+
+- Added a separate Home entry and one labelled synthetic BTCUSD 1m exercise, without World, XP, score or player-storage integration.
+- Added completed-candle autoplay (~75 seconds, code configurable), provisional range levels, 09:45 lock/box, observed-data camera, sequential inspection and restart.
+- Added two-stage A/B/C and Move → Response → Result questions, delayed feedback, evidence highlights and replay.
+- Kept the original classifier as the only classification engine; added replay and UI integration tests. Exact launch and verification instructions: docs/PLB006_TASK2.md.
+- Browser/mobile visual testing remains unverified because the browser access host was unavailable. Human review next; Task 3 not started.
+
 ## PLB-006 — Slice 1 Classification Foundation (prototype, unreleased)
 
 - Added an isolated browser-compatible ES module for synthetic COINBASE:BTCUSD 1m opening-range classification, with New York DST handling and explicit completion cutoffs.

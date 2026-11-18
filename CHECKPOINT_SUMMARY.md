@@ -5,13 +5,21 @@
 **v28.5.8 - W4 Replay Timing Dev Controls**
 Build marker: `v28_5_8_w4_replay_timing_dev_controls`
 
+## PLB-006 Task 2 — Guided Training prototype
+
+- Added the isolated Home entry, synthetic scenario, prefix-based replay state, mobile-oriented SVG chart, mandatory first viewing, inspection, classification/description submission and evidence feedback.
+- Original classifier contract, engine, fixtures and 74-test suite are unchanged. Worlds 1–4, stored progression, XP/scores, research baseline and v28.5.8 build marker are preserved.
+- Added 15 replay tests and a complete DOM/timer integration flow. Default autoplay is 75000ms in playbook/replay.mjs.
+- Launch over HTTP: py -m http.server 8000 --bind 127.0.0.1; open http://127.0.0.1:8000. Full instructions and limitations: docs/PLB006_TASK2.md.
+- Browser/mobile smoke testing is UNVERIFIED due to an unavailable browser access host; DOM simulation does not establish visual correctness. Human playtest/review next. Stop after Task 2; Task 3 not started.
+
 ## PLB-006 Slice 1 — isolated prototype
 
 - Added playbook/classifier.mjs, independent of the game engine, with synthetic-only 1m input, New York session boundaries, deterministic asOf completion, and structured A/B/C or incomplete/invalid evidence.
 - Added tests/playbook-classifier.test.mjs and tests/fixtures/playbook-synthetic.mjs using Node's built-in test runner, with no dependencies.
 - Input/output contract, timing semantics, limitations, and test commands: docs/PLB006_SLICE1.md.
 - v28.5.8 remains the game baseline and build marker. No game integration, replay adapter, UI, saved-data changes, roadmap changes, or official Trading Research Studio baseline changes.
-- Stop after Slice 1 for human review; no subsequent slice has started.
+- Historical Slice 1 checkpoint; Task 2 integration is recorded separately above.
 
 ## Base build
 

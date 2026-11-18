@@ -3945,3 +3945,14 @@ function dismissInstallTip(){
     canvas.addEventListener("touchmove", function(e){ e.preventDefault(); }, {passive:false});
   }
 })();
+
+// PLB-006: lazy isolated entry; never enters a World run or writes player state.
+async function startPlaybookTraining(){
+  try {
+    const training = await import("./playbook/training.mjs");
+    training.startTraining();
+  } catch(error) {
+    console.error("Playbook Training could not load", error);
+    alert("Playbook Training needs a local HTTP server. In this folder run: py -m http.server 8000, then open http://localhost:8000");
+  }
+}

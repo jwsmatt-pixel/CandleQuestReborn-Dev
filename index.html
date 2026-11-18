@@ -81,6 +81,7 @@
           </section>
           <div class="hero-actions">
             <button class="primary" onclick="startRun(1)">Start World 1 Run</button>
+            <button id="playbookEntry" class="secondary" onclick="startPlaybookTraining()">Playbook Training · Prototype</button>
             <button class="secondary candle-lens-review-button" onclick="reviewCandleLens()">Review Patterns</button>
             <button class="secondary" onclick="openScreen('map')">Lesson Map</button>
             <button class="secondary" onclick="openScreen('library')">Pattern Library</button>
@@ -98,6 +99,26 @@
           <span>Complete one World 1 10-question run and score 7 or more correct reads.</span>
         </div>
         <button onclick="startRun(1)">Start Run</button>
+      </section>
+    </main>
+
+    <main id="playbook" class="screen" aria-labelledby="pbTitle">
+      <section class="pb-shell">
+        <button id="pbExit" class="ghost" type="button">← Home</button>
+        <p class="eyebrow">Isolated prototype · no XP or progression</p>
+        <h2 id="pbTitle" tabindex="-1">Playbook Training</h2>
+        <p>Synthetic scenario 01 · BTCUSD · 1m · 15 January 2026<br>Invented training candles. No live or historical market data.</p>
+        <p class="pb-rules">Watch the 09:30–09:44 opening range. At 09:45 it locks. The first strict close outside starts a 15-candle assessment; wicks and equal closes do not qualify. If none qualifies through 10:45, choose C. Candle labels are New York opening times; each candle appears only after its minute closes.</p>
+        <p id="pbPhase" role="status"></p>
+        <p id="pbLevels"></p>
+        <svg id="pbChart" role="img" aria-label="Moving viewport of completed synthetic candlesticks. Blue ORH, pink ORL; developing levels dashed, locked levels solid."></svg>
+        <p id="pbClock"></p><p id="pbOhlc"></p>
+        <progress id="pbProgress" max="1" value="0" aria-label="Observation progress"></progress>
+        <div id="pbControls" class="pb-controls" hidden>
+          <button id="pbPlay" type="button">Play</button><button id="pbPrev" type="button">← Previous candle</button>
+          <button id="pbNext" type="button">Next candle →</button><button id="pbRestart" type="button">Restart</button>
+        </div>
+        <section id="pbQuestions" class="pb-questions" tabindex="-1" aria-label="Training questions and feedback"></section>
       </section>
     </main>
 

@@ -3200,3 +3200,26 @@ body[data-screen="game"][data-candle-speed="speedrun"] .coach-tray{
     margin-top:36px!important;
   }
 }
+
+/* PLB-006 isolated training screen; no World arena selectors. */
+#playbook .pb-shell{max-width:880px;margin:auto;padding:18px;border:1px solid #344861;border-radius:24px;background:#101a29;color:#eff5ff}
+#playbook h2{font-size:clamp(28px,6vw,42px);line-height:1.1;letter-spacing:-.04em;margin:10px 0}
+#playbook p{font-size:14px;line-height:1.5;color:#d2dfef;margin:10px 0}
+#playbook .eyebrow{color:#a6df86;margin-top:18px;font-size:11px}
+#playbook .pb-rules{padding:12px;background:#19283b;border-radius:12px}
+#playbook #pbPhase{min-height:42px;font-weight:800}
+#playbook #pbLevels{color:#e9f2ff;font-weight:800}
+#pbChart{display:block;width:100%;height:300px;border-radius:14px;background:#0a1220;font-family:system-ui,sans-serif;overflow:hidden}
+#playbook #pbClock,#playbook #pbOhlc{font-variant-numeric:tabular-nums;font-size:12px}
+#pbProgress{width:100%;height:10px;accent-color:#58cc02}
+#playbook .pb-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
+#playbook [hidden]{display:none!important}
+#playbook button{min-height:48px;padding:12px;border:1px solid #49617e;border-radius:12px;background:#20334d;color:#f4f8ff;font-weight:750;cursor:pointer;touch-action:manipulation;line-height:1.4}
+#playbook button:disabled{opacity:.45;cursor:default}
+#playbook button:focus-visible,#playbook [tabindex]:focus-visible{outline:3px solid #ffdf70;outline-offset:3px}
+#playbook button[aria-pressed="true"]{border-color:#b6ed8e;background:#304b30;box-shadow:inset 0 0 0 1px #b6ed8e}
+#playbook .pb-questions{display:grid;gap:10px;margin:16px 0 8px}
+#playbook .pb-card{text-align:left;width:100%}
+#playbook .pb-evidence{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+body[data-screen="playbook"] .topbar,body[data-screen="playbook"] #installTip{display:none!important}
+@media(max-width:480px){#playbook .pb-shell{padding:12px;border-radius:18px}body[data-screen="playbook"] #app{padding:8px 8px 40px}#playbook p{font-size:13px}}
