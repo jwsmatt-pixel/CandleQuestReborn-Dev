@@ -1,4 +1,4 @@
-const CANDLE_QUEST_BUILD = "v28_5_8_w4_replay_timing_dev_controls";
+const CANDLE_QUEST_BUILD = "v28.6.0-beta.1";
 const CORRECT_AUTO_ADVANCE_MS = 850;
 const WRONG_AUTO_ADVANCE_MS = 1300;
 const WORLD_4_REPLAY_TIMING = Object.freeze({
@@ -19,8 +19,8 @@ function showBuildBadge(){
   if(!document.getElementById("buildBadge")){
     const b = document.createElement("div");
     b.id = "buildBadge";
-    b.textContent = "v28.5.8";
-    b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(7,12,9,.86);color:white;border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 10px;font:800 11px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none;";
+    b.textContent = CANDLE_QUEST_BUILD;
+    b.title = "Candle Quest build: " + CANDLE_QUEST_BUILD;
     document.body.appendChild(b);
   }
 }

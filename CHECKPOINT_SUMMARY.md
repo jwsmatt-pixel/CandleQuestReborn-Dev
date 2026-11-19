@@ -1,4 +1,12 @@
-# Candle Quest Reborn - v28.5.8 Checkpoint Summary
+# Candle Quest Reborn - v28.6.0-beta.1 Checkpoint Summary
+
+## Task 7 — Mobile learning flow ready for iPhone acceptance
+
+- Answer now from either observation-complete or inspect moves to answers after render without focusing textareas. Explanation navigation and submission align the beginning of the current answer/review section; reduced motion uses instant scrolling.
+- Answering hides the chart and replay grid. View chart reveals only already observed candles; Return to answer pauses replay and preserves writing, category, Guided selections and explanation part. Draft reset boundaries are unchanged.
+- Compact answer/review instructions and spacing; selection buttons retain keyboard focus after panel rebuilds. Existing chart rendering and theme are preserved. The version badge is now a small footer in normal document flow.
+- Verification: adapter 121 passed / 0 failed, 12 syntax checks passed; native runner emitted 121 passes / 0 failures but stream closure timed out at 10 seconds. Shell access prevented git diff --check; supplemental whitespace and Git-index scope checks passed. iPhone Safari rendering/keyboard/scroll and actual desktop interaction remain UNVERIFIED.
+- Owner acceptance and exact evidence: logs/task7-mobile-ux-20261119-144538/codex-verdict.md. No commit/push/merge/deployment.
 
 ## Task 6 — Global dark theme ready for owner playtest
 
@@ -10,8 +18,8 @@
 
 ## Current build
 
-**v28.5.8 - W4 Replay Timing Dev Controls**
-Build marker: `v28_5_8_w4_replay_timing_dev_controls`
+**v28.6.0-beta.1 — Mobile learning-flow and version polish**
+Authoritative version/build marker: `CANDLE_QUEST_BUILD` in game.js; console and visible badge both use it.
 
 ## PLB-006 Task 5 — Independent Read ready for owner playtest
 

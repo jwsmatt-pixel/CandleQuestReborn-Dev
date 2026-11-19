@@ -3287,3 +3287,14 @@ body:not([data-screen="playbook"]) ::placeholder{color:var(--muted);opacity:.8}
 .pattern-progress{background:var(--surface);border-color:var(--line)}
 /* Preserve the mobile review drawer's existing layout and repaint its fade only. */
 #result[data-review="open"] .review-back-row{background:linear-gradient(180deg,transparent,var(--card) 38%)}
+
+/* Task 7: compact learning flow; chart drawing and candle styling unchanged. */
+#buildBadge{position:static;width:max-content;max-width:100%;margin:8px auto;padding:2px 6px;color:var(--muted);font:500 10px system-ui;pointer-events:none}
+#pbQuestions,#pbChartView{scroll-margin-top:12px}
+#playbook #pbViewChart,#playbook #pbReturnAnswer{width:100%;margin:8px 0}
+#playbook:is([data-stage="classify"],[data-stage="describe"],[data-stage="feedback"]) .pb-intro,
+#playbook:is([data-stage="classify"],[data-stage="describe"],[data-stage="feedback"]) .pb-mode-hint{display:none}
+#playbook:is([data-stage="classify"],[data-stage="describe"],[data-stage="feedback"]) .pb-questions{gap:8px;margin-top:8px}
+#playbook:is([data-stage="classify"],[data-stage="describe"],[data-stage="feedback"]) .pb-questions p{margin:4px 0}
+
+#playbook:is([data-stage="classify"],[data-stage="describe"]) #pbQuestions{scroll-margin-top:76px}

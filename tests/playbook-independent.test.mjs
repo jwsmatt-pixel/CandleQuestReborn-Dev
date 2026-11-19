@@ -29,16 +29,16 @@ for(let i=0;i<5;i++) test('independent reference facts and ungraded exact writin
 });
 test('independent full five-fixture rotation, gates, draft retention, evidence and mode isolation',async()=>{
  class Element{
-  constructor(){this.children=[];this.attrs={};this.textContent='';this.innerHTML='';this.clientWidth=320;this.disabled=false;this.value='';}
+  constructor(){this.children=[];this.attrs={};this.dataset={};this.textContent='';this.innerHTML='';this.clientWidth=320;this.disabled=false;this.value='';}
   append(...items){this.children.push(...items);} replaceChildren(...items){this.children=items;}
-  setAttribute(k,v){this.attrs[k]=v;} focus(){}
+  setAttribute(k,v){this.attrs[k]=v;} focus(options){this.focusOptions=options;} scrollIntoView(options){this.scrollOptions=options;}
  }
  const ids=new Map(),el=id=>{if(!ids.has(id))ids.set(id,new Element());return ids.get(id);};
  let pending,observer;
  const document={getElementById:el,createElement:tag=>Object.assign(new Element(),{tag}),body:{dataset:{screen:'home'}}};
  const keys=['document','window','MutationObserver','setTimeout','clearTimeout','localStorage'];
  const saved=Object.fromEntries(keys.map(k=>[k,globalThis[k]]));
- Object.assign(globalThis,{document,window:{openScreen:id=>document.body.dataset.screen=id,scrollTo(){},addEventListener(){}},MutationObserver:class{constructor(fn){observer=fn;}observe(){}},setTimeout:fn=>{pending=fn;return 1;},clearTimeout:()=>{pending=null;},localStorage:{getItem(){throw Error('Unexpected storage read');},setItem(){throw Error('Unexpected storage write');}}});
+ Object.assign(globalThis,{document,window:{openScreen:id=>document.body.dataset.screen=id,scrollTo(){},addEventListener(){},requestAnimationFrame(fn){fn();return 1;},cancelAnimationFrame(){},matchMedia(){return {matches:true};}},MutationObserver:class{constructor(fn){observer=fn;}observe(){}},setTimeout:fn=>{pending=fn;return 1;},clearTimeout:()=>{pending=null;},localStorage:{getItem(){throw Error('Unexpected storage read');},setItem(){throw Error('Unexpected storage write');}}});
  try{
   const training=await import('../playbook/training.mjs?independent-test');
   const walk=node=>[node,...node.children.flatMap(walk)];
@@ -65,9 +65,20 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
    const words=['  My move\n<script>alert(1)</script>  ','Unsure','My result: '+index];
    fields().forEach((field,i)=>{field.value=words[i];field.oninput();});assert.equal(submit().disabled,true);
    const expected=['B','A','B','A','C'][index],picked=index===0?'A':expected;
-   click('Category '+picked);assert.deepEqual(fields().map(f=>f.value),words);assert.equal(submit().disabled,false);
+   click('Category '+picked);
+   assert.equal(el('pbControls').hidden,true);assert.equal(el('pbChartView').hidden,true);
+   assert.deepEqual(el('pbQuestions').scrollOptions,{block:'start',behavior:'instant'});
+   assert.deepEqual(el('pbQuestions').focusOptions,{preventScroll:true});
+   el('pbViewChart').onclick();assert.equal(el('pbQuestions').hidden,true);assert.equal(el('pbControls').hidden,false);
+   el('pbPrev').onclick();el('pbNext').onclick();el('pbPlay').onclick();tick();
+   el('pbReturnAnswer').onclick();assert.equal(pending,null);assert.equal(el('pbQuestions').hidden,false);
+   assert.equal(el('pbControls').hidden,true);
+   assert.equal(el('pbQuestions').children.find(n=>n.textContent==='Category '+picked).attrs['aria-pressed'],'true');
+   assert.deepEqual(fields().map(f=>f.value),words);assert.equal(submit().disabled,false);
    fields()[1].value='  ';fields()[1].oninput();assert.equal(submit().disabled,true);
    fields()[1].value=words[1];fields()[1].oninput();noLeak();click('Submit independent read');
+   assert.deepEqual(el('pbQuestions').scrollOptions,{block:'start',behavior:'instant'});
+   assert.equal(el('pbQuestions').attrs['aria-label'],'Training feedback and review');
    assert.match(content(),new RegExp('Verified classification: '+expected));
    assert.ok(content().includes('Your classification: '+picked+' · '+(index===0?'incorrect.':'correct.')));
    assert.ok(content().includes('not automatically graded'));assert.ok(!/Explanation:.*correct/.test(content()));

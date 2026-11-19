@@ -5,18 +5,19 @@ import {buildEvidence,explanationChoices,supports,PARTS} from '../playbook/expla
 import {trainingScenario} from '../playbook/scenario.mjs';
 test('complete isolated training flow, answer gates, replay and cleanup',async()=>{
 class Element {
- constructor(){this.children=[];this.attrs={};this.textContent='';this.innerHTML='';this.clientWidth=320;this.disabled=false;}
+ constructor(){this.children=[];this.attrs={};this.dataset={};this.textContent='';this.innerHTML='';this.clientWidth=320;this.disabled=false;}
  append(...items){this.children.push(...items);}
  replaceChildren(...items){this.children=items;}
  setAttribute(k,v){this.attrs[k]=v;}
- focus(){}
+ focus(options){this.focusOptions=options;} scrollIntoView(options){this.scrollOptions=options;}
 }
 const ids=new Map(), el=id=>{if(!ids.has(id))ids.set(id,new Element());return ids.get(id);};
-let pending, observer;
+let pending, observer, frame, reduced=true;
+const flushFrame=()=>{if(frame){const fn=frame;frame=null;fn();}};
 const document={getElementById:el,createElement:()=>new Element(),body:{dataset:{screen:'home'}}};
 const saved={document:globalThis.document,window:globalThis.window,MutationObserver:globalThis.MutationObserver,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout,localStorage:globalThis.localStorage};
 Object.assign(globalThis,{document,
- window:{openScreen:id=>{document.body.dataset.screen=id;},scrollTo(){},addEventListener(){}},
+ window:{openScreen:id=>{document.body.dataset.screen=id;},scrollTo(){},addEventListener(){},requestAnimationFrame(fn){frame=fn;return 1;},cancelAnimationFrame(){frame=null;},matchMedia(){return {matches:reduced};}},
  MutationObserver:class{constructor(fn){observer=fn;}observe(){}},
  setTimeout:fn=>{pending=fn;return 1;},clearTimeout:()=>{pending=null;},
  localStorage:{setItem(){throw Error('Unexpected storage write');},getItem(){throw Error('Unexpected storage read');}}
@@ -24,7 +25,7 @@ Object.assign(globalThis,{document,
 try {
 const training=await import('../playbook/training.mjs');
 const labels=()=>el('pbQuestions').children.filter(c=>c.onclick).map(c=>c.textContent);
-const click=text=>{const b=el('pbQuestions').children.find(c=>c.onclick&&c.textContent===text);assert.ok(b,'Missing '+text);assert.equal(b.disabled,false);b.onclick();};
+const click=text=>{const b=el('pbQuestions').children.find(c=>c.onclick&&c.textContent===text);assert.ok(b,'Missing '+text);assert.equal(b.disabled,false);b.onclick();flushFrame();};
 let variation=0;
 const build=(index,wrong=false)=>{
  const e=buildEvidence(trainingScenario(index));
@@ -53,10 +54,20 @@ for(let i=1;i<=37;i++){
 }
 assert.equal(pending,null);assert.equal(el('pbControls').hidden,false);assert.ok(labels().includes('Answer now'));
 click('Inspect replay first');assert.ok(el('pbClock').textContent.includes('0 completed'));el('pbPlay').onclick();assert.equal(pending,null);el('pbNext').onclick();assert.ok(el('pbClock').textContent.includes('1 completed'));el('pbPrev').onclick();assert.ok(el('pbClock').textContent.includes('0 completed'));
-click('Answer now');assert.ok(!el('pbQuestions').children.some(c=>c.textContent.includes('correct result:')));click('B — Failed Initial Breakout');click('Continue to Move → Response → Result');
+el('pbQuestions').children.find(c=>c.textContent==='Answer now').onclick();
+assert.equal(el('pbQuestions').scrollOptions,undefined);assert.ok(frame,'navigation waits until animation frame');
+flushFrame();assert.deepEqual(el('pbQuestions').focusOptions,{preventScroll:true});
+assert.ok(!el('pbQuestions').children.some(c=>c.textContent.includes('correct result:')));click('B — Failed Initial Breakout');click('Continue to Move → Response → Result');
 assert.equal(el('pbQuestions').children.find(c=>c.textContent==='Continue to RESPONSE').disabled,true);
 const move=explanationChoices(buildEvidence(trainingScenario(0)),'move',variation).find(c=>c.id==='bullish');
-click(move.text);click('Continue to RESPONSE');
+click(move.text);
+reduced=false;el('pbViewChart').onclick();flushFrame();
+assert.deepEqual(el('pbChartView').scrollOptions,{block:'start',behavior:'smooth'});reduced=true;assert.equal(el('pbQuestions').hidden,true);assert.equal(el('pbControls').hidden,false);
+el('pbNext').onclick();el('pbReturnAnswer').onclick();flushFrame();
+assert.equal(el('pbControls').hidden,true);assert.equal(el('pbQuestions').hidden,false);
+assert.equal(el('pbQuestions').children.find(c=>c.textContent===move.text).attrs['aria-pressed'],'true');
+assert.deepEqual(el('pbQuestions').scrollOptions,{block:'start',behavior:'instant'});
+click('Continue to RESPONSE');
 assert.equal(el('pbQuestions').children.find(c=>c.textContent==='Continue to RESULT').disabled,true);
 click('← Previous part');assert.equal(el('pbQuestions').children.find(c=>c.textContent===move.text).attrs['aria-pressed'],'true');
 click('Back to classification');assert.equal(el('pbQuestions').children.find(c=>c.textContent==='B — Failed Initial Breakout').attrs['aria-pressed'],'true');

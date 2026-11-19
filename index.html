@@ -112,6 +112,8 @@
         <p id="pbScenario">Synthetic candles · BTCUSD · 1m</p>
         <p id="pbStage" role="status"></p>
         <p class="pb-intro">Watch the range form, then read the first closing breakout.</p>
+        <button id="pbViewChart" type="button" aria-controls="pbChartView" hidden>View chart</button>
+        <section id="pbChartView" tabindex="-1" aria-label="Revealed chart and replay">
         <p id="pbPhase" role="status"></p>
         <p id="pbLevels"></p>
         <svg id="pbChart" role="img" aria-label="Moving viewport of completed synthetic candlesticks. Blue ORH, pink ORL, dashed light-grey midpoint; developing boundaries dashed, locked boundaries solid."></svg>
@@ -123,6 +125,8 @@
           <button id="pbPlay" type="button">Play</button><button id="pbPrev" type="button">← Previous candle</button>
           <button id="pbNext" type="button">Next candle →</button><button id="pbRestart" type="button">Restart</button>
         </div>
+        <button id="pbReturnAnswer" type="button" aria-controls="pbQuestions" hidden>Return to answer</button>
+        </section>
         <section id="pbQuestions" class="pb-questions" tabindex="-1" aria-label="Training questions and feedback"></section>
       </section>
     </main>

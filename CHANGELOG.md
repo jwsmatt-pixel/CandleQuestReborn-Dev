@@ -1,5 +1,14 @@
 # Candle Quest Reborn — Changelog
 
+## v28.6.0-beta.1 — Task 7: Mobile learning-flow and version polish (2026-11-19)
+
+- PLB-006: defer Answer now, explanation-step and submission navigation to the next animation frame; focus only non-editable sections with preventScroll, then align the answer/review start. Honour reduced motion.
+- Hide chart/replay transport while answering. View chart / Return to answer pauses replay and preserves Independent Read writing/category and Guided explanation selections; existing restart, mode-switch and Next reset semantics remain unchanged. Keep observation-first and revealed-candle limits.
+- Hide repeated mode/observation instructions during answer/review, tighten panel spacing and retain keyboard focus on rebuilt selection buttons. Chart drawing, dark theme and candle geometry are unchanged.
+- Console and visible identification share CANDLE_QUEST_BUILD = v28.6.0-beta.1. Move the badge into document flow so it cannot cover mobile controls.
+- Verification: final in-process test adapter 121 passed, 0 failed; 12 JS/module syntax checks passed. Native in-process runner emitted 121 pass / 0 fail events but did not close within 10 seconds. Shell launch (including git diff --check) is blocked by host access denial; supplemental whitespace checks passed. Rendered iPhone Safari and desktop browser verification remain UNVERIFIED.
+- Evidence and owner acceptance checklist: logs/task7-mobile-ux-20261119-144538/codex-verdict.md. No commit, push, merge or deployment.
+
 ## Task 6 — Global dark theme (2026-11-19)
 
 - Extend the existing PLB-006 navy surfaces, light text, subtle borders and control colours across home, map, Worlds, library, shop, coaching, onboarding, results and mobile review. Preserve existing shop skins and layout.
