@@ -1,5 +1,10 @@
 # Candle Quest Reborn — Changelog
 
+## Task 8.3 — Unified Results Design v1 for Playbook (2026-11-19)
+
+- Add a dark results summary at the top of Review. Guided shows the explanation score, classification and MOVE / RESPONSE / RESULT statuses from the existing grades. An incorrect classification shows the correct category.
+- Independent Read shows the verified classification and marks the learner’s original writing for self-review alongside its factual references. The Guided explanation comparison, chart evidence shortcuts and Next exercise remain available.
+
 ## Task 8.1 — Temporary Playbook replay bypass
 
 - Playbook starts, restarts, mode switches and Next exercise open at the required observation limit with Answer available. Review unlocks on submission, and manual stepping and replay use the existing timing.

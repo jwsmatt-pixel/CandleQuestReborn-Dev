@@ -27,7 +27,8 @@ Object.assign(globalThis,{document,
 });
 try {
 const {startTraining,SKIP_INITIAL_REPLAY_FOR_TESTING:skipInitial}=await import('../playbook/training.mjs');
-const answer=el('pbQuestions'),review=el('pbReviewContent'),actions=el('pbReviewActions');
+const answer=el('pbQuestions'),review=el('pbReviewContent'),actions=el('pbReviewActions'),summary=el('pbReviewSummary');
+const walk=node=>[node,...node.children.flatMap(walk)];
 const labels=()=>answer.children.filter(c=>c.onclick).map(c=>c.textContent);
 const click=text=>{const b=[...answer.children,...actions.children,...review.children].find(c=>c.onclick&&c.textContent===text);assert.ok(b,'Missing '+text);assert.equal(b.disabled,false);b.onclick();flushFrame();};
 const view=expected=>{
@@ -39,18 +40,18 @@ const view=expected=>{
 const locked=()=>{
  assert.equal(el('pbReviewTab').disabled,true);el('pbReviewTab').onclick();flushFrame();
  assert.equal(el('pbReview').hidden,true);
- assert.deepEqual(review.children,[]);assert.deepEqual(actions.children,[]);
+ assert.deepEqual(summary.children,[]);assert.deepEqual(review.children,[]);assert.deepEqual(actions.children,[]);
  assert.equal(el('pbLegend').hidden,true);assert.doesNotMatch(el('pbChart').innerHTML,/#ffdf70|fill-opacity="\.07"/);
 };
 let variation=0;
-const build=(index,wrong=false)=>{
+const build=(index,correctParts=PARTS)=>{
  const e=buildEvidence(trainingScenario(index));
  for(const [i,part] of PARTS.entries()){
    assert.ok(el('pbQuestions').children.some(c=>c.textContent.startsWith((i+1)+' / 3 · '+part.toUpperCase())));
    const opts=explanationChoices(e,part,variation);
-   const selected=opts.find(c=>supports(e,part,c.id)!==wrong).text;
+   const selected=opts.find(c=>supports(e,part,c.id)===correctParts.includes(part)).text;
    click(selected);
-   if(index===0 && !wrong){
+   if(index===0 && correctParts.length===PARTS.length){
      el('pbViewChart').onclick();flushFrame();view('Observe');locked();
      el('pbReturnAnswer').onclick();flushFrame();view('Answer');
      assert.equal(answer.children.find(c=>c.textContent===selected).attrs['aria-pressed'],'true');
@@ -58,6 +59,22 @@ const build=(index,wrong=false)=>{
    locked();
    click(i<2?'Continue to '+PARTS[i+1].toUpperCase():'Submit explanation');
  }
+};
+const assertSummary=(correctParts,tone,picked,classificationCorrect)=>{
+ const nodes=walk(summary);
+ const score=nodes.find(node=>node.className==='results-summary__score');
+ assert.equal(score.textContent,correctParts.length+' / 3');
+ assert.equal(score.dataset.resultTone,tone);
+ assert.ok(nodes.some(node=>node.tag==='dt' && node.textContent==='Explanation score'));
+ const classification=nodes.find(node=>node.className==='results-summary__classification');
+ assert.deepEqual(classification.children.map(node=>node.textContent),[
+   classificationCorrect?'Correct':'Incorrect',
+   'Your category: '+picked,
+   ...(classificationCorrect?[]:['Correct category: B — Failed Initial Breakout'])
+ ]);
+ const breakdown=nodes.find(node=>node.className==='results-summary__breakdown');
+ assert.deepEqual(breakdown.children.map(item=>item.children.map(node=>node.textContent)),
+   PARTS.map(part=>[part.toUpperCase(),correctParts.includes(part)?'Correct':'Incorrect']));
 };
 const tick=()=>{assert.ok(pending,'Missing autoplay timer');const fn=pending;pending=null;fn();};
 const assertReset=limit=>{
@@ -138,19 +155,30 @@ click('Back to classification');assert.equal(el('pbQuestions').children.find(c=>
 click('Continue to Move → Response → Result');
 build(0);view('Review');assert.equal(el('pbReviewTab').disabled,false);assert.equal(el('pbAnswerTab').disabled,true);
 el('pbAnswerTab').onclick();view('Review');
-assert.ok(review.children.some(c=>c.textContent==='Explanation: 3 / 3 correct.'));
+assertSummary(PARTS,'success','B',true);
+const submittedScore=walk(summary).find(node=>node.className==='results-summary__score');
 assert.equal(actions.children[0].textContent,'Next synthetic exercise →');
 const evidence=actions.children.find(c=>c.className==='pb-evidence');
 evidence.children.find(c=>c.textContent.startsWith('First close')).onclick();flushFrame();view('Observe');
 assert.ok(el('pbOhlc').textContent.startsWith('09:51 candle'));assert.ok(el('pbChart').innerHTML.includes('#ffdf70'));
 el('pbReturnReview').onclick();flushFrame();view('Review');
+assert.equal(walk(summary).find(node=>node.className==='results-summary__score'),submittedScore);
 click('Replay revealed exercise');assert.ok(pending);el('pbExit').onclick();assert.equal(pending,null);assert.equal(document.body.dataset.screen,'home');
-startTraining();variation++;completeFirstView(37);el('pbAnswerTab').onclick();flushFrame();click('A — Sustained Breakout');click('Continue to Move → Response → Result');build(0,true);
-assert.ok(review.children.some(c=>c.textContent.includes('incorrect; reference: B')));
-assert.ok(review.children.some(c=>c.textContent==='Explanation: 0 / 3 correct.'));
+startTraining();variation++;completeFirstView(37);el('pbAnswerTab').onclick();flushFrame();click('A — Sustained Breakout');click('Continue to Move → Response → Result');build(0,[]);
+assertSummary([],'warning','A',false);
 const comparison=review.children.find(c=>c.children?.some(p=>p.textContent==='Compare your explanation'));
-assert.ok(comparison);assert.equal(comparison.children.filter(c=>c.textContent.includes('Incorrect · You:')).length,3);
+assert.equal(comparison?.tag,'details');assert.equal(comparison.children.filter(c=>c.textContent.includes('Incorrect · You:')).length,3);
 click('Restart exercise');variation++;
+for(const {correctParts,tone,picked,classificationCorrect} of [
+ {correctParts:['response'],tone:'warning',picked:'B',classificationCorrect:true},
+ {correctParts:['move','result'],tone:'partial',picked:'A',classificationCorrect:false}
+]){
+ completeFirstView(37);el('pbAnswerTab').onclick();flushFrame();
+ click(picked==='B'?'B — Failed Initial Breakout':'A — Sustained Breakout');
+ click('Continue to Move → Response → Result');build(0,correctParts);
+ view('Review');assertSummary(correctParts,tone,picked,classificationCorrect);
+ click('Restart exercise');variation++;
+}
 // Complete the rotation and wrap. Next resets the answer and review state.
 for(const [index,classification] of ['B','A','B','A','C','B'].entries()){
  assert.ok(el('pbScenario').textContent.startsWith('Synthetic exercise '+(index%5+1)+' / 5'));
@@ -158,8 +186,7 @@ for(const [index,classification] of ['B','A','B','A','C','B'].entries()){
  assert.equal(el('pbAnswerTab').disabled,false);locked();
  el('pbAnswerTab').onclick();flushFrame();click(classification+' — '+({A:'Sustained Breakout',B:'Failed Initial Breakout',C:'No Qualifying Breakout'})[classification]);click('Continue to Move → Response → Result');
  build(index%5);
- assert.ok(review.children.some(c=>c.textContent==='Explanation: 3 / 3 correct.'));
- assert.ok(review.children.some(c=>c.textContent.includes('Classification: '+classification+' · correct.')));
+ assertSummary(PARTS,'success',classification,true);
  assert.equal(el('pbLegend').hidden,false);view('Review');
  if(classification==='C'){
    actions.children.find(c=>c.className==='pb-evidence').children.find(c=>c.textContent.startsWith('Search end')).onclick();flushFrame();

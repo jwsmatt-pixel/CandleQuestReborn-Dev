@@ -1,5 +1,11 @@
 # Candle Quest Reborn - v28.6.0-beta.1 Checkpoint Summary
 
+## Task 8.3 — Playbook results ready for owner review
+
+- Guided Review shows a prominent explanation score out of three, separate classification feedback and the per-part breakdown. Independent Read shows classification feedback and writing self-review with original responses and factual references.
+- The shared `results-summary` CSS classes and tone tokens are used by Playbook Review. Review unlocks on submission, and the temporary initial replay bypass remains enabled.
+- Native Playbook tests passed 122 of 122 and 13 syntax checks passed. Rendered mobile layout and assistive-technology behaviour remain unverified. See [Task 8.3 verification](logs/task8-3-results-20261119-212956/codex-verdict.md).
+
 ## Task 8.1 — Initial Playbook replay bypass enabled for testing
 
 - Each exercise starts in Observe with all required candles revealed and autoplay paused. Answer is available immediately. Review still requires submission.

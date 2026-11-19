@@ -3302,3 +3302,61 @@ body:not([data-screen="playbook"]) ::placeholder{color:var(--muted);opacity:.8}
 #playbook .pb-categories button{padding:8px 4px;text-align:center}
 #playbook .pb-review-actions{display:grid;gap:8px;margin:6px 0 10px}
 #playbook .pb-review-actions button{text-align:center}
+
+/* Shared results presentation, currently used by Playbook Review. */
+.results-summary{
+  --results-success:#a8dbb1;
+  --results-partial:#f0c67f;
+  --results-warning:#d9aeb3;
+  display:grid;
+  gap:12px;
+  margin:6px 0 10px;
+  padding:clamp(12px,3vw,20px);
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--bg);
+  color:var(--ink);
+  font-size:14px;
+  line-height:1.4;
+}
+.results-summary h3{margin:0;font-size:clamp(18px,4vw,22px);line-height:1.2}
+.results-summary__metrics{display:grid;gap:16px;margin:0}
+.results-summary__metrics--scored{grid-template-columns:auto minmax(0,1fr)}
+.results-summary__metrics dt{color:var(--muted);font-size:.9em;font-weight:650}
+.results-summary__metrics dd{margin:2px 0 0}
+.results-summary__score{
+  font-size:clamp(28px,7vw,38px);
+  font-weight:750;
+  font-variant-numeric:tabular-nums;
+  line-height:1.1;
+}
+.results-summary__classification,.results-summary__note{display:grid;gap:2px;color:var(--muted)}
+.results-summary__classification .results-summary__status,.results-summary__note strong{font-size:1.1em}
+.results-summary__note{padding-top:10px;border-top:1px solid var(--line)}
+.results-summary__note strong{color:var(--ink)}
+.results-summary__breakdown{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.results-summary__breakdown li{
+  display:grid;
+  gap:2px;
+  padding:6px 8px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--card);
+  color:var(--muted);
+  font-size:.9em;
+  overflow-wrap:anywhere;
+}
+.results-summary__breakdown li span{font-weight:650;letter-spacing:.03em}
+.results-summary [data-result-tone="success"]{color:var(--results-success)}
+.results-summary [data-result-tone="partial"]{color:var(--results-partial)}
+.results-summary [data-result-tone="warning"]{color:var(--results-warning)}
+
+#playbook #pbReviewContent summary{display:list-item;padding-block:12px;font-weight:750}
+#playbook #pbReviewContent summary:focus-visible{outline:3px solid #ffdf70;outline-offset:2px}

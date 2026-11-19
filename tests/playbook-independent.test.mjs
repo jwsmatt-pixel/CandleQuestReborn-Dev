@@ -43,14 +43,14 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
  try{
   const {startTraining,SKIP_INITIAL_REPLAY_FOR_TESTING:skipInitial}=await import('../playbook/training.mjs?independent-test');
   const walk=node=>[node,...node.children.flatMap(walk)];
-  const answer=el('pbQuestions'),review=el('pbReviewContent'),actions=el('pbReviewActions');
+  const answer=el('pbQuestions'),review=el('pbReviewContent'),actions=el('pbReviewActions'),summary=el('pbReviewSummary');
   const content=(panel=answer)=>walk(panel).map(n=>n.textContent).join('\n');
   const click=text=>{const b=[answer,review,actions].flatMap(walk).find(n=>n.onclick&&n.textContent===text);assert.ok(b,'Missing '+text);assert.equal(b.disabled,false);b.onclick();};
   const tick=()=>{assert.ok(pending);const fn=pending;pending=null;fn();};
   const noLeak=()=>{
    assert.equal(el('pbLegend').hidden,true);assert.ok(!el('pbChart').innerHTML.includes('#ffdf70'));
    assert.equal(el('pbReviewTab').disabled,true);assert.equal(el('pbReview').hidden,true);
-   assert.deepEqual(review.children,[]);assert.deepEqual(actions.children,[]);
+   assert.deepEqual(summary.children,[]);assert.deepEqual(review.children,[]);assert.deepEqual(actions.children,[]);
    assert.ok(!/Reference:|Verified classification:|correct.|Sustained Breakout|Failed Initial Breakout|No Qualifying Breakout/.test(content()));
    if(el('pbIndependent').attrs['aria-pressed']==='true'){
     assert.doesNotMatch(el('pbPhase').textContent,/First qualifying|following closes|First return/);
@@ -102,9 +102,16 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
    assert.deepEqual(el('pbScenario').scrollOptions,{block:'start',behavior:'instant'});
    assert.equal(el('pbReview').hidden,false);assert.equal(el('pbAnswerView').hidden,true);
    assert.equal(el('pbReviewTab').disabled,false);assert.equal(el('pbAnswerTab').disabled,true);
-   assert.match(content(review),new RegExp('Verified classification: '+expected));
-   assert.ok(content(review).includes('Your classification: '+picked+' · '+(index===0?'incorrect.':'correct.')));
-   assert.ok(content(review).includes('not automatically graded'));assert.ok(!/Explanation:.*correct/.test(content(review)));
+   assert.match(content(summary),new RegExp('Verified classification: '+expected));
+   const summaryNodes=walk(summary);
+   const classification=summaryNodes.find(n=>n.className==='results-summary__classification');
+   assert.equal(classification.children[0].textContent,index===0?'Incorrect':'Correct');
+   assert.equal(classification.children[1].textContent,'Your category: '+picked);
+   assert.ok(summaryNodes.some(n=>n.textContent==='Writing self-review'));
+   assert.equal(summaryNodes.filter(n=>n.dataset.resultTone).length,1);
+   assert.ok(!summaryNodes.some(n=>n.className==='results-summary__score' || n.className==='results-summary__breakdown'));
+   const facts=independentReview(buildEvidence(trainingScenario(index)),picked,Object.fromEntries(PARTS.map((part,i)=>[part,words[i]])));
+   assert.deepEqual(walk(review).filter(n=>n.textContent.startsWith('Reference: ')).map(n=>n.textContent),facts.parts.map(part=>'Reference: '+part.reference));
    const originals=walk(review).filter(n=>n.className==='pb-original');assert.deepEqual(originals.map(n=>n.textContent),words);assert.ok(originals.every(n=>!n.innerHTML));
    assert.equal(el('pbLegend').hidden,false);
    if(index===4) assert.ok(!el('pbChart').innerHTML.includes('#ffdf70')); // A's first close may be outside the final viewport.

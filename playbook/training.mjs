@@ -81,6 +81,7 @@ export function startTraining(){
   pane='observe';answerStarted=false;partIndex=-1;chosenClass=null;answers={};evidence=null;feedback=null;variation++;
   written={move:'',response:'',result:''};
   el('pbQuestions').replaceChildren();
+  el('pbReviewSummary').replaceChildren();
   el('pbReviewActions').replaceChildren();
   el('pbReviewContent').replaceChildren();
   el('pbGuided').setAttribute('aria-pressed',String(mode==='guided'));
@@ -199,8 +200,78 @@ function renderAnswer(){
   panel.append(next);
 }
 
+function resultStatus(correct){
+  const status=document.createElement('strong');
+  status.className='results-summary__status';
+  status.dataset.resultTone=correct?'success':'warning';
+  status.textContent=correct?'Correct':'Incorrect';
+  return status;
+}
+
+function renderReviewSummary(final){
+  const summary=el('pbReviewSummary');
+  const heading=document.createElement('h3');
+  heading.id='pbResultsTitle';
+  heading.textContent='Exercise results';
+  const metrics=document.createElement('dl');
+  metrics.className='results-summary__metrics';
+  const guided=mode==='guided';
+  let breakdown;
+
+  if(guided){
+    metrics.className+=' results-summary__metrics--scored';
+    const correctCount=feedback.parts.filter(part=>part.correct).length;
+    const explanation=document.createElement('div');
+    const label=document.createElement('dt');label.textContent='Explanation score';
+    const score=document.createElement('dd');
+    score.className='results-summary__score';
+    score.dataset.resultTone=correctCount===PARTS.length?'success':correctCount===2?'partial':'warning';
+    score.textContent=correctCount+' / '+PARTS.length;
+    explanation.append(label,score);
+    metrics.append(explanation);
+
+    breakdown=document.createElement('ul');
+    breakdown.className='results-summary__breakdown';
+    breakdown.setAttribute('role','list');
+    breakdown.setAttribute('aria-label','Explanation breakdown');
+    feedback.parts.forEach(part=>{
+      const item=document.createElement('li');
+      const name=document.createElement('span');name.textContent=part.part.toUpperCase();
+      item.append(name,resultStatus(part.correct));
+      breakdown.append(item);
+    });
+  }
+
+  const classification=document.createElement('div');
+  const label=document.createElement('dt');label.textContent='Classification';
+  const outcome=document.createElement('dd');
+  outcome.className='results-summary__classification';
+  const chosen=document.createElement('span');chosen.textContent='Your category: '+chosenClass;
+  outcome.append(resultStatus(feedback.classificationCorrect),chosen);
+  if(!guided || !feedback.classificationCorrect){
+    const expected=document.createElement('span');
+    expected.textContent=(guided?'Correct category: ':'Verified classification: ')+final.classification+' — '+LABELS[final.classification];
+    outcome.append(expected);
+  }
+  classification.append(label,outcome);
+  metrics.append(classification);
+  summary.replaceChildren(heading,metrics);
+
+  if(guided){
+    summary.append(breakdown);
+  }else{
+    const note=document.createElement('div');note.className='results-summary__note';
+    const label=document.createElement('strong');label.textContent='Writing self-review';
+    const instruction=document.createElement('span');
+    instruction.textContent='Compare each original response with the factual reference.';
+    note.append(label,instruction);
+    summary.append(note);
+  }
+}
+
 function renderReview(){
   const final=snapshot(input,state).result;
+  renderReviewSummary(final);
   const actions=el('pbReviewActions'),panel=el('pbReviewContent');
   const next=button('Next synthetic exercise →',()=>{scenarioIndex=(scenarioIndex+1)%SCENARIO_COUNT;startTraining();});
   next.className+=' pb-primary';
@@ -216,9 +287,6 @@ function renderReview(){
   const text=t=>paragraph(panel,t);
   text('Synthetic · '+scenarioTitle(final));
   if(mode==='independent'){
-    text('Verified classification: '+final.classification+' — '+LABELS[final.classification]+'.');
-    text('Your classification: '+chosenClass+' · '+(feedback.classificationCorrect?'correct.':'incorrect.'));
-    text('Self-review · Your writing is not automatically graded. Compare each original response with the factual reference. No writing score or XP is awarded.');
     feedback.parts.forEach(p=>{
       const row=document.createElement('section');row.className='pb-comparison';
       const title=document.createElement('h3');title.textContent=p.part.toUpperCase();
@@ -228,8 +296,6 @@ function renderReview(){
     });
     text('Your self-review checklist: Did I identify the important price movement? Did I describe the response accurately? Does my result follow from the observed evidence?');
   }else{
-    text('Classification: '+chosenClass+' · '+(feedback.classificationCorrect?'correct.':'incorrect; reference: '+final.classification+' — '+LABELS[final.classification]+'.'));
-    text('Explanation: '+feedback.parts.filter(p=>p.correct).length+' / 3 correct.');
     text('Reference · '+feedback.reference);
     const comparison=document.createElement('details');
     const summary=document.createElement('summary');summary.textContent='Compare your explanation';comparison.append(summary);
