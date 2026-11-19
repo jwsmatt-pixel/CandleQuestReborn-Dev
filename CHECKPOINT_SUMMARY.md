@@ -1,5 +1,13 @@
 # Candle Quest Reborn - v28.5.8 Checkpoint Summary
 
+## Task 6 — Global dark theme ready for owner playtest
+
+- Shared dark tokens now cover the main UI, world navigation, game controls, cards, library, shop, coaching/help, onboarding and summary/review drawer, including existing mobile styles. Layout and gameplay remain unchanged.
+- Preserve the existing Playbook CSS exactly and all canvas/SVG/chart presentation. W1 already paints its own dark #0b120e background; no chart or game JavaScript adjustment was needed. Keep Night/Neon/Gold skin choices and the original gameplay/training separation.
+- Automated verification: 121 existing regression callbacks passed using the saved local adapter (0 failures); 12 syntax checks, 8 localhost content checks, 14 palette contrast checks passed. All 100 existing chart/art style blocks and non-palette/layout declarations across 900 existing CSS blocks are preserved. Game, Playbook modules and tests remain byte-identical.
+- Host denies shell/child processes; native node:test invocation timed out and is not claimed as passing. Actual browser/mobile rendering, focus appearance, native dialogs and World playtesting are UNVERIFIED; owner manual playtest required.
+- Evidence: logs/task6-darktheme-20261119-110127/codex-verdict.md. Only style.css and these two documentation files are modified; evidence is under ignored logs/. No commit/push/merge/deploy/branch change.
+
 ## Current build
 
 **v28.5.8 - W4 Replay Timing Dev Controls**

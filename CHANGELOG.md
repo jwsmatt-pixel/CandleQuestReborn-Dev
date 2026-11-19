@@ -1,5 +1,13 @@
 # Candle Quest Reborn — Changelog
 
+## Task 6 — Global dark theme (2026-11-19)
+
+- Extend the existing PLB-006 navy surfaces, light text, subtle borders and control colours across home, map, Worlds, library, shop, coaching, onboarding, results and mobile review. Preserve existing shop skins and layout.
+- Replace legacy light UI colours with shared tokens; improve focus, hover, selected, disabled, loading and input presentation. Keep locked-card text readable and selected library tabs visible with purchased skins.
+- W1 already renders a dark canvas (#0b120e); leave its engine, candle colours, labels and drawing calculations unchanged. Preserve all Playbook styling, chart evidence and both training modes. No HTML or JavaScript changes.
+- Verification: existing test callbacks via local in-process adapter: 121 passed, 0 failed; 12 JS/module syntax checks and 8 loopback HTTP exact-content checks passed. Fourteen palette contrast pairs meet 4.5:1. Native test runner timed out under host restrictions; rendered browser/mobile verification is UNVERIFIED.
+- Evidence and owner playtest steps: logs/task6-darktheme-20261119-110127/codex-verdict.md. No commit, push, merge, branch change or deployment.
+
 ## PLB-006 Task 5 — Independent Read v0.1 (2026-11-19)
 
 - Add immediately available Guided / Independent Read selection. Switching mode restarts the current exercise; the in-memory fixture rotation and all saved World progression stay separate.
