@@ -32,6 +32,7 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
   constructor(){this.children=[];this.attrs={};this.dataset={};this.textContent='';this.innerHTML='';this.clientWidth=320;this.disabled=false;this.value='';}
   append(...items){this.children.push(...items);} replaceChildren(...items){this.children=items;}
   setAttribute(k,v){this.attrs[k]=v;} focus(options){this.focusOptions=options;} scrollIntoView(options){this.scrollOptions=options;}
+  querySelectorAll(tag){return this.children.flatMap(c=>[...(c.tag===tag?[c]:[]),...c.querySelectorAll(tag)]);}
  }
  const ids=new Map(),el=id=>{if(!ids.has(id))ids.set(id,new Element());return ids.get(id);};
  let pending,observer;
@@ -42,11 +43,14 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
  try{
   const training=await import('../playbook/training.mjs?independent-test');
   const walk=node=>[node,...node.children.flatMap(walk)];
-  const content=()=>walk(el('pbQuestions')).map(n=>n.textContent).join('\n');
-  const click=text=>{const b=walk(el('pbQuestions')).find(n=>n.onclick&&n.textContent===text);assert.ok(b,'Missing '+text);assert.equal(b.disabled,false);b.onclick();};
+  const answer=el('pbQuestions'),review=el('pbReviewContent'),actions=el('pbReviewActions');
+  const content=(panel=answer)=>walk(panel).map(n=>n.textContent).join('\n');
+  const click=text=>{const b=[answer,review,actions].flatMap(walk).find(n=>n.onclick&&n.textContent===text);assert.ok(b,'Missing '+text);assert.equal(b.disabled,false);b.onclick();};
   const tick=()=>{assert.ok(pending);const fn=pending;pending=null;fn();};
   const noLeak=()=>{
    assert.equal(el('pbLegend').hidden,true);assert.ok(!el('pbChart').innerHTML.includes('#ffdf70'));
+   assert.equal(el('pbReviewTab').disabled,true);assert.equal(el('pbReview').hidden,true);
+   assert.deepEqual(review.children,[]);assert.deepEqual(actions.children,[]);
    assert.ok(!/Reference:|Verified classification:|correct.|Sustained Breakout|Failed Initial Breakout|No Qualifying Breakout/.test(content()));
    assert.ok(!/First qualifying|following closes|First return/.test(el('pbPhase').textContent));
   };
@@ -56,8 +60,8 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
    assert.ok(el('pbScenario').textContent.startsWith('Synthetic exercise '+(index+1)));
    assert.equal(el('pbControls').hidden,true);
    for(let n=0;n<(index===4?76:37);n++){noLeak();assert.equal(walk(el('pbQuestions')).filter(n=>n.tag==='textarea').length,0);tick();}
-   noLeak();click('Inspect replay first');el('pbPlay').onclick();el('pbNext').onclick();assert.ok(el('pbClock').textContent.includes('1 completed'));el('pbPrev').onclick();assert.ok(el('pbClock').textContent.includes('0 completed'));
-   click('Answer now');noLeak();
+   noLeak();el('pbInspect').onclick();el('pbPlay').onclick();el('pbNext').onclick();assert.ok(el('pbClock').textContent.includes('1 completed'));el('pbPrev').onclick();assert.ok(el('pbClock').textContent.includes('0 completed'));
+   el('pbAnswerTab').onclick();noLeak();
    const fields=()=>el('pbQuestions').children.filter(n=>n.tag==='textarea');
    assert.equal(fields().length,3);assert.deepEqual(fields().map(f=>f.id),PARTS.map(p=>'pbWritten-'+p));
    const submit=()=>el('pbQuestions').children.find(n=>n.textContent==='Submit independent read');
@@ -67,34 +71,54 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
    const expected=['B','A','B','A','C'][index],picked=index===0?'A':expected;
    click('Category '+picked);
    assert.equal(el('pbControls').hidden,true);assert.equal(el('pbChartView').hidden,true);
-   assert.deepEqual(el('pbQuestions').scrollOptions,{block:'start',behavior:'instant'});
-   assert.deepEqual(el('pbQuestions').focusOptions,{preventScroll:true});
-   el('pbViewChart').onclick();assert.equal(el('pbQuestions').hidden,true);assert.equal(el('pbControls').hidden,false);
+   assert.deepEqual(el('pbScenario').scrollOptions,{block:'start',behavior:'instant'});
+   assert.deepEqual(el('pbAnswerView').focusOptions,{preventScroll:true});
+   assert.match(el('pbChartSummary').textContent,/09:30 New York · 0 completed/);
+   const draftFields=fields();
+   el('pbObserveTab').onclick();assert.equal(el('pbAnswerView').hidden,true);
+   el('pbAnswerTab').onclick();fields().forEach((field,i)=>assert.equal(field,draftFields[i]));
+   el('pbViewChart').onclick();assert.equal(el('pbAnswerView').hidden,true);assert.equal(el('pbControls').hidden,false);assert.equal(el('pbReturnAnswer').hidden,false);
    el('pbPrev').onclick();el('pbNext').onclick();el('pbPlay').onclick();tick();
-   el('pbReturnAnswer').onclick();assert.equal(pending,null);assert.equal(el('pbQuestions').hidden,false);
+   el('pbReturnAnswer').onclick();assert.equal(pending,null);assert.equal(el('pbAnswerView').hidden,false);
    assert.equal(el('pbControls').hidden,true);
-   assert.equal(el('pbQuestions').children.find(n=>n.textContent==='Category '+picked).attrs['aria-pressed'],'true');
+   assert.equal(walk(answer).find(n=>n.textContent==='Category '+picked).attrs['aria-pressed'],'true');
    assert.deepEqual(fields().map(f=>f.value),words);assert.equal(submit().disabled,false);
    fields()[1].value='  ';fields()[1].oninput();assert.equal(submit().disabled,true);
    fields()[1].value=words[1];fields()[1].oninput();noLeak();click('Submit independent read');
-   assert.deepEqual(el('pbQuestions').scrollOptions,{block:'start',behavior:'instant'});
-   assert.equal(el('pbQuestions').attrs['aria-label'],'Training feedback and review');
-   assert.match(content(),new RegExp('Verified classification: '+expected));
-   assert.ok(content().includes('Your classification: '+picked+' · '+(index===0?'incorrect.':'correct.')));
-   assert.ok(content().includes('not automatically graded'));assert.ok(!/Explanation:.*correct/.test(content()));
-   const originals=walk(el('pbQuestions')).filter(n=>n.className==='pb-original');assert.deepEqual(originals.map(n=>n.textContent),words);assert.ok(originals.every(n=>!n.innerHTML));
+   assert.deepEqual(el('pbScenario').scrollOptions,{block:'start',behavior:'instant'});
+   assert.equal(el('pbReview').hidden,false);assert.equal(el('pbAnswerView').hidden,true);
+   assert.equal(el('pbReviewTab').disabled,false);assert.equal(el('pbAnswerTab').disabled,true);
+   assert.match(content(review),new RegExp('Verified classification: '+expected));
+   assert.ok(content(review).includes('Your classification: '+picked+' · '+(index===0?'incorrect.':'correct.')));
+   assert.ok(content(review).includes('not automatically graded'));assert.ok(!/Explanation:.*correct/.test(content(review)));
+   const originals=walk(review).filter(n=>n.className==='pb-original');assert.deepEqual(originals.map(n=>n.textContent),words);assert.ok(originals.every(n=>!n.innerHTML));
    assert.equal(el('pbLegend').hidden,false);
    if(index===4) assert.ok(!el('pbChart').innerHTML.includes('#ffdf70')); // A's first close may be outside the final viewport.
-   const links=el('pbQuestions').children.find(n=>n.className==='pb-evidence');
-   if(index===4){assert.ok(!links.children.some(n=>/First close|First return/.test(n.textContent)));assert.match(content(),/All 61 search closes/);}
-   else {links.children.find(n=>n.textContent.startsWith('First close')).onclick();assert.ok(el('pbOhlc').textContent.startsWith('09:51'));assert.ok(el('pbChart').innerHTML.includes('#ffdf70'));}
-   assert.deepEqual(walk(el('pbQuestions')).filter(n=>n.className==='pb-original').map(n=>n.textContent),words);
-   click('Replay revealed exercise');tick();assert.deepEqual(walk(el('pbQuestions')).filter(n=>n.className==='pb-original').map(n=>n.textContent),words);
+   const links=actions.children.find(n=>n.className==='pb-evidence');
+   if(index===4){assert.ok(!links.children.some(n=>/First close|First return/.test(n.textContent)));assert.match(content(review),/All 61 search closes/);}
+   else {links.children.find(n=>n.textContent.startsWith('First close')).onclick();assert.ok(el('pbOhlc').textContent.startsWith('09:51'));assert.ok(el('pbChart').innerHTML.includes('#ffdf70'));assert.equal(el('pbReview').hidden,true);el('pbReturnReview').onclick();}
+   assert.deepEqual(walk(review).filter(n=>n.className==='pb-original').map(n=>n.textContent),words);
+   click('Replay revealed exercise');tick();assert.deepEqual(walk(review).filter(n=>n.className==='pb-original').map(n=>n.textContent),words);
+   el('pbReviewTab').onclick();assert.equal(pending,null);assert.equal(el('pbReview').hidden,false);
    click('Next synthetic exercise →');noLeak();
   }
   assert.ok(el('pbScenario').textContent.startsWith('Synthetic exercise 1'));
+  for(let n=0;n<37;n++)tick();
+  el('pbAnswerTab').onclick();
+  const draft=walk(answer).find(n=>n.tag==='textarea');draft.value='Reset this draft';draft.oninput();click('Category A');
+  el('pbViewChart').onclick();el('pbRestart').onclick();noLeak();
+  for(let n=0;n<37;n++)tick();
+  el('pbAnswerTab').onclick();
+  assert.ok(walk(answer).filter(n=>n.tag==='textarea').every(n=>n.value===''));
+  assert.equal(walk(answer).find(n=>n.textContent==='Category A').attrs['aria-pressed'],'false');
+  const changedModeDraft=walk(answer).find(n=>n.tag==='textarea');changedModeDraft.value='Clear on mode switch';changedModeDraft.oninput();
   el('pbGuided').onclick();assert.equal(el('pbGuided').attrs['aria-pressed'],'true');
-  for(let n=0;n<37;n++)tick();click('Answer now');assert.ok(content().includes('B — Failed Initial Breakout'));assert.equal(walk(el('pbQuestions')).filter(n=>n.tag==='textarea').length,0);
+  el('pbIndependent').onclick();
+  for(let n=0;n<37;n++)tick();
+  el('pbAnswerTab').onclick();
+  assert.ok(walk(answer).filter(n=>n.tag==='textarea').every(n=>n.value===''));
+  el('pbGuided').onclick();
+  for(let n=0;n<37;n++)tick();el('pbAnswerTab').onclick();assert.ok(content().includes('B — Failed Initial Breakout'));assert.equal(walk(el('pbQuestions')).filter(n=>n.tag==='textarea').length,0);
   el('pbExit').onclick();assert.equal(document.body.dataset.screen,'home');assert.equal(pending,null);
   training.startTraining();document.body.dataset.screen='shop';observer();assert.equal(pending,null);
  }finally{Object.assign(globalThis,saved);}

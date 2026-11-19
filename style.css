@@ -3215,13 +3215,13 @@ body[data-screen="game"][data-candle-speed="speedrun"] .coach-tray{
 
 /* PLB-006 isolated training screen; no World arena selectors. */
 #playbook .pb-shell{max-width:880px;margin:auto;padding:18px;border:1px solid #344861;border-radius:24px;background:#101a29;color:#eff5ff}
-#playbook h2{font-size:clamp(28px,6vw,42px);line-height:1.1;letter-spacing:-.04em;margin:10px 0}
+#playbook .pb-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+#playbook h2{font-size:clamp(21px,5.5vw,32px);line-height:1.1;letter-spacing:-.04em;margin:0}
+#playbook #pbExit{flex:none}
 #playbook p{font-size:14px;line-height:1.5;color:#d2dfef;margin:10px 0}
-#playbook .eyebrow{color:#a6df86;margin-top:18px;font-size:11px}
 #playbook .pb-rules{padding:12px;background:#19283b;border-radius:12px}
-#playbook #pbPhase{min-height:36px;font-weight:750;font-size:12px;margin:6px 0}
+#playbook #pbPhase{font-weight:750;font-size:12px;margin:6px 0}
 #playbook #pbStage{color:#b6ed8e;font-weight:800;margin:6px 0}
-#playbook .pb-intro{margin:4px 0}
 #playbook .pb-rules summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:750}
 #playbook .pb-rules{margin-top:10px;padding:4px 12px}
 #playbook #pbLegend{font-size:12px;border-left:3px solid #ffdf70;padding-left:10px}
@@ -3230,13 +3230,14 @@ body[data-screen="game"][data-candle-speed="speedrun"] .coach-tray{
 #pbChart{display:block;width:100%;height:300px;border-radius:14px;background:#0a1220;font-family:system-ui,sans-serif;overflow:hidden}
 #playbook #pbClock,#playbook #pbOhlc{font-variant-numeric:tabular-nums;font-size:12px}
 #pbProgress{width:100%;height:10px;accent-color:#58cc02}
-#playbook .pb-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
+#playbook .pb-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0}
 #playbook [hidden]{display:none!important}
 #playbook button{min-height:48px;padding:12px;border:1px solid #49617e;border-radius:12px;background:#20334d;color:#f4f8ff;font-weight:750;cursor:pointer;touch-action:manipulation;line-height:1.4}
 #playbook button:disabled{opacity:.45;cursor:default}
 #playbook button:focus-visible,#playbook [tabindex]:focus-visible{outline:3px solid #ffdf70;outline-offset:3px}
 #playbook button[aria-pressed="true"]{border-color:#b6ed8e;background:#304b30;box-shadow:inset 0 0 0 1px #b6ed8e}
-#playbook .pb-questions{display:grid;gap:10px;margin:16px 0 8px}
+#playbook .pb-questions{display:grid;gap:8px;margin:8px 0}
+#playbook .pb-questions p{margin:4px 0}
 #playbook .pb-card{text-align:left;width:100%}
 #playbook .pb-evidence{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 body[data-screen="playbook"] .topbar,body[data-screen="playbook"] #installTip{display:none!important}
@@ -3253,9 +3254,9 @@ body[data-screen="playbook"] .topbar,body[data-screen="playbook"] #installTip{di
 
 /* Independent Read: compact choice, comfortable writing and literal review text. */
 #playbook .pb-modes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#playbook .pb-mode-hint{font-size:12px}
+#playbook .pb-mode-hint,#playbook #pbScenario{font-size:12px;margin:4px 0}
 #playbook .pb-questions label{font-size:14px;font-weight:750;line-height:1.5}
-#playbook .pb-questions textarea{box-sizing:border-box;width:100%;min-height:88px;padding:12px;border:1px solid #7189a5;border-radius:12px;background:#0a1220;color:#eff5ff;font:inherit;font-size:16px;line-height:1.5;resize:vertical}
+#playbook .pb-questions textarea{box-sizing:border-box;width:100%;min-height:68px;padding:8px 10px;border:1px solid #7189a5;border-radius:12px;background:#0a1220;color:#eff5ff;font:inherit;font-size:16px;line-height:1.5;resize:vertical}
 #playbook textarea:focus-visible{outline:3px solid #ffdf70;outline-offset:3px}
 #playbook .pb-comparison{min-width:0;padding:12px;background:#19283b;border-radius:12px}
 #playbook .pb-comparison h3{font-size:14px;margin:0}
@@ -3288,13 +3289,16 @@ body:not([data-screen="playbook"]) ::placeholder{color:var(--muted);opacity:.8}
 /* Preserve the mobile review drawer's existing layout and repaint its fade only. */
 #result[data-review="open"] .review-back-row{background:linear-gradient(180deg,transparent,var(--card) 38%)}
 
-/* Task 7: compact learning flow; chart drawing and candle styling unchanged. */
+/* Build badge in normal document flow. */
 #buildBadge{position:static;width:max-content;max-width:100%;margin:8px auto;padding:2px 6px;color:var(--muted);font:500 10px system-ui;pointer-events:none}
-#pbQuestions,#pbChartView{scroll-margin-top:12px}
-#playbook #pbViewChart,#playbook #pbReturnAnswer{width:100%;margin:8px 0}
-#playbook:is([data-stage="classify"],[data-stage="describe"],[data-stage="feedback"]) .pb-intro,
-#playbook:is([data-stage="classify"],[data-stage="describe"],[data-stage="feedback"]) .pb-mode-hint{display:none}
-#playbook:is([data-stage="classify"],[data-stage="describe"],[data-stage="feedback"]) .pb-questions{gap:8px;margin-top:8px}
-#playbook:is([data-stage="classify"],[data-stage="describe"],[data-stage="feedback"]) .pb-questions p{margin:4px 0}
 
-#playbook:is([data-stage="classify"],[data-stage="describe"]) #pbQuestions{scroll-margin-top:76px}
+/* PLB-006 pane navigation and compact chart context. */
+#playbook .pb-pane-nav{position:sticky;top:0;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:4px 0;background:#101a29}
+#playbook .pb-pane-nav button{padding:8px 4px}
+#playbook .pb-observe-action button,#playbook #pbInspect{width:100%;margin:4px 0}
+#playbook .pb-chart-summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;margin:4px 0 8px;padding:6px 8px;border:1px solid #344861;border-radius:12px;background:#19283b}
+#playbook #pbChartSummary{margin:0;font-size:12px;font-variant-numeric:tabular-nums}
+#playbook .pb-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#playbook .pb-categories button{padding:8px 4px;text-align:center}
+#playbook .pb-review-actions{display:grid;gap:8px;margin:6px 0 10px}
+#playbook .pb-review-actions button{text-align:center}

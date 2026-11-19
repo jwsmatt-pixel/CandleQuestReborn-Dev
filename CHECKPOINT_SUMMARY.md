@@ -1,5 +1,12 @@
 # Candle Quest Reborn - v28.6.0-beta.1 Checkpoint Summary
 
+## Task 8 / M0.2 — Three-pane Playbook ready for owner review
+
+- Observe starts the full first replay. Answer unlocks after observation and Review unlocks after submission. Each pane has a dedicated navigation button.
+- Answer keeps the current candle count, New York time and visible range levels in a compact summary. View chart opens Observe with Return to answer above the chart. Written drafts, classification and Guided choices survive chart inspection.
+- Review keeps submitted responses and reference explanations together. Use the evidence links to inspect the revealed chart or Next exercise to advance. Restart and a mode switch clear the current draft and start a fresh observation.
+- Automated checks cover both modes, the five-exercise rotation, draft retention, review locking and replay limits. Rendered iPhone Safari verification is UNVERIFIED. See [Task 8 evidence and iPhone steps](logs/task8-three-pane-20261119/codex-verdict.md).
+
 ## Task 7 — Mobile learning flow ready for iPhone acceptance
 
 - Answer now from either observation-complete or inspect moves to answers after render without focusing textareas. Explanation navigation and submission align the beginning of the current answer/review section; reduced motion uses instant scrolling.

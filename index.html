@@ -104,30 +104,54 @@
 
     <main id="playbook" class="screen" aria-labelledby="pbTitle">
       <section class="pb-shell">
-        <button id="pbExit" class="ghost" type="button">← Home</button>
-        <p class="eyebrow">Guided practice · no XP or progression</p>
-        <h2 id="pbTitle" tabindex="-1">Playbook Training</h2>
-        <div class="pb-modes" role="group" aria-label="Training mode"><button id="pbGuided" type="button" aria-pressed="true">Guided</button><button id="pbIndependent" type="button" aria-pressed="false">Independent Read</button></div>
-        <p class="pb-mode-hint">Guided: choose an explanation. Independent Read: write your own. Switching mode restarts this exercise.</p>
-        <p id="pbScenario">Synthetic candles · BTCUSD · 1m</p>
-        <p id="pbStage" role="status"></p>
-        <p class="pb-intro">Watch the range form, then read the first closing breakout.</p>
-        <button id="pbViewChart" type="button" aria-controls="pbChartView" hidden>View chart</button>
-        <section id="pbChartView" tabindex="-1" aria-label="Revealed chart and replay">
-        <p id="pbPhase" role="status"></p>
-        <p id="pbLevels"></p>
-        <svg id="pbChart" role="img" aria-label="Moving viewport of completed synthetic candlesticks. Blue ORH, pink ORL, dashed light-grey midpoint; developing boundaries dashed, locked boundaries solid."></svg>
-        <p id="pbClock"></p><p id="pbOhlc"></p>
-        <progress id="pbProgress" max="1" value="0" aria-label="Observation progress"></progress>
-        <p id="pbLegend" hidden>Yellow outline: first breakout / first return. Pale band: 15 following closes, or the full search for C. Blue: ORH · Pink: ORL.</p>
-        <details class="pb-guide"><summary>Opening-range guide · New York time</summary><ol><li>09:30–09:45 forms the opening range.</li><li>The first completed candle closing strictly outside the range determines the breakout. A wick alone does not qualify.</li><li>The next 15 completed closes determine A (stay beyond the breached boundary) or B (return to or through it). No qualifying breakout by the 10:45 search cutoff results in C.</li></ol><details class="pb-rules"><summary>Timing and edge cases</summary><p>Candle labels show opening times. The 09:30–09:44 candles complete the range at 09:45. The 10:45 search candle completes at 10:46. Equality does not start a breakout; a following close equal to the breached boundary counts as a return. Always finish all 15 following closes, even for a late breakout. A later breakout never replaces the first. Invented prices, never market history. The dashed grey midpoint follows completed range candles and locks at 09:45.</p></details></details>
-        <div id="pbControls" class="pb-controls" hidden>
-          <button id="pbPlay" type="button">Play</button><button id="pbPrev" type="button">← Previous candle</button>
-          <button id="pbNext" type="button">Next candle →</button><button id="pbRestart" type="button">Restart</button>
+        <header class="pb-header">
+          <button id="pbExit" class="ghost" type="button">← Home</button>
+          <h2 id="pbTitle" tabindex="-1">Playbook Training</h2>
+        </header>
+        <div class="pb-modes" role="group" aria-label="Training mode" aria-describedby="pbModeHint">
+          <button id="pbGuided" type="button" aria-pressed="true">Guided</button>
+          <button id="pbIndependent" type="button" aria-pressed="false">Independent Read</button>
         </div>
-        <button id="pbReturnAnswer" type="button" aria-controls="pbQuestions" hidden>Return to answer</button>
+        <p id="pbModeHint" class="pb-mode-hint">Switching mode restarts this exercise.</p>
+        <p id="pbScenario">Synthetic candles · BTCUSD · 1m</p>
+        <nav id="pbPaneNav" class="pb-pane-nav" aria-label="Exercise panes">
+          <button id="pbObserveTab" type="button" aria-controls="pbChartView" aria-pressed="true">Observe</button>
+          <button id="pbAnswerTab" type="button" aria-controls="pbAnswerView" aria-pressed="false" disabled>Answer</button>
+          <button id="pbReviewTab" type="button" aria-controls="pbReview" aria-pressed="false" disabled>Review</button>
+        </nav>
+        <section id="pbChartView" tabindex="-1" aria-label="Observe">
+          <div class="pb-observe-action">
+            <button id="pbReturnAnswer" class="pb-primary" type="button" aria-controls="pbAnswerView" hidden>Return to answer</button>
+            <button id="pbReturnReview" class="pb-primary" type="button" aria-controls="pbReview" hidden>Return to review</button>
+            <button id="pbAnswerNow" class="pb-primary" type="button" aria-controls="pbAnswerView" hidden>Answer now</button>
+          </div>
+          <p id="pbStage" role="status"></p>
+          <p id="pbPhase" role="status"></p>
+          <p id="pbLevels"></p>
+          <svg id="pbChart" role="img" aria-label="Moving viewport of completed synthetic candlesticks. Blue ORH, pink ORL, dashed light-grey midpoint; developing boundaries dashed, locked boundaries solid."></svg>
+          <p id="pbClock"></p><p id="pbOhlc"></p>
+          <progress id="pbProgress" max="1" value="0" aria-label="Replay progress"></progress>
+          <div id="pbControls" class="pb-controls" role="group" aria-label="Replay controls" hidden>
+            <button id="pbPrev" type="button">← Previous candle</button>
+            <button id="pbNext" type="button">Next candle →</button>
+            <button id="pbPlay" type="button">Play</button>
+            <button id="pbRestart" type="button">Restart</button>
+          </div>
+          <button id="pbInspect" type="button" hidden>Inspect replay first</button>
+          <p id="pbLegend" hidden>Yellow outline: first breakout / first return. Pale band: 15 following closes, or the full search for C. Blue: ORH · Pink: ORL.</p>
+          <details class="pb-guide"><summary>Opening-range guide · New York time</summary><ol><li>09:30–09:45 forms the opening range.</li><li>The first completed candle closing strictly outside the range determines the breakout. A wick alone does not qualify.</li><li>The next 15 completed closes determine A (stay beyond the breached boundary) or B (return to or through it). No qualifying breakout by the 10:45 search cutoff results in C.</li></ol><details class="pb-rules"><summary>Timing and edge cases</summary><p>Candle labels show opening times. The 09:30–09:44 candles complete the range at 09:45. The 10:45 search candle completes at 10:46. Equality does not start a breakout; a following close equal to the breached boundary counts as a return. Always finish all 15 following closes, even for a late breakout. A later breakout never replaces the first. Invented prices, never market history. The dashed grey midpoint follows completed range candles and locks at 09:45.</p></details></details>
         </section>
-        <section id="pbQuestions" class="pb-questions" tabindex="-1" aria-label="Training questions and feedback"></section>
+        <section id="pbAnswerView" tabindex="-1" aria-label="Answer" hidden>
+          <div class="pb-chart-summary">
+            <p id="pbChartSummary"></p>
+            <button id="pbViewChart" type="button" aria-controls="pbChartView">View chart</button>
+          </div>
+          <div id="pbQuestions" class="pb-questions"></div>
+        </section>
+        <section id="pbReview" tabindex="-1" aria-label="Review" hidden>
+          <div id="pbReviewActions" class="pb-review-actions"></div>
+          <div id="pbReviewContent" class="pb-questions"></div>
+        </section>
       </section>
     </main>
 

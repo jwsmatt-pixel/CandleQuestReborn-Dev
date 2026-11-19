@@ -2,35 +2,59 @@ import {trainingScenario,SCENARIO_COUNT} from './scenario.mjs';
 import {createReplay,advance,inspect,replayFromStart,snapshot,prefix,scenarioTitle,LABELS,nyTime,DEFAULT_AUTOPLAY_MS} from './replay.mjs';
 import {buildEvidence,explanationChoices,gradeExplanation,independentReview,PARTS} from './explanation.mjs';
 const el=id=>document.getElementById(id);
-let input, state, timer, stage, chosenClass, answers, partIndex, evidence, feedback;
-let chartOpen=false, navigationFrame=0;
-// Focus a non-editable section after layout; never summon the software keyboard.
+const panes={observe:['pbObserveTab','pbChartView'],answer:['pbAnswerTab','pbAnswerView'],review:['pbReviewTab','pbReview']};
+let input, state, timer, pane, answerStarted, chosenClass, answers, partIndex, evidence, feedback, written;
+let navigationFrame=0, scenarioIndex=0, variation=-1, mode='guided';
+
+// Focus after layout without summoning the software keyboard.
 function moveTo(id){
   window.cancelAnimationFrame(navigationFrame);
   navigationFrame=window.requestAnimationFrame(()=>{
     if(document.body.dataset.screen!=='playbook') return;
-    const target=el(id);
-    target.focus({preventScroll:true});
-    target.scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+    el(id).focus({preventScroll:true});
+    el('pbScenario').scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   });
 }
-function answerNow(){state.playing=false;stop();chartOpen=false;stage='classify';render();moveTo('pbQuestions');}
-function toggleChart(open){
-  state.playing=false;stop();chartOpen=open;render();
-  moveTo(open?'pbChartView':'pbQuestions');
+
+function showPane(target){
+  if(!state || pane===target) return;
+  if(target==='answer' && (!state.completed || feedback)) return;
+  if(target==='review' && !feedback) return;
+  state.playing=false;
+  stop();
+  pane=target;
+  if(pane==='answer' && !answerStarted){
+    answerStarted=true;
+    renderAnswer();
+  }
+  render();
+  const returnButton=feedback?'pbReturnReview':answerStarted?'pbReturnAnswer':'pbChartView';
+  moveTo(pane==='observe'?returnButton:panes[pane][1]);
 }
-let scenarioIndex=0, variation=-1, mode='guided', written, submitted;
-const button=(text,fn,selected=false)=>{
-  const b=document.createElement('button'); b.type='button'; b.textContent=text;
-  b.className='pb-card'; b.setAttribute('aria-pressed',String(selected)); b.onclick=()=>{
-    fn();
-    // A selection rebuilds the panel; keep keyboard focus on its replacement.
-    if(b.isConnected===false){
-      const replacement=Array.from(el('pbQuestions').children).find(c=>c.textContent===text && c.tagName==='BUTTON');
-      replacement?.focus({preventScroll:true});
-    }
-  }; return b;
-};
+
+function button(text,fn){
+  const b=document.createElement('button');
+  b.type='button';b.textContent=text;b.className='pb-card';b.onclick=fn;
+  return b;
+}
+
+function choice(panel,text,select,selected){
+  const b=button(text,()=>{
+    select();
+    renderAnswer();
+    // The answer panel has been rebuilt; move focus to the new selection.
+    Array.from(el('pbQuestions').querySelectorAll('button')).find(c=>c.textContent===text)?.focus({preventScroll:true});
+  });
+  b.setAttribute('aria-pressed',String(selected));
+  panel.append(b);
+}
+
+function paragraph(panel,text){
+  const p=document.createElement('p');
+  p.textContent=text;
+  panel.append(p);
+}
+
 function stop(){clearTimeout(timer);}
 function schedule(){
   stop();
@@ -38,70 +62,98 @@ function schedule(){
   timer=setTimeout(()=>{
     const wasComplete=state.completed;
     state=advance(state);
-    if(!wasComplete && state.completed) stage='ready';
-    render(); schedule();
-    if(!wasComplete && state.completed) el('pbQuestions').focus({preventScroll:true});
+    render();schedule();
+    if(!wasComplete && state.completed) el('pbAnswerNow').focus({preventScroll:true});
   },state.stepMs);
 }
+
 export function startTraining(){
-  stop();chartOpen=false;window.cancelAnimationFrame(navigationFrame); input=trainingScenario(scenarioIndex); state=createReplay(input);
-  written={move:'',response:'',result:''};submitted=null;
-  stage='watch'; chosenClass=null;answers={};partIndex=0;evidence=null;feedback=null;variation++;
-  window.openScreen('playbook'); render(); schedule();
-  el('pbTitle').focus(); window.scrollTo(0,0);
-}
-function render(){
-  const s=snapshot(input,state), r=s.result;
+  stop();
+  window.cancelAnimationFrame(navigationFrame);
+  input=trainingScenario(scenarioIndex);
+  state=createReplay(input);
+  pane='observe';answerStarted=false;partIndex=-1;chosenClass=null;answers={};evidence=null;feedback=null;variation++;
+  written={move:'',response:'',result:''};
+  el('pbQuestions').replaceChildren();
+  el('pbReviewActions').replaceChildren();
+  el('pbReviewContent').replaceChildren();
   el('pbGuided').setAttribute('aria-pressed',String(mode==='guided'));
   el('pbIndependent').setAttribute('aria-pressed',String(mode==='independent'));
   el('pbScenario').textContent='Synthetic exercise '+(scenarioIndex+1)+' / '+SCENARIO_COUNT+' · BTCUSD · 1m · 15 Jan 2026';
-  el('pbStage').textContent=({watch:'1 · Observe',ready:'2 · Choose your next step',inspect:'2 · Inspect',classify:'3 · Answer',describe:'3 · Build explanation',feedback:'4 · Review'})[stage];
-  el('pbLegend').hidden=stage!=='feedback';
+  window.openScreen('playbook');render();schedule();
+  el('pbTitle').focus();window.scrollTo(0,0);
+}
+
+function render(){
+  const observing=pane==='observe';
+  for(const [name,[nav,view]] of Object.entries(panes)){
+    el(nav).setAttribute('aria-pressed',String(pane===name));
+    el(view).hidden=pane!==name;
+  }
+  el('pbAnswerTab').disabled=!state.completed || !!feedback;
+  el('pbReviewTab').disabled=!feedback;
+  el('pbAnswerNow').hidden=!observing || !state.completed || answerStarted;
+  el('pbReturnAnswer').hidden=!observing || !answerStarted || !!feedback;
+  el('pbReturnReview').hidden=!observing || !feedback;
+  el('pbControls').hidden=!observing || !state.completed;
+  el('pbInspect').hidden=!observing || !state.completed || answerStarted || state.cursor!==state.limit;
+  el('pbLegend').hidden=!feedback;
+  if(pane==='review') return;
+
+  const s=snapshot(input,state),r=s.result;
+  const clock=nyTime(s.asOf)+' New York · '+s.candles.length+' completed 1m candles';
+  const levels=s.range ? 'ORH '+s.range.high+' · ORL '+s.range.low+' · '+(s.range.locked?'Locked':'Provisional') : 'ORH / ORL develop from observed candles only';
+  if(pane==='answer'){
+    el('pbChartSummary').textContent=clock+' · '+levels;
+    return;
+  }
+
+  el('pbStage').hidden=state.completed;
+  el('pbStage').textContent='Watch first · about '+Math.round(DEFAULT_AUTOPLAY_MS/1000)+' seconds. Answers unlock after observation.';
   el('pbProgress').value=state.cursor/state.limit;
-  el('pbClock').textContent=nyTime(s.asOf)+' New York · '+state.cursor+' completed 1m candles';
-  let phase=!s.range ? 'Session opens at 09:30. Watch completed candles appear.' : !s.range.locked
+  el('pbClock').textContent=clock;
+  const phase=!s.range ? 'Session opens at 09:30.' : !s.range.locked
     ? 'Opening range developing · '+state.cursor+'/15 candles · levels provisional'
     : 'Opening range locked at 09:45 · '+(r.firstBreakout ? 'First qualifying '+r.firstBreakout.direction+' candle: '+nyTime(r.firstBreakout.timestamp)+' · following closes '+r.assessment.observedCount+'/15' : 'Searching strict closing breakouts · 09:45–10:45 inclusive');
   el('pbPhase').textContent=mode==='independent' && !feedback && s.range?.locked
     ? 'Opening range locked at 09:45 · Observe the completed candles against ORH, ORL and midpoint.' : phase;
-  el('pbLevels').textContent=s.range ? 'ORH '+s.range.high+' · ORL '+s.range.low+' · '+(s.range.locked?'Locked':'Provisional') : 'ORH / ORL develop from observed candles only';
+  el('pbLevels').textContent=levels;
   const last=s.candles.at(-1);
   el('pbOhlc').textContent=last ? nyTime(last.timestamp)+' candle · O '+last.open+' · H '+last.high+' · L '+last.low+' · C '+last.close : 'No completed candle yet.';
-  const answering=stage==='classify' || stage==='describe';
-  el('playbook').dataset.stage=stage;
-  el('pbChartView').hidden=answering && !chartOpen;
-  el('pbQuestions').hidden=answering && chartOpen;
-  el('pbViewChart').hidden=!answering || chartOpen;
-  el('pbReturnAnswer').hidden=!answering || !chartOpen;
-  el('pbControls').hidden=!state.completed || (answering && !chartOpen);
-  el('pbQuestions').setAttribute('aria-label',stage==='feedback'?'Training feedback and review':'Training answers');
   draw(s);
   el('pbPlay').textContent=state.playing?'Pause':'Play';
   el('pbPrev').disabled=state.cursor===0;
   el('pbNext').disabled=state.cursor===state.revealed;
   el('pbPlay').disabled=state.cursor===state.limit;
+}
+
+function moveToAnswerPart(){
+  renderAnswer();
+  moveTo('pbAnswerView');
+}
+
+function submitReview(){
+  if(pane!=='answer' || !state.completed || feedback || !chosenClass) return;
+  if(mode==='independent'){
+    if(!PARTS.every(p=>written[p].trim())) return;
+    evidence=buildEvidence(prefix(input,state.limit));
+    feedback=independentReview(evidence,chosenClass,Object.freeze({...written}),variation);
+  }else{
+    if(!PARTS.every(p=>answers[p])) return;
+    feedback=gradeExplanation(evidence,chosenClass,answers,variation);
+  }
+  state={...state,cursor:state.limit,playing:false};
+  el('pbQuestions').replaceChildren();
+  renderReview();
+  showPane('review');
+}
+
+function renderAnswer(){
   const panel=el('pbQuestions');panel.replaceChildren();
-  const text=t=>{const p=document.createElement('p');p.textContent=t;panel.append(p);};
-  if(stage==='watch'){text('Watch first · about '+Math.round(DEFAULT_AUTOPLAY_MS/1000)+' seconds. Answers unlock after observation.');return;}
-  if(stage==='ready'){
-    text('Observation complete. Choose how to continue.');
-    const answer=button('Answer now',answerNow);answer.className+=' pb-primary';
-    panel.append(answer,button('Inspect replay first',()=>{state=replayFromStart(state);stage='inspect';render();schedule();}));return;
-  }
-  if(stage==='inspect'){
-    text('Inspect the revealed sequence with Play / Pause or one completed candle at a time.');
-    panel.append(button('Answer now',answerNow));return;
-  }
-  if(stage==='classify' && mode==='independent'){
-    text('Write all three parts, then choose a category. “Unsure” is welcome; no word minimum.');
+  if(mode==='independent'){
+    paragraph(panel,'Write all three parts, then choose a category. “Unsure” is welcome.');
     const prompts={move:'What did price do?',response:'What happened afterwards?',result:'What does the completed evidence establish?'};
-    const submit=button('Submit independent read',()=>{
-      if(!chosenClass || !PARTS.every(p=>written[p].trim())) return;
-      submitted=Object.freeze({...written});
-      evidence=buildEvidence(prefix(input,state.limit));
-      feedback=independentReview(evidence,chosenClass,submitted,variation);
-      state={...state,cursor:state.limit,playing:false};stop();stage='feedback';render();moveTo('pbQuestions');
-    });
+    const submit=button('Submit independent read',submitReview);
     const update=()=>{submit.disabled=!chosenClass || !PARTS.every(p=>written[p].trim());};
     PARTS.forEach(part=>{
       const label=document.createElement('label');label.htmlFor='pbWritten-'+part;
@@ -110,30 +162,52 @@ function render(){
       field.value=written[part];field.placeholder='A short response, or Unsure';
       field.oninput=()=>{written[part]=field.value;update();};panel.append(label,field);
     });
-    text('Choose your classification independently.');
-    ['A','B','C'].forEach(id=>panel.append(button('Category '+id,()=>{chosenClass=id;render();},chosenClass===id)));
+    paragraph(panel,'Choose your classification independently.');
+    const categories=document.createElement('div');categories.className='pb-categories';
+    ['A','B','C'].forEach(id=>choice(categories,'Category '+id,()=>{chosenClass=id;},chosenClass===id));
+    panel.append(categories);
     submit.className+=' pb-primary';update();panel.append(submit);return;
   }
-  if(stage==='classify'){
-    text('Classify the completed outcome. Feedback follows your full explanation.');
-    Object.entries(LABELS).forEach(([id,label])=>panel.append(button(id+' — '+label,()=>{chosenClass=id;render();},chosenClass===id)));
-    const next=button('Continue to Move → Response → Result',()=>{evidence=buildEvidence(prefix(input,state.limit));partIndex=0;stage='describe';render();moveTo('pbQuestions');});next.disabled=!chosenClass;panel.append(next);return;
+  if(partIndex<0){
+    paragraph(panel,'Classify the completed outcome. Feedback follows your full explanation.');
+    Object.entries(LABELS).forEach(([id,label])=>choice(panel,id+' — '+label,()=>{chosenClass=id;},chosenClass===id));
+    const next=button('Continue to Move → Response → Result',()=>{
+      if(!chosenClass) return;
+      evidence=buildEvidence(prefix(input,state.limit));partIndex=0;moveToAnswerPart();
+    });
+    next.className+=' pb-primary';next.disabled=!chosenClass;panel.append(next);return;
   }
-  if(stage==='describe'){
-    const part=PARTS[partIndex];
-    const prompts={move:'What did price do?',response:'What did subsequent price action do?',result:'What does the completed evidence establish?'};
-    text((partIndex+1)+' / 3 · '+part.toUpperCase()+' — '+prompts[part]);
-    explanationChoices(evidence,part,variation).forEach(c=>panel.append(button(c.text,()=>{answers[part]=c.id;render();},answers[part]===c.id)));
-    panel.append(button(partIndex ? '← Previous part' : 'Back to classification',()=>{
-      if(partIndex) partIndex--; else stage='classify';render();moveTo('pbQuestions');
-    }));
-    const next=button(partIndex<2 ? 'Continue to '+PARTS[partIndex+1].toUpperCase() : 'Submit explanation',()=>{
-      if(partIndex<2){partIndex++;render();moveTo('pbQuestions');return;}
-      feedback=gradeExplanation(evidence,chosenClass,answers,variation);
-      state={...state,cursor:state.limit,playing:false};stop();stage='feedback';render();moveTo('pbQuestions');
-    });next.disabled=!answers[part];if(partIndex===2)next.disabled=!PARTS.every(p=>answers[p]);panel.append(next);return;
-  }
-  const final=snapshot(input,{...state,cursor:state.limit}).result;
+  const part=PARTS[partIndex];
+  const prompts={move:'What did price do?',response:'What did subsequent price action do?',result:'What does the completed evidence establish?'};
+  paragraph(panel,(partIndex+1)+' / 3 · '+part.toUpperCase()+' — '+prompts[part]);
+  explanationChoices(evidence,part,variation).forEach(c=>choice(panel,c.text,()=>{answers[part]=c.id;},answers[part]===c.id));
+  panel.append(button(partIndex?'← Previous part':'Back to classification',()=>{
+    partIndex--;moveToAnswerPart();
+  }));
+  const lastPart=partIndex===PARTS.length-1;
+  const next=button(lastPart?'Submit explanation':'Continue to '+PARTS[partIndex+1].toUpperCase(),lastPart?submitReview:()=>{
+    partIndex++;moveToAnswerPart();
+  });
+  next.className+=' pb-primary';
+  next.disabled=lastPart?!PARTS.every(p=>answers[p]):!answers[part];
+  panel.append(next);
+}
+
+function renderReview(){
+  const final=snapshot(input,state).result;
+  const actions=el('pbReviewActions'),panel=el('pbReviewContent');
+  const next=button('Next synthetic exercise →',()=>{scenarioIndex=(scenarioIndex+1)%SCENARIO_COUNT;startTraining();});
+  next.className+=' pb-primary';
+  const evidenceLinks=document.createElement('div');evidenceLinks.className='pb-evidence';
+  const points=[['Range lock',final.openingRange.completesAt],['First close',final.firstBreakout?.timestamp],['First return',final.assessment?.firstReturn?.timestamp],[final.assessment?'Assessment end':'Search end',final.assessment?.end ?? final.search.end]];
+  points.filter(p=>p[1]).forEach(([label,stamp])=>evidenceLinks.append(button(label+' · '+nyTime(stamp),()=>{
+    state={...state,cursor:Math.min(state.limit,Math.max(0,input.candles.findIndex(c=>c.timestamp===stamp)+(label==='Range lock'?0:1))),playing:false};
+    showPane('observe');
+  })));
+  actions.append(next,evidenceLinks,button('Replay revealed exercise',()=>{
+    showPane('observe');state=replayFromStart(state);render();schedule();
+  }));
+  const text=t=>paragraph(panel,t);
   text('Synthetic · '+scenarioTitle(final));
   if(mode==='independent'){
     text('Verified classification: '+final.classification+' — '+LABELS[final.classification]+'.');
@@ -143,30 +217,22 @@ function render(){
       const row=document.createElement('section');row.className='pb-comparison';
       const title=document.createElement('h3');title.textContent=p.part.toUpperCase();
       const own=document.createElement('p');own.className='pb-original';own.textContent=p.chosen;
-      const reference=document.createElement('p');reference.textContent='Reference: '+p.reference;
-      const label=document.createElement('p');label.textContent='Your original words:';
-      row.append(title,label,own,reference);panel.append(row);
+      row.append(title);paragraph(row,'Your original words:');row.append(own);paragraph(row,'Reference: '+p.reference);
+      panel.append(row);
     });
     text('Your self-review checklist: Did I identify the important price movement? Did I describe the response accurately? Does my result follow from the observed evidence?');
-  } else {
-  text('Classification: '+chosenClass+' · '+(feedback.classificationCorrect?'correct.':'incorrect; reference: '+final.classification+' — '+LABELS[final.classification]+'.'));
-  text('Explanation: '+feedback.parts.filter(p=>p.correct).length+' / 3 correct.');
-  text('Reference · '+feedback.reference);
-  const comparison=document.createElement('details');
-  const summary=document.createElement('summary');summary.textContent='Compare your explanation';comparison.append(summary);
-  feedback.parts.forEach(p=>{
-    const row=document.createElement('p');
-    row.textContent=p.part.toUpperCase()+' · '+(p.correct?'Correct':'Incorrect')+' · You: '+p.chosen+(p.correct?'':' Reference: '+p.reference);
-    comparison.append(row);
-  });panel.append(comparison);
+  }else{
+    text('Classification: '+chosenClass+' · '+(feedback.classificationCorrect?'correct.':'incorrect; reference: '+final.classification+' — '+LABELS[final.classification]+'.'));
+    text('Explanation: '+feedback.parts.filter(p=>p.correct).length+' / 3 correct.');
+    text('Reference · '+feedback.reference);
+    const comparison=document.createElement('details');
+    const summary=document.createElement('summary');summary.textContent='Compare your explanation';comparison.append(summary);
+    feedback.parts.forEach(p=>paragraph(comparison,p.part.toUpperCase()+' · '+(p.correct?'Correct':'Incorrect')+' · You: '+p.chosen+(p.correct?'':' Reference: '+p.reference)));
+    panel.append(comparison);
   }
   if(final.assessment) text('All 15 following completed closes assessed through '+nyTime(final.assessment.end)+'; decision available at '+nyTime(final.assessment.completesAt)+' New York.');
   if(!final.assessment) text('All 61 search closes checked through 10:45; complete at '+nyTime(final.search.completesAt)+' New York.');
-  const evidenceLinks=document.createElement('div');evidenceLinks.className='pb-evidence';
-  const points=[['Range lock',final.openingRange.completesAt],['First close',final.firstBreakout?.timestamp],['First return',final.assessment?.firstReturn?.timestamp],[final.assessment?'Assessment end':'Search end',final.assessment?.end ?? final.search.end]];
-  points.filter(p=>p[1]).forEach(([label,stamp])=>evidenceLinks.append(button(label+' · '+nyTime(stamp),()=>{state={...state,cursor:Math.min(state.limit,Math.max(0,input.candles.findIndex(c=>c.timestamp===stamp)+(label==='Range lock'?0:1))),playing:false};stop();render();})));
-  const next=button('Next synthetic exercise →',()=>{scenarioIndex=(scenarioIndex+1)%SCENARIO_COUNT;startTraining();});next.className+=' pb-primary';
-  panel.append(next,evidenceLinks,button('Replay revealed exercise',()=>{state=replayFromStart(state);render();schedule();}),button('Restart exercise',startTraining));
+  panel.append(button('Restart exercise',startTraining));
 }
 function draw(s){
   const svg=el('pbChart'), w=Math.max(280,svg.clientWidth||340), h=300;
@@ -197,15 +263,19 @@ function draw(s){
   });
   svg.innerHTML=markup;
 }
-el('pbViewChart').onclick=()=>toggleChart(true);
-el('pbReturnAnswer').onclick=()=>toggleChart(false);
+for(const [name,[nav]] of Object.entries(panes)) el(nav).onclick=()=>showPane(name);
+el('pbAnswerNow').onclick=()=>showPane('answer');
+el('pbViewChart').onclick=()=>showPane('observe');
+el('pbReturnAnswer').onclick=()=>showPane('answer');
+el('pbReturnReview').onclick=()=>showPane('review');
+el('pbInspect').onclick=()=>{state=replayFromStart(state);render();schedule();};
 el('pbPlay').onclick=()=>{state={...state,playing:!state.playing};render();schedule();};
 el('pbPrev').onclick=()=>{state=inspect(state,-1);stop();render();};
 el('pbNext').onclick=()=>{state=inspect(state,1);stop();render();};
 el('pbRestart').onclick=startTraining;
 el('pbExit').onclick=()=>{stop();window.cancelAnimationFrame(navigationFrame);state.playing=false;window.openScreen('home');el('playbookEntry').focus();};
 new MutationObserver(()=>{if(document.body.dataset.screen!=='playbook'){stop();if(state)state.playing=false;}}).observe(document.body,{attributes:true,attributeFilter:['data-screen']});
-window.addEventListener('resize',()=>{if(state && document.body.dataset.screen==='playbook') draw(snapshot(input,state));});
+window.addEventListener('resize',()=>{if(state && pane==='observe' && document.body.dataset.screen==='playbook') draw(snapshot(input,state));});
 
 // Switching mode restarts this exercise only; no World or saved progression is touched.
 for(const [id,value] of [['pbGuided','guided'],['pbIndependent','independent']]){

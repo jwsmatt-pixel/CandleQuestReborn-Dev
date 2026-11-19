@@ -1,5 +1,12 @@
 # Candle Quest Reborn — Changelog
 
+## Task 8 / M0.2 — PLB-006 three-pane mobile interface (2026-11-19)
+
+- Observe keeps the chart and mandatory first viewing. The replay grid reads Previous candle, Next candle, Play/Pause, Restart.
+- Answer supports Guided and Independent Read with a summary of the current chart position. View chart and Return to answer preserve the draft, category, and Guided step and choices.
+- Review unlocks on submission and puts evidence links, replay, and Next exercise above the learner and reference explanations. Evidence links open Observe at the selected completed candle. Return to review restores the submitted comparison.
+- The Playbook tests cover both modes, exact written drafts, submission gates, replay limits, control order, and reset behaviour. Rendered iPhone Safari verification is UNVERIFIED. See [Task 8 evidence](logs/task8-three-pane-20261119/codex-verdict.md).
+
 ## v28.6.0-beta.1 — Task 7: Mobile learning-flow and version polish (2026-11-19)
 
 - PLB-006: defer Answer now, explanation-step and submission navigation to the next animation frame; focus only non-editable sections with preventScroll, then align the answer/review start. Honour reduced motion.
