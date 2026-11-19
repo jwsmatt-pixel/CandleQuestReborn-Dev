@@ -1,5 +1,10 @@
 # Candle Quest Reborn - v28.6.0-beta.1 Checkpoint Summary
 
+## Task 8.1 — Initial Playbook replay bypass enabled for testing
+
+- Each exercise starts in Observe with all required candles revealed and autoplay paused. Answer is available immediately. Review still requires submission.
+- Set `SKIP_INITIAL_REPLAY_FOR_TESTING` to `false` to restore the mandatory first replay. See [Task 8.1 verification](logs/task8-1-initial-replay-bypass/codex-verdict.md).
+
 ## Task 8 / M0.2 — Three-pane Playbook ready for owner review
 
 - Observe starts the full first replay. Answer unlocks after observation and Review unlocks after submission. Each pane has a dedicated navigation button.

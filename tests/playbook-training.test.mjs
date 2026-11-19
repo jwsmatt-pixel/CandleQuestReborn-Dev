@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {buildEvidence,explanationChoices,supports,PARTS} from '../playbook/explanation.mjs';
 import {trainingScenario} from '../playbook/scenario.mjs';
+import {DEFAULT_AUTOPLAY_MS} from '../playbook/replay.mjs';
 test('complete isolated training flow, answer gates, replay and cleanup',async()=>{
 class Element {
  constructor(){this.children=[];this.attrs={};this.dataset={};this.textContent='';this.innerHTML='';this.clientWidth=320;this.disabled=false;}
@@ -14,18 +15,18 @@ class Element {
  focus(options){this.focusOptions=options;} scrollIntoView(options){this.scrollOptions=options;}
 }
 const ids=new Map(), el=id=>{if(!ids.has(id))ids.set(id,new Element());return ids.get(id);};
-let pending, observer, frame, reduced=true;
+let pending, delay, observer, frame, reduced=true;
 const flushFrame=()=>{if(frame){const fn=frame;frame=null;fn();}};
 const document={getElementById:el,createElement:tag=>Object.assign(new Element(),{tag}),body:{dataset:{screen:'home'}}};
 const saved={document:globalThis.document,window:globalThis.window,MutationObserver:globalThis.MutationObserver,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout,localStorage:globalThis.localStorage};
 Object.assign(globalThis,{document,
  window:{openScreen:id=>{document.body.dataset.screen=id;},scrollTo(){},addEventListener(){},requestAnimationFrame(fn){frame=fn;return 1;},cancelAnimationFrame(){frame=null;},matchMedia(){return {matches:reduced};}},
  MutationObserver:class{constructor(fn){observer=fn;}observe(){}},
- setTimeout:fn=>{pending=fn;return 1;},clearTimeout:()=>{pending=null;},
+ setTimeout:(fn,ms)=>{pending=fn;delay=ms;return 1;},clearTimeout:()=>{pending=null;},
  localStorage:{setItem(){throw Error('Unexpected storage write');},getItem(){throw Error('Unexpected storage read');}}
 });
 try {
-const training=await import('../playbook/training.mjs');
+const {startTraining,SKIP_INITIAL_REPLAY_FOR_TESTING:skipInitial}=await import('../playbook/training.mjs');
 const answer=el('pbQuestions'),review=el('pbReviewContent'),actions=el('pbReviewActions');
 const labels=()=>answer.children.filter(c=>c.onclick).map(c=>c.textContent);
 const click=text=>{const b=[...answer.children,...actions.children,...review.children].find(c=>c.onclick&&c.textContent===text);assert.ok(b,'Missing '+text);assert.equal(b.disabled,false);b.onclick();flushFrame();};
@@ -59,10 +60,41 @@ const build=(index,wrong=false)=>{
  }
 };
 const tick=()=>{assert.ok(pending,'Missing autoplay timer');const fn=pending;pending=null;fn();};
-training.startTraining();
-assert.equal(document.body.dataset.screen,'playbook');assert.equal(el('pbControls').hidden,true);assert.deepEqual(labels(),[]);
-view('Observe');locked();
-assert.equal(el('pbAnswerTab').disabled,true);el('pbAnswerTab').onclick();view('Observe');
+const assertReset=limit=>{
+ view('Observe');locked();assert.deepEqual(labels(),[]);
+ assert.equal(el('pbControls').hidden,!skipInitial);
+ assert.equal(el('pbAnswerTab').disabled,!skipInitial);
+ assert.match(el('pbClock').textContent,new RegExp(' · '+(skipInitial?limit:0)+' completed 1m candles$'));
+ assert.equal(el('pbProgress').value,skipInitial?1:0);
+ if(skipInitial){
+   assert.equal(pending,null);
+   assert.equal(el('pbPrev').disabled,false);
+   assert.equal(el('pbNext').disabled,true);
+   assert.equal(el('pbPlay').disabled,true);
+ }else{
+   assert.ok(pending,'Missing first-view autoplay');
+ }
+};
+const completeFirstView=limit=>{
+ assertReset(limit);
+ if(!skipInitial) for(let i=0;i<limit;i++)tick();
+};
+startTraining();
+assert.equal(document.body.dataset.screen,'playbook');
+assertReset(37);
+if(skipInitial){
+ el('pbPrev').onclick();
+ assert.match(el('pbClock').textContent,/ · 36 completed 1m candles$/);
+ assert.equal(el('pbNext').disabled,false);
+ el('pbNext').onclick();
+ assert.match(el('pbClock').textContent,/ · 37 completed 1m candles$/);
+ assert.equal(el('pbNext').disabled,true);
+ el('pbInspect').onclick();
+ assert.match(el('pbClock').textContent,/ · 0 completed 1m candles$/);
+}else{
+ el('pbAnswerTab').onclick();view('Observe');
+}
+assert.equal(delay,DEFAULT_AUTOPLAY_MS/37);
 for(let i=1;i<=37;i++){
  tick();
  assert.ok(!el('pbChart').innerHTML.includes('#ffdf70'));
@@ -71,7 +103,7 @@ for(let i=1;i<=37;i++){
  assert.ok(el('pbChart').innerHTML.includes('stroke="#cbd0d8"'));
  if(i<15){assert.ok(el('pbLevels').textContent.includes('Provisional'));assert.ok(!el('pbChart').innerHTML.includes('fill-opacity=".6"'));}
  if(i===15){assert.ok(el('pbLevels').textContent.includes('Locked'));assert.ok(el('pbChart').innerHTML.includes('fill-opacity=".6"'));assert.ok(el('pbClock').textContent.startsWith('09:45'));}
- if(i<37){assert.deepEqual(labels(),[]);assert.equal(el('pbAnswerTab').disabled,true);}
+ if(i<37){assert.deepEqual(labels(),[]);assert.equal(el('pbAnswerTab').disabled,!skipInitial);}
 }
 assert.equal(pending,null);assert.equal(el('pbControls').hidden,false);assert.equal(el('pbAnswerNow').hidden,false);
 assert.equal(el('pbAnswerTab').disabled,false);locked();
@@ -113,20 +145,16 @@ evidence.children.find(c=>c.textContent.startsWith('First close')).onclick();flu
 assert.ok(el('pbOhlc').textContent.startsWith('09:51 candle'));assert.ok(el('pbChart').innerHTML.includes('#ffdf70'));
 el('pbReturnReview').onclick();flushFrame();view('Review');
 click('Replay revealed exercise');assert.ok(pending);el('pbExit').onclick();assert.equal(pending,null);assert.equal(document.body.dataset.screen,'home');
-training.startTraining();variation++;for(let i=0;i<37;i++)tick();el('pbAnswerTab').onclick();flushFrame();click('A — Sustained Breakout');click('Continue to Move → Response → Result');build(0,true);
+startTraining();variation++;completeFirstView(37);el('pbAnswerTab').onclick();flushFrame();click('A — Sustained Breakout');click('Continue to Move → Response → Result');build(0,true);
 assert.ok(review.children.some(c=>c.textContent.includes('incorrect; reference: B')));
 assert.ok(review.children.some(c=>c.textContent==='Explanation: 0 / 3 correct.'));
 const comparison=review.children.find(c=>c.children?.some(p=>p.textContent==='Compare your explanation'));
 assert.ok(comparison);assert.equal(comparison.children.filter(c=>c.textContent.includes('Incorrect · You:')).length,3);
-click('Restart exercise');variation++;assert.equal(el('pbControls').hidden,true);assert.ok(el('pbClock').textContent.includes('0 completed'));
-// Complete a whole rotation and wrap; Next must clear answers, highlights and
-// inspection privileges and never reveal outcome names before submission.
+click('Restart exercise');variation++;
+// Complete the rotation and wrap. Next resets the answer and review state.
 for(const [index,classification] of ['B','A','B','A','C','B'].entries()){
  assert.ok(el('pbScenario').textContent.startsWith('Synthetic exercise '+(index%5+1)+' / 5'));
- assert.equal(el('pbControls').hidden,true);assert.equal(el('pbLegend').hidden,true);
- assert.ok(!el('pbChart').innerHTML.includes('#ffdf70'));
- assert.deepEqual(labels(),[]);
- for(let n=0;n<(classification==='C'?76:37);n++)tick();
+ completeFirstView(classification==='C'?76:37);
  assert.equal(el('pbAnswerTab').disabled,false);locked();
  el('pbAnswerTab').onclick();flushFrame();click(classification+' — '+({A:'Sustained Breakout',B:'Failed Initial Breakout',C:'No Qualifying Breakout'})[classification]);click('Continue to Move → Response → Result');
  build(index%5);
@@ -144,7 +172,8 @@ for(const [index,classification] of ['B','A','B','A','C','B'].entries()){
  }
  click('Next synthetic exercise →');variation++;
 }
-document.body.dataset.screen='shop';observer();assert.equal(pending,null);
+if(skipInitial) el('pbInspect').onclick();
+assert.ok(pending);document.body.dataset.screen='shop';observer();assert.equal(pending,null);
 
 } finally {Object.assign(globalThis,saved);}
 });

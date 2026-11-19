@@ -1,5 +1,10 @@
 # Candle Quest Reborn — Changelog
 
+## Task 8.1 — Temporary Playbook replay bypass
+
+- Playbook starts, restarts, mode switches and Next exercise open at the required observation limit with Answer available. Review unlocks on submission, and manual stepping and replay use the existing timing.
+- Set `SKIP_INITIAL_REPLAY_FOR_TESTING` to `false` in `playbook/training.mjs` to restore the mandatory first viewing. See [Task 8.1 verification](logs/task8-1-initial-replay-bypass/codex-verdict.md).
+
 ## Task 8 / M0.2 — PLB-006 three-pane mobile interface (2026-11-19)
 
 - Observe keeps the chart and mandatory first viewing. The replay grid reads Previous candle, Next candle, Play/Pause, Restart.

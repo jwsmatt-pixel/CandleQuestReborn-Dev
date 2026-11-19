@@ -1,6 +1,9 @@
 import {trainingScenario,SCENARIO_COUNT} from './scenario.mjs';
 import {createReplay,advance,inspect,replayFromStart,snapshot,prefix,scenarioTitle,LABELS,nyTime,DEFAULT_AUTOPLAY_MS} from './replay.mjs';
 import {buildEvidence,explanationChoices,gradeExplanation,independentReview,PARTS} from './explanation.mjs';
+// Set to false to restore mandatory first-view autoplay.
+export const SKIP_INITIAL_REPLAY_FOR_TESTING = true;
+
 const el=id=>document.getElementById(id);
 const panes={observe:['pbObserveTab','pbChartView'],answer:['pbAnswerTab','pbAnswerView'],review:['pbReviewTab','pbReview']};
 let input, state, timer, pane, answerStarted, chosenClass, answers, partIndex, evidence, feedback, written;
@@ -72,6 +75,9 @@ export function startTraining(){
   window.cancelAnimationFrame(navigationFrame);
   input=trainingScenario(scenarioIndex);
   state=createReplay(input);
+  if(SKIP_INITIAL_REPLAY_FOR_TESTING){
+    Object.assign(state,{cursor:state.limit,revealed:state.limit,completed:true,playing:false});
+  }
   pane='observe';answerStarted=false;partIndex=-1;chosenClass=null;answers={};evidence=null;feedback=null;variation++;
   written={move:'',response:'',result:''};
   el('pbQuestions').replaceChildren();

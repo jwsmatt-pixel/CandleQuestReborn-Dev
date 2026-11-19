@@ -41,7 +41,7 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
  const saved=Object.fromEntries(keys.map(k=>[k,globalThis[k]]));
  Object.assign(globalThis,{document,window:{openScreen:id=>document.body.dataset.screen=id,scrollTo(){},addEventListener(){},requestAnimationFrame(fn){fn();return 1;},cancelAnimationFrame(){},matchMedia(){return {matches:true};}},MutationObserver:class{constructor(fn){observer=fn;}observe(){}},setTimeout:fn=>{pending=fn;return 1;},clearTimeout:()=>{pending=null;},localStorage:{getItem(){throw Error('Unexpected storage read');},setItem(){throw Error('Unexpected storage write');}}});
  try{
-  const training=await import('../playbook/training.mjs?independent-test');
+  const {startTraining,SKIP_INITIAL_REPLAY_FOR_TESTING:skipInitial}=await import('../playbook/training.mjs?independent-test');
   const walk=node=>[node,...node.children.flatMap(walk)];
   const answer=el('pbQuestions'),review=el('pbReviewContent'),actions=el('pbReviewActions');
   const content=(panel=answer)=>walk(panel).map(n=>n.textContent).join('\n');
@@ -52,14 +52,28 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
    assert.equal(el('pbReviewTab').disabled,true);assert.equal(el('pbReview').hidden,true);
    assert.deepEqual(review.children,[]);assert.deepEqual(actions.children,[]);
    assert.ok(!/Reference:|Verified classification:|correct.|Sustained Breakout|Failed Initial Breakout|No Qualifying Breakout/.test(content()));
-   assert.ok(!/First qualifying|following closes|First return/.test(el('pbPhase').textContent));
+   if(el('pbIndependent').attrs['aria-pressed']==='true'){
+    assert.doesNotMatch(el('pbPhase').textContent,/First qualifying|following closes|First return/);
+   }
   };
-  training.startTraining();assert.equal(el('pbGuided').attrs['aria-pressed'],'true');
-  tick();el('pbIndependent').onclick();assert.ok(el('pbClock').textContent.includes('0 completed'));assert.equal(el('pbIndependent').attrs['aria-pressed'],'true');
+  const completeFirstView=limit=>{
+   assert.equal(el('pbControls').hidden,!skipInitial);
+   assert.equal(el('pbAnswerTab').disabled,!skipInitial);
+   if(skipInitial){
+    assert.equal(pending,null);
+    assert.match(el('pbClock').textContent,new RegExp(' · '+limit+' completed 1m candles$'));
+   }else{
+    assert.match(el('pbClock').textContent,/ · 0 completed 1m candles$/);
+    for(let n=0;n<limit;n++){noLeak();assert.equal(answer.children.length,0);tick();}
+   }
+   assert.equal(el('pbAnswerTab').disabled,false);
+  };
+  startTraining();assert.equal(el('pbGuided').attrs['aria-pressed'],'true');
+  if(skipInitial) el('pbInspect').onclick();
+  tick();el('pbIndependent').onclick();assert.equal(el('pbIndependent').attrs['aria-pressed'],'true');
   for(let index=0;index<5;index++){
    assert.ok(el('pbScenario').textContent.startsWith('Synthetic exercise '+(index+1)));
-   assert.equal(el('pbControls').hidden,true);
-   for(let n=0;n<(index===4?76:37);n++){noLeak();assert.equal(walk(el('pbQuestions')).filter(n=>n.tag==='textarea').length,0);tick();}
+   completeFirstView(index===4?76:37);
    noLeak();el('pbInspect').onclick();el('pbPlay').onclick();el('pbNext').onclick();assert.ok(el('pbClock').textContent.includes('1 completed'));el('pbPrev').onclick();assert.ok(el('pbClock').textContent.includes('0 completed'));
    el('pbAnswerTab').onclick();noLeak();
    const fields=()=>el('pbQuestions').children.filter(n=>n.tag==='textarea');
@@ -103,23 +117,23 @@ test('independent full five-fixture rotation, gates, draft retention, evidence a
    click('Next synthetic exercise →');noLeak();
   }
   assert.ok(el('pbScenario').textContent.startsWith('Synthetic exercise 1'));
-  for(let n=0;n<37;n++)tick();
+  completeFirstView(37);
   el('pbAnswerTab').onclick();
   const draft=walk(answer).find(n=>n.tag==='textarea');draft.value='Reset this draft';draft.oninput();click('Category A');
   el('pbViewChart').onclick();el('pbRestart').onclick();noLeak();
-  for(let n=0;n<37;n++)tick();
+  completeFirstView(37);
   el('pbAnswerTab').onclick();
   assert.ok(walk(answer).filter(n=>n.tag==='textarea').every(n=>n.value===''));
   assert.equal(walk(answer).find(n=>n.textContent==='Category A').attrs['aria-pressed'],'false');
   const changedModeDraft=walk(answer).find(n=>n.tag==='textarea');changedModeDraft.value='Clear on mode switch';changedModeDraft.oninput();
   el('pbGuided').onclick();assert.equal(el('pbGuided').attrs['aria-pressed'],'true');
   el('pbIndependent').onclick();
-  for(let n=0;n<37;n++)tick();
+  completeFirstView(37);
   el('pbAnswerTab').onclick();
   assert.ok(walk(answer).filter(n=>n.tag==='textarea').every(n=>n.value===''));
   el('pbGuided').onclick();
-  for(let n=0;n<37;n++)tick();el('pbAnswerTab').onclick();assert.ok(content().includes('B — Failed Initial Breakout'));assert.equal(walk(el('pbQuestions')).filter(n=>n.tag==='textarea').length,0);
+  completeFirstView(37);el('pbAnswerTab').onclick();assert.ok(content().includes('B — Failed Initial Breakout'));assert.equal(walk(el('pbQuestions')).filter(n=>n.tag==='textarea').length,0);
   el('pbExit').onclick();assert.equal(document.body.dataset.screen,'home');assert.equal(pending,null);
-  training.startTraining();document.body.dataset.screen='shop';observer();assert.equal(pending,null);
+  startTraining();document.body.dataset.screen='shop';observer();assert.equal(pending,null);
  }finally{Object.assign(globalThis,saved);}
 });
