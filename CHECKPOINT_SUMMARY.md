@@ -1,5 +1,11 @@
 # Candle Quest Reborn - v28.6.0-beta.1 Checkpoint Summary
 
+## M2 — World 1 candle visuals ready for owner review
+
+- World 1 gameplay uses a dedicated Canvas paint path with a navy backdrop, white wicks, light bullish bodies and outlined dark bearish bodies. It retains the existing candle and channel geometry and the positional freeze cue.
+- Baseline comparisons passed for 60 seeded runs across both training styles and all supported tempos. All 600 signals passed their existing validators. Canvas command checks matched baseline geometry and shared renderer output.
+- The archived baseline and patched checkout each passed all 122 native Playbook tests. The patched checkout also passed 13 JavaScript syntax checks and the Git whitespace check. Real-device iPhone visual acceptance is pending. See the [M2 implementation verdict](logs/m2-w1-candle-visual-20261120-125224/codex-verdict.md).
+
 ## Task 8.3 — Playbook results ready for owner review
 
 - Guided Review shows a prominent explanation score out of three, separate classification feedback and the per-part breakdown. Independent Read shows classification feedback and writing self-review with original responses and factual references.

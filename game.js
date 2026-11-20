@@ -3688,6 +3688,47 @@ function drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal=false){
   }
 }
 
+function drawWorld1Candle(ctx, x, yO, yH, yL, yC, cw, bullish, isSignal, mobile){
+  const effectiveCW = isSignal ? cw * (mobile ? 1.18 : 1.15) : cw;
+  const centerX = Math.round(x);
+  let bodyW = Math.max(mobile ? 9 : 5, Math.round(effectiveCW));
+  if(bodyW % 2 === 0) bodyW += 1;
+  const left = centerX - Math.floor(bodyW / 2);
+
+  const yHigh = Math.round(Math.min(yH, yL));
+  const yLow = Math.round(Math.max(yH, yL));
+  const wickW = mobile ? 3 : 2;
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(centerX - Math.floor(wickW / 2), yHigh, wickW, Math.max(1, yLow - yHigh));
+
+  // Match the shared candle bounds, including the midpoint-centred tiny bar.
+  const bodyTopRaw = Math.min(yO, yC);
+  const bodyBottomRaw = Math.max(yO, yC);
+  const bodyMid = Math.round((bodyTopRaw + bodyBottomRaw) / 2);
+  const rawBodyH = Math.abs(yC - yO);
+  const minBodyH = mobile ? 4 : 3;
+  if(rawBodyH < minBodyH){
+    const barH = mobile ? 3 : 2;
+    ctx.fillStyle = bullish ? "#f5f7ff" : "#aabbd1";
+    ctx.fillRect(left, bodyMid - Math.floor(barH / 2), bodyW, barH);
+    return;
+  }
+
+  const bodyH = Math.max(minBodyH, Math.round(rawBodyH));
+  const top = bodyH === minBodyH && rawBodyH < minBodyH + 1
+    ? bodyMid - Math.floor(bodyH / 2)
+    : Math.round(bodyTopRaw);
+  ctx.fillStyle = bullish ? "#f5f7ff" : "#101c2e";
+  ctx.fillRect(left, top, bodyW, bodyH);
+
+  if(!bullish){
+    // Inset the white outline to keep the body bounds and short wick tips visible.
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(left + 0.5, top + 0.5, bodyW - 1, bodyH - 1);
+  }
+}
+
 function drawLevelLabel(ctx, text, x, y, color){
   ctx.save();
   ctx.font="800 11px system-ui";
@@ -3733,8 +3774,9 @@ function drawWorld2LevelLabel(ctx, text, x, y, color){
 
 function drawGame(frozen=false){
   const canvas = $("gameCanvas"), ctx = canvas.getContext("2d"), W=canvas.width, H=canvas.height;
+  const isWorld1 = run?.world.id === 1;
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = "#0b120e";
+  ctx.fillStyle = isWorld1 ? "#0b1524" : "#0b120e";
   ctx.fillRect(0,0,W,H);
   if(!run) return;
 
@@ -3789,7 +3831,8 @@ function drawGame(frozen=false){
   const cw = cwBase;
 
   // Grid lines
-  ctx.strokeStyle="rgba(255,255,255,.07)"; ctx.lineWidth=1;
+  ctx.strokeStyle = isWorld1 ? "#1b2b3e" : "rgba(255,255,255,.07)";
+  ctx.lineWidth=1;
   for(let y=36;y<H-40;y+=44){ ctx.beginPath(); ctx.moveTo(24,y); ctx.lineTo(W-24,y); ctx.stroke(); }
 
   const hi = run.resistance;
@@ -3834,7 +3877,8 @@ function drawGame(frozen=false){
     const green = cl >= o;
     const yO=mapY(o), yH=mapY(h), yL=mapY(l), yC=mapY(cl);
     const isSignal = frozen && i >= visibleCandles.length - 3;
-    drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal);
+    if(isWorld1) drawWorld1Candle(ctx, x, yO, yH, yL, yC, cw, green, isSignal, mobile);
+    else drawFlatCandle(ctx, x, yO, yH, yL, yC, cw, green, isSignal);
   });
   if(isWorld4 && run.w4DevelopingCandle){
     const [o,h,l,cl] = run.w4DevelopingCandle;

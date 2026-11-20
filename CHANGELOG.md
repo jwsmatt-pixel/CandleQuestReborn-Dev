@@ -1,5 +1,10 @@
 # Candle Quest Reborn — Changelog
 
+## M2 — World 1 candle visuals (2026-11-20)
+
+- World 1 uses a navy chart, a subdued grid, white wicks, light bullish bodies and dark bearish bodies with inset white outlines. Tiny bodies and Dojis use centered bars.
+- Quest Moment retains the wider last three candles in the existing freeze frame. Price and channel projection, candle placement and the answer flow retain their baseline behavior.
+
 ## Task 8.3 — Unified Results Design v1 for Playbook (2026-11-19)
 
 - Add a dark results summary at the top of Review. Guided shows the explanation score, classification and MOVE / RESPONSE / RESULT statuses from the existing grades. An incorrect classification shows the correct category.
